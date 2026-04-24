@@ -1,0 +1,275 @@
+import React, { useState } from 'react';
+import { 
+  Database, Map, Users, Link as LinkIcon, Globe, 
+  AlertTriangle, CloudLightning, Droplets, HeartPulse, 
+  Crosshair, Flame, MapPin, Activity, Shield, 
+  Layers, Scale, FileText, Gavel, 
+  BarChart, Target, Briefcase, 
+  Network, Lock, Cpu, BrainCircuit, ArrowRight, Info
+} from 'lucide-react';
+
+// --- DATA STRUCTURE ---
+const flowSteps = [
+  "Dados", "Integração", "Inteligência", "Monitoramento", "Resposta", "Governança", "Decisão"
+];
+
+const layers = [
+  {
+    id: 5,
+    title: "5. Gestão Estratégica e Decisão",
+    shortTitle: "Estratégia & Decisão",
+    description: "Responsável por transformar dados e operações em visão estratégica e coordenação nacional.",
+    color: "from-slate-50 to-gray-100",
+    borderColor: "border-slate-200",
+    iconColor: "text-slate-600",
+    icon: <BarChart className="w-6 h-6" />,
+    items: [
+      { text: "Painéis executivos e indicadores estratégicos", icon: <BarChart size={16}/> },
+      { text: "Monitoramento nacional integrado de territórios", icon: <Globe size={16}/> },
+      { text: "Priorização de ações e alocação de recursos", icon: <Target size={16}/> },
+      { text: "Arranjo institucional e operacional de GRD", icon: <Briefcase size={16}/> },
+      { text: "Suporte à coordenação entre FUNAI e parceiros", icon: <Users size={16}/> }
+    ]
+  },
+  {
+    id: 4,
+    title: "4. Governança Territorial e Direitos",
+    shortTitle: "Governança & Direitos",
+    description: "Responsável por apoiar a tomada de decisão institucional, a defesa de direitos e a gestão de conflitos territoriais.",
+    color: "from-indigo-50 to-blue-50",
+    borderColor: "border-indigo-200",
+    iconColor: "text-indigo-600",
+    icon: <Scale className="w-6 h-6" />,
+    items: [
+      { text: "Identificação de sobreposição e conflitos de uso", icon: <Layers size={16}/> },
+      { text: "Proteção de direitos com base em evidências", icon: <Shield size={16}/> },
+      { text: "Análise de impacto social sobre comunidades", icon: <Users size={16}/> },
+      { text: "Produção de relatórios e suporte jurídico", icon: <Gavel size={16}/> },
+      { text: "Organização de informações para políticas públicas", icon: <FileText size={16}/> }
+    ]
+  },
+  {
+    id: 3,
+    title: "3. Monitoramento e Operação",
+    shortTitle: "Monitoramento & Resposta",
+    description: "Responsável por detectar eventos, acompanhar ocorrências e apoiar a atuação operacional da FUNAI e parceiros.",
+    color: "from-amber-50 to-orange-50",
+    borderColor: "border-amber-200",
+    iconColor: "text-amber-600",
+    icon: <Activity className="w-6 h-6" />,
+    items: [
+      { text: "Monitoramento de pressões e invasões", icon: <Crosshair size={16}/> },
+      { text: "Detecção de eventos críticos (fogo, seca, conflitos)", icon: <Flame size={16}/> },
+      { text: "Rastreabilidade de pressões territoriais", icon: <MapPin size={16}/> },
+      { text: "Gestão e resposta a ocorrências", icon: <Activity size={16}/> },
+      { text: "Apoio à proteção territorial inteligente", icon: <Shield size={16}/> }
+    ]
+  },
+  {
+    id: 2,
+    title: "2. Inteligência Territorial, Climática e de Riscos",
+    shortTitle: "Inteligência & Riscos",
+    description: "Responsável por analisar, modelar e antecipar riscos e vulnerabilidades em Terras Indígenas.",
+    color: "from-emerald-50 to-teal-50",
+    borderColor: "border-emerald-200",
+    iconColor: "text-emerald-600",
+    icon: <CloudLightning className="w-6 h-6" />,
+    items: [
+      { text: "Análise de Risco Territorial Indígena", icon: <AlertTriangle size={16}/> },
+      { text: "Zoneamento de risco climático", icon: <Map size={16}/> },
+      { text: "Monitoramento climático e modelagem", icon: <CloudLightning size={16}/> },
+      { text: "Segurança hídrica e disponibilidade de água", icon: <Droplets size={16}/> },
+      { text: "Índice de vulnerabilidade social", icon: <HeartPulse size={16}/> }
+    ]
+  },
+  {
+    id: 1,
+    title: "1. Base Estruturante de Dados e Cadastro",
+    shortTitle: "Base de Dados",
+    description: "Responsável por consolidar, integrar e estruturar as informações fundamentais sobre territórios e comunidades.",
+    color: "from-sky-50 to-blue-50",
+    borderColor: "border-sky-200",
+    iconColor: "text-sky-600",
+    icon: <Database className="w-6 h-6" />,
+    items: [
+      { text: "Cadastro Nacional Unificado Indígena (CNITI+)", icon: <Database size={16}/> },
+      { text: "Cadastro territorial de TIs (limites, status)", icon: <Map size={16}/> },
+      { text: "Cadastro de comunidades e aldeias", icon: <Users size={16}/> },
+      { text: "Integração (RANI, CadÚnico, CAF, SNCR)", icon: <LinkIcon size={16}/> },
+      { text: "Plataforma de dados geoespaciais e interoperabilidade", icon: <Globe size={16}/> }
+    ]
+  }
+];
+
+const transversalLayer = {
+  id: 6,
+  title: "6. Camadas Transversais",
+  description: "Elementos estruturantes que garantem o funcionamento integrado da plataforma em todas as suas camadas.",
+  color: "from-purple-50 to-fuchsia-50",
+  borderColor: "border-purple-200",
+  icon: <Network className="w-6 h-6 text-purple-600" />,
+  items: [
+    { text: "Integração institucional (FUNAI, IBAMA, etc.)", icon: <Network size={20}/> },
+    { text: "Interoperabilidade (INPE, ANA, CEMADEN)", icon: <LinkIcon size={20}/> },
+    { text: "Governança e Qualidade de Dados (LGPD)", icon: <Lock size={20}/> },
+    { text: "Plataforma Geoespacial (ArcGIS)", icon: <Globe size={20}/> },
+    { text: "Inteligência Artificial e Analytics", icon: <BrainCircuit size={20}/> }
+  ]
+};
+
+// --- COMPONENTS ---
+
+const FlowBar = () => (
+  <div className="flex flex-wrap items-center justify-center gap-2 bg-white p-4 rounded-xl mb-8 shadow-sm border border-slate-200">
+    {flowSteps.map((step, index) => (
+      <React.Fragment key={index}>
+        <div className="px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold text-sm border border-emerald-200 shadow-sm">
+          {step}
+        </div>
+        {index < flowSteps.length - 1 && (
+          <ArrowRight className="text-slate-400 w-4 h-4 hidden sm:block" />
+        )}
+      </React.Fragment>
+    ))}
+  </div>
+);
+
+export default function App() {
+  const [activeLayer, setActiveLayer] = useState(null);
+
+  return (
+    <div className="min-h-screen bg-slate-100 text-slate-800 p-4 md:p-8 font-sans selection:bg-emerald-500/30 flex flex-col items-center justify-center">
+      
+      {/* Quadro Widescreen (apresentação) */}
+      <div className="w-full max-w-[1600px] mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 p-6 md:p-10 xl:p-12">
+        
+        {/* Header Section */}
+        <header className="mb-8 text-center space-y-4">
+          <div className="inline-flex items-center justify-center p-3 bg-emerald-50 rounded-2xl border border-emerald-100 mb-2">
+            <Globe className="w-10 h-10 text-emerald-600 mr-3" />
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600">
+              TERRA+
+            </h1>
+          </div>
+          <h2 className="text-xl md:text-2xl font-medium text-slate-700">
+            Infraestrutura Nacional de Inteligência Territorial Indígena
+          </h2>
+          <p className="max-w-4xl mx-auto text-slate-500 text-sm md:text-base leading-relaxed">
+            Módulos organizados em camadas funcionais que permitem transformar dados em inteligência, 
+            inteligência em ação e ação em proteção territorial indígena, evoluindo de uma atuação 
+            reativa para um modelo proativo baseado em evidências.
+          </p>
+        </header>
+
+        {/* Value Flow */}
+        <FlowBar />
+
+        {/* Main Architecture Diagram */}
+        <div className="flex flex-col xl:flex-row gap-8">
+          
+          {/* Left Column: Stacked Layers (1 to 5) */}
+          <div className="flex-1 flex flex-col gap-5">
+            {layers.map((layer) => (
+              <div 
+                key={layer.id}
+                onMouseEnter={() => setActiveLayer(layer.id)}
+                onMouseLeave={() => setActiveLayer(null)}
+                className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ease-in-out cursor-default
+                  bg-gradient-to-br ${layer.color} ${layer.borderColor}
+                  ${activeLayer === layer.id ? 'shadow-md ring-1 ring-black/5 scale-[1.01]' : 'shadow-sm opacity-95'}
+                `}
+              >
+                <div className="p-5 flex flex-col md:flex-row gap-6">
+                  {/* Layer Header */}
+                  <div className="md:w-1/3 border-b md:border-b-0 md:border-r border-black/5 pb-4 md:pb-0 md:pr-6 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`p-2 rounded-xl bg-white shadow-sm border border-black/5 ${layer.iconColor}`}>
+                        {layer.icon}
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-800 leading-tight">
+                        {layer.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-600 leading-relaxed hidden md:block">
+                      {layer.description}
+                    </p>
+                  </div>
+                  
+                  {/* Layer Items */}
+                  <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-3 content-center">
+                    {layer.items.map((item, idx) => (
+                      <div 
+                        key={idx} 
+                        className="flex items-center gap-3 text-sm bg-white/60 hover:bg-white transition-colors p-3 rounded-xl border border-black/5 shadow-sm"
+                      >
+                        <span className={`${layer.iconColor} shrink-0`}>
+                          {item.icon}
+                        </span>
+                        <span className="text-slate-700 font-medium">{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Mobile Description Toggle */}
+                <div className="md:hidden px-5 pb-4">
+                   <p className="text-xs text-slate-500 italic">{layer.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Right Column: Transversal Layers (Layer 6) */}
+          <div className="xl:w-1/3 flex">
+            <div className={`w-full rounded-2xl border p-8 flex flex-col bg-gradient-to-b ${transversalLayer.color} ${transversalLayer.borderColor} shadow-lg relative overflow-hidden`}>
+              
+              {/* Background Decoration */}
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-5">
+                <BrainCircuit className="w-64 h-64 text-purple-900" />
+              </div>
+
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-3 rounded-xl bg-white shadow-sm border border-purple-100">
+                    {transversalLayer.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold text-purple-900">
+                    {transversalLayer.title}
+                  </h3>
+                </div>
+                
+                <p className="text-base text-purple-700 mb-8 leading-relaxed">
+                  {transversalLayer.description}
+                </p>
+
+                <div className="flex flex-col gap-4 mt-auto">
+                  {transversalLayer.items.map((item, idx) => (
+                    <div 
+                      key={idx} 
+                      className="group flex flex-col gap-2 p-5 rounded-xl bg-white/80 border border-purple-100 hover:bg-white hover:border-purple-300 hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="text-purple-600 group-hover:scale-110 transition-transform origin-left">
+                        {item.icon}
+                      </div>
+                      <span className="text-sm font-semibold text-purple-900">
+                        {item.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+        {/* Footer info */}
+        <div className="mt-10 text-center text-slate-400 text-sm flex items-center justify-center gap-2 border-t border-slate-100 pt-6">
+          <Info size={16} />
+          <span>Arquitetura estruturada para prevenção de riscos e coordenação interinstitucional.</span>
+        </div>
+
+      </div>
+    </div>
+  );
+}
