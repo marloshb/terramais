@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A2 · Cadastro de Comunidades e Aldeias — INITI</title>
+<style>
+:root{
+--bg:#f4f6fa;--panel:#ffffff;--panel2:#f9fafc;--line:#e4e8f0;--line2:#eef1f6;
+--ink:#1d2433;--ink2:#5a6577;--muted:#8a93a6;--brand:#1f6b3b;--brand2:#2e8b57;
+--accent:#0f5ea8;--gold:#9a6b12;--crit:#c0392b;--warn:#c77c12;--ok:#1f8a4c;--info:#2167a8;
+--shadow:0 1px 3px rgba(20,30,50,.06),0 6px 22px rgba(20,30,50,.06);
+--r:11px;--font:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.muted{color:var(--muted)}.ink2{color:var(--ink2)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#cfd6e2;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* TOP BAR */
+.top{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 16px;position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:11px;min-width:300px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1f6b3b,#2e8b57);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;box-shadow:0 2px 8px rgba(31,107,59,.35)}
+.brand b{font-size:14px;letter-spacing:.2px}.brand .sub{font-size:10.5px;color:var(--muted);letter-spacing:.4px}
+.search{flex:1;max-width:560px;position:relative}
+.search input{width:100%;height:38px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);padding:0 14px 0 38px;font-size:13px;color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--brand2);background:#fff;box-shadow:0 0 0 3px rgba(46,139,87,.1)}
+.search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.topbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.tbtn{height:36px;padding:0 13px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:12.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:7px;transition:.15s}
+.tbtn:hover{border-color:var(--brand2);color:var(--brand)}
+.tbtn.primary{background:linear-gradient(135deg,#1f6b3b,#2e8b57);color:#fff;border:none;box-shadow:0 2px 8px rgba(31,107,59,.3)}
+.tbtn.primary:hover{filter:brightness(1.06)}
+.bell{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:#fff;position:relative;color:var(--ink2);font-size:15px}
+.bell .dot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--crit);border:2px solid #fff}
+.av{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#0f5ea8,#2167a8);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+
+/* SHELL */
+.shell{display:flex;height:calc(100vh - 56px)}
+.side{width:236px;background:#fff;border-right:1px solid var(--line);padding:12px 10px;overflow-y:auto;flex-shrink:0}
+.snav{font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--muted);text-transform:uppercase;padding:12px 10px 6px}
+.nav{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;color:var(--ink2);font-size:12.8px;font-weight:600;margin-bottom:1px;cursor:pointer;transition:.13s;border:1px solid transparent}
+.nav .ico{width:18px;text-align:center;font-size:14px;filter:grayscale(.2)}
+.nav:hover{background:var(--panel2);color:var(--ink)}
+.nav.active{background:#eaf4ee;color:var(--brand);border-color:#cfe6d8;font-weight:700}
+.nav .cnt{margin-left:auto;font-size:10.5px;background:#eef1f6;color:var(--ink2);border-radius:20px;padding:1px 7px;font-weight:700}
+.nav.active .cnt{background:#cfe6d8;color:var(--brand)}
+
+.main{flex:1;overflow-y:auto;position:relative}
+.wrap{padding:18px 20px 40px}
+.phead{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.phead h1{font-size:19px;font-weight:800;letter-spacing:-.2px}
+.phead .crumb{font-size:11.5px;color:var(--muted);margin-bottom:3px}
+.phead .crumb b{color:var(--brand)}
+.seg{display:flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;color:var(--ink2)}
+.seg button.on{background:var(--brand);color:#fff}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand2)}
+.kpi.c::before{background:var(--crit)}.kpi.w::before{background:var(--warn)}.kpi.i::before{background:var(--info)}.kpi.g::before{background:var(--gold)}
+.kpi .lab{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px;min-height:26px}
+.kpi .val{font-size:25px;font-weight:800;letter-spacing:-.5px}
+.kpi .dlt{font-size:11px;margin-top:5px;font-weight:600;color:var(--ink2)}
+.kpi .dlt.up{color:var(--ok)}.kpi .dlt.dn{color:var(--crit)}
+
+/* GRID layouts */
+.cols{display:grid;grid-template-columns:1fr 320px;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card .ch{padding:13px 15px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:10px}
+.card .ch h3{font-size:13.5px;font-weight:700}
+.card .ch .sp{margin-left:auto}
+.card .cb{padding:14px 15px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1px solid transparent}
+.chip.ok{background:#e7f5ec;color:var(--ok);border-color:#c4e6d1}
+.chip.warn{background:#fdf3e3;color:var(--warn);border-color:#f2dcb4}
+.chip.crit{background:#fdeceb;color:var(--crit);border-color:#f4cdc9}
+.chip.info{background:#e9f1fa;color:var(--info);border-color:#cadff2}
+.chip.neu{background:#eef1f6;color:var(--ink2);border-color:#e0e5ee}
+.chip.gold{background:#f7f0df;color:var(--gold);border-color:#e8d9b0}
+
+/* MAP */
+.maparea{position:relative;border-radius:var(--r);overflow:hidden;background:linear-gradient(160deg,#eef4f8,#e6eef4);height:560px;border:1px solid var(--line)}
+.maparea svg{position:absolute;inset:0;width:100%;height:100%}
+.uf{fill:#dfe7ee;stroke:#fff;stroke-width:.6;transition:.2s}
+.uf.hl{fill:#cfe0d6}
+.legend{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:11px;box-shadow:var(--shadow);max-width:210px}
+.legend .lt{font-weight:700;margin-bottom:7px;font-size:11px}
+.lk{display:flex;align-items:center;gap:8px;margin:4px 0}
+.lk .sw{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.maptools{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:5px}
+.mt{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.96);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:var(--shadow);color:var(--ink2)}
+.mt:hover{color:var(--brand);border-color:var(--brand2)}
+.maplayers{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:11.5px;box-shadow:var(--shadow);max-width:185px}
+.maplayers .lt{font-weight:700;margin-bottom:6px}
+.ly{display:flex;align-items:center;gap:7px;margin:4px 0;cursor:pointer}
+.ly .tog{width:26px;height:15px;border-radius:10px;background:var(--brand2);position:relative;flex-shrink:0}
+.ly .tog::after{content:"";position:absolute;right:2px;top:2px;width:11px;height:11px;border-radius:50%;background:#fff}
+.ly.off .tog{background:#cbd2dd}.ly.off .tog::after{left:2px;right:auto}
+.dot-c{cursor:pointer;transition:.15s}.dot-c:hover{stroke:#1d2433;stroke-width:2}
+.mtip{position:absolute;background:#1d2433;color:#fff;font-size:11px;padding:7px 10px;border-radius:7px;pointer-events:none;opacity:0;transition:.12s;z-index:20;max-width:230px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.mtip b{color:#fff}.mtip .s{color:#aab4c5;font-size:10px}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12.3px}
+thead th{text-align:left;padding:9px 11px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--line);background:var(--panel2);position:sticky;top:0}
+tbody td{padding:9px 11px;border-bottom:1px solid var(--line2)}
+tbody tr{cursor:pointer;transition:.1s}
+tbody tr:hover{background:#f4f8f5}
+tbody tr.sel{background:#eaf4ee}
+.qbar{display:inline-block;width:46px;height:6px;border-radius:4px;background:#eef1f6;position:relative;overflow:hidden;vertical-align:middle}
+.qbar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+
+/* RIGHT panel */
+.rp{display:flex;flex-direction:column;gap:14px}
+.detail .dh{padding:14px 15px;border-bottom:1px solid var(--line2)}
+.detail .dh .nm{font-size:15px;font-weight:800}
+.detail .dh .mt2{font-size:11.5px;color:var(--muted);margin-top:2px}
+.score-ring{display:flex;align-items:center;gap:12px;margin:12px 0}
+.ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line2);font-size:12px}
+.kv:last-child{border:none}.kv b{font-weight:700}
+.act{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.act button{padding:8px;border-radius:8px;border:1px solid var(--line);font-size:11.5px;font-weight:600;color:var(--ink2);background:#fff}
+.act button:hover{border-color:var(--brand2);color:var(--brand)}
+.act button.full{grid-column:1/3;background:linear-gradient(135deg,#1f6b3b,#2e8b57);color:#fff;border:none}
+
+/* AI panel */
+.ai .ach{display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid var(--line2)}
+.ai .orb{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#6a3bd1,#0f5ea8);display:flex;align-items:center;justify-content:center;font-size:14px}
+.aimsg{margin:11px 15px;padding:11px 12px;background:linear-gradient(180deg,#f3f0fb,#f7f9fc);border:1px solid #e4ddf5;border-radius:10px;font-size:12px;line-height:1.55}
+.aimsg b{color:#5a2fb0}
+.suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 15px 14px}
+.suggest button{font-size:11px;padding:6px 10px;border-radius:20px;border:1px solid #d8d0ee;background:#f7f4fd;color:#5a2fb0;font-weight:600}
+.suggest button:hover{background:#efe9fb}
+
+/* agents */
+.agent{display:flex;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line2)}
+.agent:last-child{border:none}
+.agent .ab{width:30px;height:30px;border-radius:8px;background:#eaf4ee;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.agent .an{font-size:12.3px;font-weight:700;display:flex;align-items:center;gap:7px}
+.agent .ad{font-size:11px;color:var(--muted);margin:1px 0 4px}
+.agent .ao{font-size:11px;color:var(--brand);font-weight:600;background:#eef7f1;border-radius:6px;padding:4px 7px;display:inline-block}
+.stat{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.stat.sb{background:var(--warn)}
+
+/* alerts */
+.alert{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line2);font-size:12px}
+.alert:last-child{border:none}
+.alert .ai2{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.alert .at{font-weight:600}.alert .ax{font-size:10.5px;color:var(--muted)}
+
+/* KANBAN */
+.kanban{display:flex;gap:11px;overflow-x:auto;padding-bottom:14px}
+.kcol{min-width:226px;flex-shrink:0;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px}
+.kcol .kh{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;padding:4px 6px 9px;color:var(--ink2)}
+.kcol .kh .kc{margin-left:auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:0 7px;font-size:10.5px}
+.kcard{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:8px;box-shadow:0 1px 2px rgba(20,30,50,.05);cursor:pointer}
+.kcard:hover{border-color:var(--brand2)}
+.kcard .kn{font-size:12.3px;font-weight:700;margin-bottom:3px}
+.kcard .km{font-size:10.5px;color:var(--muted);margin-bottom:6px}
+.kcard .kf{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kbadge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:5px}
+
+/* FICHA tabs */
+.ftabs{display:flex;gap:3px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:14px}
+.ftab{padding:9px 13px;font-size:12.3px;font-weight:600;color:var(--ink2);border-bottom:2px solid transparent;white-space:nowrap}
+.ftab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.ftab:hover{color:var(--ink)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.field{padding:8px 0;border-bottom:1px solid var(--line2)}
+.field .fl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+.field .fv{font-size:13px;font-weight:600;margin-top:2px}
+
+.bars{display:flex;flex-direction:column;gap:9px}
+.barrow{display:flex;align-items:center;gap:10px;font-size:12px}
+.barrow .bl{width:130px;color:var(--ink2)}
+.barrow .bt{flex:1;height:9px;background:#eef1f6;border-radius:5px;overflow:hidden}
+.barrow .bt i{display:block;height:100%;border-radius:5px}
+.barrow .bn{width:42px;text-align:right;font-weight:700}
+
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.tl{position:relative;padding:0 0 15px 6px}
+.tl::before{content:"";position:absolute;left:-18px;top:3px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--brand2)}
+.tl .tt{font-size:12.3px;font-weight:700}
+.tl .td{font-size:11px;color:var(--muted)}
+.tl .tx{font-size:11.5px;color:var(--ink2);margin-top:2px}
+
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
+.fstep{padding:7px 12px;border-radius:8px;background:#fff;border:1px solid var(--line);font-size:11.5px;font-weight:600;color:var(--ink2)}
+.fstep.done{background:#eaf4ee;border-color:#cfe6d8;color:var(--brand)}
+.fstep.now{background:var(--brand);color:#fff;border:none;box-shadow:0 2px 8px rgba(31,107,59,.3)}
+.farrow{color:var(--muted)}
+
+.modlink{display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:9px;transition:.15s}
+.modlink:hover{border-color:var(--brand2);box-shadow:var(--shadow)}
+.modlink .mi{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.modlink .mt3{font-weight:700;font-size:13px}
+.modlink .mx{font-size:11px;color:var(--muted)}
+.modlink .mflow{margin-left:auto;font-size:10.5px;color:var(--brand);font-weight:700;background:#eef7f1;padding:3px 8px;border-radius:6px}
+
+.hidden{display:none!important}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.secttitle{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}
+.note{font-size:11.5px;color:var(--ink2);background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--brand2);border-radius:8px;padding:10px 12px;margin:10px 0}
+.dispcard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.dispcard .dt{font-weight:700;font-size:12.5px;display:flex;align-items:center;gap:8px}
+.gridform{display:grid;grid-template-columns:1fr 1fr;gap:11px 16px}
+.ff{display:flex;flex-direction:column;gap:5px}
+.ff label{font-size:11px;font-weight:600;color:var(--ink2)}
+.ff input,.ff select,.ff textarea{height:36px;border:1px solid var(--line);border-radius:8px;padding:0 11px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink)}
+.ff textarea{height:auto;padding:9px 11px;resize:vertical}
+.ff.full{grid-column:1/3}
+.req{color:var(--crit)}
+@media(max-width:1180px){.kpis{grid-template-columns:repeat(3,1fr)}.cols{grid-template-columns:1fr}}
+</style></head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <div class="logo">IT</div>
+    <div><b>INITI</b> <span class="sub">· Infraestrutura Nacional de Inteligência Territorial Indígena</span><br>
+    <span class="sub" style="color:var(--brand);font-weight:700">Módulo A2 · Cadastro de Comunidades e Aldeias</span></div>
+  </div>
+  <div class="search">
+    <span class="ic">🔎</span>
+    <input placeholder="Buscar comunidade, aldeia, Terra Indígena, etnia, município, UF ou coordenação regional…">
+  </div>
+  <div class="topbtns">
+    <button class="tbtn primary" onclick="openForm()">＋ Nova Comunidade / Aldeia</button>
+    <button class="tbtn">⬆ Importar cadastro</button>
+    <button class="tbtn">📲 Coleta de campo</button>
+    <button class="tbtn">✅ Validar base</button>
+    <button class="bell">🔔<span class="dot"></span></button>
+    <div class="av">AF</div>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="main"><div class="wrap" id="view"></div></main>
+</div>
+
+<div class="mtip" id="mtip"></div>
+
+<script>
+const DATA = {"comms": [["Watoriki", "Demini", "Yanomami", "Yanomami", "RR", "Alto Alegre", "CR Roraima", 380, 62, "Aldeia", "Aéreo/Fluvial", -63.2, 1.9, 86, "Alto", "Médio", "Publicado", 83, "Alta", true, "2026-06-12", "Publicado", [], true, 231.0, 82.2], ["Maturacá", "Maturacá", "Yanomami", "Yanomami", "AM", "São G. da Cachoeira", "CR Roraima", 640, 110, "Comunidade", "Fluvial", -66.0, 1.1, 74, "Médio", "Alto", "Publicado", 80, "Alta", true, "2026-05-30", "Publicado", ["População desatualizada"], true, 174.1, 98.4], ["Palimiú", "Palimiú", "Yanomami", "Yanomami", "RR", "Alto Alegre", "CR Roraima", 290, 48, "Aldeia", "Fluvial", -62.6, 2.2, 91, "Alto", "Alto", "Em validação", 58, "Alta", true, "2026-06-16", "Validação regional", ["Ocorrência crítica aberta", "Localização sem validação regional"], true, 243.2, 76.1], ["Massapê", "Vale do Javari", "Vale do Javari", "Marubo", "AM", "Atalaia do Norte", "CR Vale do Javari", 210, 33, "Aldeia", "Fluvial", -71.3, -5.3, 79, "Médio", "Alto", "Publicado", 77, "Alta", false, "2026-04-10", "Publicado", ["Sensibilidade: revisar"], true, 66.4, 228.5], ["Kapôt", "Kapôt", "Kayapó", "Mebêngôkre", "PA", "São Félix do Xingu", "CR Sul do Pará", 520, 88, "Aldeia", "Terrestre/Aéreo", -51.8, -7.7, 68, "Baixo", "Médio", "Em validação", 60, "Média", false, "2026-06-14", "Validação territorial", ["Fora do limite da TI associada (1,4 km)"], false, 462.6, 277.2], ["Gorotire", "Gorotire", "Kayapó", "Mebêngôkre", "PA", "Cumaru do Norte", "CR Sul do Pará", 1100, 180, "Comunidade", "Terrestre", -51.6, -7.8, 55, "Baixo", "Baixo", "Publicado", 85, "Média", false, "2026-03-22", "Publicado", [], true, 466.7, 279.3], ["Maloca do Contão", "Contão", "Raposa Serra do Sol", "Macuxi", "RR", "Normandia", "CR Roraima", 430, 70, "Comunidade", "Terrestre", -60.2, 4.6, 49, "Baixo", "Baixo", "Publicado", 88, "Média", false, "2026-04-28", "Publicado", [], true, 292.0, 27.3], ["Lagoa Comprida", "Lagoa Comprida", "Araribóia", "Guajajara", "MA", "Arame", "CR Maranhão", 260, 44, "Aldeia", "Terrestre", -46.2, -4.7, 82, "Médio", "Alto", "Em validação", 52, "Alta", true, "2026-06-15", "Análise de sensibilidade", ["Insegurança alimentar registrada", "Risco climático (fogo) elevado"], true, 576.4, 216.3], ["Sawré Muybu", "Sawré Muybu", "Munduruku", "Munduruku", "PA", "Itaituba", "CR Sul do Pará", 340, 55, "Aldeia", "Fluvial", -57.3, -6.3, 88, "Alto", "Médio", "Em edição", 43, "Alta", true, "2026-06-17", "Em edição", ["Possível duplicidade (Sawré Aboy)", "Localização sem precisão", "Documento ausente"], true, 350.9, 248.8], ["Sawré Aboy", "Sawré Aboy", "Munduruku", "Munduruku", "PA", "Itaituba", "CR Sul do Pará", 90, 15, "Aldeia", "Fluvial", -57.05, -6.5, 72, "Médio", "Médio", "Em triagem", 38, "Alta", false, "2026-06-18", "Em triagem", ["Cadastro preliminar", "Possível fusão com Sawré Muybu"], true, 356.0, 252.9], ["Trincheira", "Bacajá", "Trincheira Bacajá", "Xikrin", "PA", "Senador J. Porfírio", "CR Sul do Pará", 410, 66, "Comunidade", "Fluvial/Terrestre", -51.4, -4.1, 75, "Médio", "Médio", "Aguardando despacho", 64, "Média", false, "2026-06-13", "Aguardando despacho", ["Validação regional pendente"], true, 470.7, 204.1], ["Alto Jamari", "Alto Jamari", "Uru-Eu-Wau-Wau", "Amondawa", "RO", "Gov. J. Teixeira", "CR Rondônia", 70, 12, "Aldeia", "Terrestre", -63.3, -11.3, 69, "Médio", "Médio", "Publicado", 78, "Alta", false, "2025-11-15", "Publicado", ["Sem atualização recente (>180d)"], true, 229.0, 350.4], ["Iauaretê", "Iauaretê", "Alto Rio Negro", "Tariano", "AM", "São G. da Cachoeira", "CR Alto Rio Negro", 3300, 520, "Comunidade", "Fluvial/Aéreo", -69.2, 0.6, 46, "Baixo", "Baixo", "Publicado", 87, "Média", false, "2026-02-20", "Publicado", [], true, 109.1, 108.6], ["Pari-Cachoeira", "Pari-Cachoeira", "Alto Rio Negro", "Tukano", "AM", "São G. da Cachoeira", "CR Alto Rio Negro", 1200, 190, "Comunidade", "Fluvial", -69.8, 0.3, 51, "Baixo", "Médio", "Em complementação", 59, "Baixa", false, "2026-06-10", "Em complementação", ["Sem dados de acesso logístico", "Sem vínculo com serviços"], true, 96.9, 114.7], ["Diauarum", "Diauarum", "Xingu", "Kĩsêdjê", "MT", "Querência", "CR Mato Grosso", 480, 77, "Comunidade", "Fluvial/Aéreo", -53.2, -11.2, 57, "Baixo", "Baixo", "Publicado", 82, "Baixa", false, "2026-03-30", "Publicado", [], true, 434.2, 348.3], ["Khikatxi", "Khikatxi", "Xingu", "Ikpeng", "MT", "Gaúcha do Norte", "CR Mato Grosso", 150, 26, "Aldeia", "Fluvial", -53.4, -11.6, 63, "Médio", "Médio", "Revisão técnica", 61, "Baixa", false, "2026-06-11", "Revisão técnica", ["Metadados incompletos"], true, 430.1, 356.5]], "services": [["Polo Base Surucucu", "saude", "RR", -62.9, 1.6, 237.1, 88.3], ["Polo Base Maturacá", "saude", "AM", -66.1, 1.0, 172.1, 100.5], ["Escola Indígena Kapôt", "escola", "PA", -51.85, -7.72, 461.6, 277.6], ["Polo Saúde Jacareacanga", "saude", "PA", -57.7, -6.2, 342.8, 246.8], ["Escola Iauaretê", "escola", "AM", -69.2, 0.62, 109.1, 108.2], ["Polo Saúde Atalaia", "saude", "AM", -71.0, -4.9, 72.5, 220.3], ["UBSI Arame", "saude", "MA", -46.3, -4.75, 574.4, 217.3], ["Escola Diauarum", "escola", "MT", -53.2, -11.22, 434.2, 348.7]], "agents": [["Cadastro Assistido", "Sugere campos e vínculo territorial por coordenada", "online", "Sugere TI 'Munduruku' para novo ponto"], ["Conciliação Comunitária", "Detecta duplicidades por nome e proximidade", "online", "Sawré Aboy × Sawré Muybu: 88% / 1,2 km"], ["Validação Territorial", "Confere se o ponto está dentro da TI associada", "online", "Kapôt fora do limite (1,4 km)"], ["Sensibilidade e LGPD", "Recomenda restrição e mascaramento de dados", "online", "Palimiú: ocultar coordenada (perfis externos)"], ["Vulnerabilidade Comunitária", "Cruza clima, hídrico, alimentar e logístico", "online", "Palimiú: prioridade ALTA (hídrico+ocorrência)"], ["Atualização de Campo", "Identifica cadastros vencidos e roteiriza coleta", "standby", "2 comunidades >180d sem atualização"], ["Integração Serviços Públicos", "Relaciona saúde/educação e calcula lacunas", "online", "Pari-Cachoeira sem vínculo de serviço"], ["Síntese Comunitária", "Gera resumo executivo da comunidade", "online", "Resumo da comunidade selecionada disponível"]], "nav": [["overview", "Visão geral", "📊"], ["list", "Comunidades e aldeias", "👥"], ["map", "Mapa comunitário", "🗺️"], ["kanban", "Produção cadastral", "🗂️"], ["field", "Coleta de campo", "📲"], ["valid", "Validações", "✅"], ["vuln", "Vulnerabilidade", "🌡️"], ["water", "Segurança hídrica", "💧"], ["food", "Segurança alimentar", "🌾"], ["logist", "Acesso logístico", "🛶"], ["services", "Serviços públicos", "🏥"], ["partners", "Parceiros", "🤝"], ["docs", "Documentos e evidências", "📎"], ["dispatch", "Despachos", "✉️"], ["integr", "Integrações", "🔌"], ["audit", "Auditoria", "🔍"]], "integr": [["Cadastro Territorial de TIs (Módulo A1)", "vínculo territorial", "2026-06-18 03:00", "Diária", "ok", "Restrita", "98%", 612, 0, 612, 0], ["SESAI / DSEIs", "saúde indígena", "2026-06-18 06:30", "Diária", "ok", "Alta", "94%", 3400, 12, 3210, 42], ["Polos de Saúde Indígena", "atendimento", "2026-06-17 06:30", "Semanal", "ok", "Alta", "92%", 820, 3, 790, 18], ["Sec. Estaduais de Educação", "escolas indígenas", "2026-06-16 07:00", "Semanal", "alerta", "Média", "81%", 1450, 40, 1300, 55], ["MDS / CadÚnico (autorizado)", "assistência social", "2026-06-10 07:00", "Mensal", "alerta", "Alta", "76%", 2100, 0, 1800, 120], ["ANA / CEMADEN", "risco hídrico e clima", "tempo real", "Contínua", "ok", "Baixa", "96%", 240, 0, 240, 0], ["INPE / DETER", "eventos críticos", "tempo real", "Contínua", "ok", "Baixa", "97%", 58, 0, 58, 0], ["MapBiomas", "uso e cobertura do solo", "2026-06-12 06:00", "Mensal", "ok", "Baixa", "95%", 16, 0, 16, 0], ["Defesa Civil", "emergências", "2026-06-18 08:00", "Diária", "ok", "Média", "90%", 34, 0, 34, 4], ["Formulários de campo (offline)", "coleta comunitária", "2026-06-18 14:20", "Contínua", "alerta", "Alta", "88%", 47, 5, 38, 9], ["Parceiros / ONGs / Universidades", "projetos e cooperação", "2026-06-05 10:00", "Eventual", "ok", "Média", "85%", 62, 0, 60, 2]], "audit": [["2026-06-18 16:55", "Téc. Regional · CR Sul do Pará", "Edição cadastral", "Sawré Muybu", "Correção de localização · rascunho v2"], ["2026-06-18 15:40", "IA · Conciliação Comunitária", "Alerta de duplicidade", "Sawré Aboy", "Sugerida fusão com Sawré Muybu (88%)"], ["2026-06-18 11:10", "IA · Sensibilidade/LGPD", "Classificação de sensibilidade", "Palimiú", "Recomendado mascaramento de coordenada"], ["2026-06-17 16:20", "Analista Social", "Cálculo de vulnerabilidade", "Lagoa Comprida", "Score preliminar 82 (alta)"], ["2026-06-17 09:05", "Validador Regional", "Validação de localização", "Maloca do Contão", "Ponto confirmado dentro da TI"], ["2026-06-16 13:30", "Sistema", "Publicação cadastral", "Iauaretê", "Ficha publicada · módulos notificados"]], "ti_xy": {"Yanomami": [224.9, 84.2], "Vale do Javari": [62.4, 232.5], "Kayapó": [458.6, 283.3], "Raposa Serra do Sol": [285.9, 29.4], "Araribóia": [580.5, 218.3], "Munduruku": [346.8, 252.9], "Uru-Eu-Wau-Wau": [224.9, 354.4], "Alto Rio Negro": [153.8, 110.6], "Xingu": [438.2, 354.4], "Trincheira Bacajá": [468.7, 206.1]}, "uf_paths": {"RO": "M246.9,387.3 L249.7,388.1 L251.0,387.2 L253.1,388.2 L253.0,390.2 L257.7,393.9 L259.1,395.6 L263.9,395.3 L266.2,396.2 L270.7,395.0 L271.8,395.8 L275.5,395.2 L277.4,396.0 L278.2,397.5 L281.6,399.0 L283.2,396.5 L288.1,394.1 L288.5,391.4 L289.3,390.2 L290.6,386.5 L292.3,384.3 L293.6,384.1 L295.4,377.2 L297.1,376.8 L300.5,371.5 L298.3,369.6 L298.1,367.0 L296.4,365.2 L296.3,362.9 L294.0,361.5 L293.8,356.1 L297.4,352.9 L297.7,351.2 L296.4,349.1 L296.5,346.8 L288.1,346.2 L286.7,344.1 L275.7,344.1 L267.0,344.0 L264.5,344.0 L266.0,339.5 L266.3,332.5 L264.5,330.2 L263.8,325.2 L264.7,324.0 L265.4,321.1 L264.0,318.2 L266.0,316.4 L263.9,313.0 L263.2,310.3 L262.9,308.9 L265.0,308.7 L264.4,305.5 L266.2,302.0 L263.9,299.6 L261.2,297.3 L258.7,298.2 L257.4,300.9 L255.6,301.1 L254.8,299.6 L252.9,299.6 L251.6,295.3 L249.9,295.0 L249.5,296.3 L248.0,293.4 L248.1,291.4 L245.9,290.2 L244.9,291.1 L244.0,289.1 L242.1,288.0 L241.3,285.2 L237.8,282.8 L222.5,282.8 L222.4,283.9 L219.9,287.6 L219.0,290.1 L217.4,289.2 L215.9,290.1 L215.3,293.0 L216.3,294.7 L214.0,297.4 L211.9,298.4 L211.9,302.5 L208.4,303.6 L208.2,302.2 L203.0,303.4 L202.3,304.0 L198.3,303.4 L195.7,306.2 L196.1,308.1 L193.4,311.8 L191.5,312.7 L190.1,309.3 L188.9,309.0 L186.4,310.5 L185.5,310.0 L185.7,313.0 L182.5,312.1 L180.6,312.8 L179.6,315.1 L177.7,314.4 L174.7,312.0 L170.6,312.5 L165.8,311.9 L166.2,313.8 L164.0,316.5 L161.7,317.2 L157.7,320.3 L161.4,321.9 L169.8,320.6 L171.0,319.6 L174.5,320.1 L176.4,318.9 L180.1,319.2 L183.2,320.5 L185.4,317.2 L187.2,318.3 L188.6,321.2 L187.7,322.8 L188.6,328.4 L186.5,331.6 L186.7,332.7 L185.7,333.7 L186.2,337.0 L187.5,338.2 L187.1,340.2 L188.8,341.7 L189.3,344.0 L187.1,347.3 L188.2,354.5 L190.1,355.1 L190.3,359.5 L192.6,358.7 L193.9,364.5 L197.7,364.8 L200.6,366.7 L200.3,368.1 L202.7,369.0 L204.3,369.1 L204.3,371.6 L206.5,373.7 L210.0,373.8 L215.5,375.4 L217.0,373.7 L221.2,373.8 L226.2,376.1 L229.0,378.4 L233.2,377.5 L234.9,381.7 L237.3,382.0 L239.3,384.8 L242.0,384.3 L242.9,385.7 L246.9,387.3Z", "AC": "M151.1,317.4 L147.2,315.7 L147.2,315.7 L143.3,315.0 L134.0,310.8 L129.0,308.6 L120.3,304.6 L114.8,299.9 L108.8,294.8 L104.1,290.8 L96.9,284.6 L91.7,280.2 L82.4,279.1 L70.7,277.8 L64.8,277.1 L53.3,275.7 L48.8,275.2 L40.3,274.2 L33.9,271.9 L16.9,265.7 L15.6,265.3 L17.7,269.0 L14.1,270.8 L12.3,270.3 L13.2,272.5 L11.9,274.5 L15.2,277.6 L17.8,278.7 L17.6,280.7 L16.3,280.5 L17.1,282.7 L19.1,284.5 L21.0,290.3 L25.2,293.0 L24.9,295.6 L29.3,299.0 L30.8,301.8 L32.0,302.0 L33.1,305.0 L29.9,309.8 L27.6,312.0 L37.6,312.0 L41.7,313.6 L45.3,314.0 L47.1,316.3 L46.7,318.8 L49.1,319.8 L48.6,324.0 L64.9,324.0 L68.3,323.3 L71.0,320.5 L72.6,320.3 L75.2,317.1 L76.6,316.7 L81.3,312.4 L82.6,312.2 L80.7,316.0 L82.2,318.2 L80.3,320.6 L80.3,325.6 L80.3,332.6 L80.2,338.3 L80.2,344.3 L82.1,343.0 L84.2,345.0 L86.7,345.7 L89.6,345.1 L94.2,342.7 L98.2,343.8 L104.6,342.8 L108.5,343.1 L115.0,344.7 L118.3,344.7 L118.9,347.2 L122.5,346.5 L125.6,345.1 L128.6,343.4 L133.4,337.1 L136.3,337.0 L139.5,338.2 L142.3,334.3 L147.5,331.6 L147.4,330.4 L150.2,330.9 L153.8,328.6 L155.9,326.2 L161.4,321.9 L157.7,320.3 L151.1,317.4Z", "AM": "M333.7,270.0 L333.0,266.7 L329.8,262.7 L327.8,261.2 L326.9,258.6 L328.0,255.2 L331.2,252.4 L339.5,234.6 L349.9,212.3 L357.9,195.1 L358.7,193.2 L360.8,188.5 L361.7,186.7 L369.1,170.7 L367.9,170.2 L369.4,167.1 L373.1,165.1 L375.3,162.0 L372.7,162.6 L368.9,165.0 L366.6,164.3 L365.4,165.0 L363.5,165.7 L361.8,165.0 L362.1,161.7 L359.8,161.8 L356.4,159.8 L355.3,157.0 L351.7,155.3 L349.8,156.1 L345.0,152.9 L343.3,153.2 L342.5,151.3 L337.5,149.2 L336.7,147.8 L337.4,144.6 L336.0,143.1 L333.5,145.8 L331.4,143.8 L330.2,144.1 L327.9,141.7 L327.8,138.9 L323.2,135.4 L321.7,133.2 L321.9,129.8 L319.0,127.9 L319.1,122.4 L318.5,121.0 L318.5,115.4 L311.0,115.4 L307.5,115.4 L295.3,115.4 L291.4,123.3 L288.0,132.0 L289.7,135.4 L285.9,136.7 L285.1,138.5 L282.4,138.8 L280.5,138.0 L279.5,134.8 L277.1,131.9 L271.2,131.0 L271.0,132.2 L266.4,134.1 L264.8,136.1 L263.9,140.7 L264.7,142.4 L262.9,147.2 L263.1,149.1 L264.8,149.9 L266.1,152.9 L263.4,150.2 L259.5,148.8 L258.6,149.3 L257.5,149.1 L255.0,144.0 L252.8,141.9 L250.1,140.6 L247.4,137.5 L245.0,136.2 L245.5,134.6 L248.1,135.1 L249.6,133.6 L248.9,131.9 L251.6,127.3 L250.4,126.8 L250.5,124.3 L248.9,122.8 L248.8,120.9 L247.1,119.3 L246.2,116.6 L246.3,113.1 L244.9,111.8 L244.5,107.1 L246.0,105.0 L246.4,101.3 L245.8,98.7 L244.8,98.8 L242.4,91.6 L240.4,89.7 L239.0,88.5 L240.6,86.3 L241.1,81.5 L238.4,79.8 L234.6,79.9 L232.3,76.9 L229.5,77.0 L227.5,75.9 L227.0,77.2 L223.7,77.5 L218.2,80.8 L215.3,80.3 L213.5,81.6 L213.4,86.7 L208.1,91.6 L206.6,92.5 L206.7,89.8 L203.5,92.0 L202.8,93.6 L199.2,95.8 L198.0,94.8 L195.4,95.8 L194.0,98.1 L191.3,97.9 L191.1,101.5 L187.8,101.9 L185.4,106.8 L183.5,107.6 L182.4,106.1 L184.3,103.7 L182.5,100.3 L179.4,100.5 L175.6,102.7 L174.8,104.3 L171.1,105.7 L169.8,104.9 L167.7,105.8 L167.7,105.5 L156.7,95.8 L152.0,97.1 L152.3,91.5 L151.8,85.6 L150.6,83.2 L148.2,82.7 L145.9,75.2 L143.2,76.7 L141.2,79.7 L138.0,79.5 L134.7,83.6 L131.7,82.2 L130.6,80.5 L128.5,81.7 L128.1,83.7 L130.3,85.6 L105.2,85.7 L102.3,84.7 L99.9,85.9 L96.0,86.1 L96.0,98.9 L98.9,98.1 L98.9,99.0 L106.6,98.7 L108.2,99.5 L110.3,102.8 L109.4,105.6 L110.8,107.7 L106.1,108.3 L103.4,105.9 L100.4,108.0 L99.2,107.3 L96.4,108.8 L91.9,109.4 L91.9,119.4 L91.7,124.6 L94.4,127.5 L96.0,127.8 L100.8,131.2 L101.7,133.8 L100.4,136.0 L102.5,139.5 L104.6,141.1 L105.1,144.0 L104.4,149.0 L100.7,170.4 L96.2,195.7 L93.9,207.5 L91.9,209.7 L90.2,207.8 L88.8,209.3 L86.6,207.1 L86.9,205.3 L82.3,204.9 L80.3,206.0 L77.4,205.3 L75.3,207.2 L73.8,209.8 L67.1,209.9 L67.2,210.7 L62.3,211.0 L60.0,212.8 L56.7,211.9 L54.0,212.8 L53.3,214.4 L47.3,217.9 L44.7,218.5 L43.8,220.4 L40.1,222.0 L34.2,225.7 L34.5,228.5 L32.6,232.5 L32.7,235.7 L28.8,239.9 L26.8,245.6 L29.7,251.0 L27.6,254.4 L24.7,254.8 L18.9,258.2 L16.6,261.8 L17.1,263.5 L15.6,265.3 L16.9,265.7 L33.9,271.9 L40.3,274.2 L48.8,275.2 L53.3,275.7 L64.8,277.1 L70.7,277.8 L82.4,279.1 L91.7,280.2 L96.9,284.6 L104.1,290.8 L108.8,294.8 L114.8,299.9 L120.3,304.6 L129.0,308.6 L134.0,310.8 L143.3,315.0 L147.2,315.7 L147.2,315.7 L151.1,317.4 L157.7,320.3 L161.7,317.2 L164.0,316.5 L166.2,313.8 L165.8,311.9 L170.6,312.5 L174.7,312.0 L177.7,314.4 L179.6,315.1 L180.6,312.8 L182.5,312.1 L185.7,313.0 L185.5,310.0 L186.4,310.5 L188.9,309.0 L190.1,309.3 L191.5,312.7 L193.4,311.8 L196.1,308.1 L195.7,306.2 L198.3,303.4 L202.3,304.0 L203.0,303.4 L208.2,302.2 L208.4,303.6 L211.9,302.5 L211.9,298.4 L214.0,297.4 L216.3,294.7 L215.3,293.0 L215.9,290.1 L217.4,289.2 L219.0,290.1 L219.9,287.6 L222.4,283.9 L222.5,282.8 L237.8,282.8 L241.3,285.2 L242.1,288.0 L244.0,289.1 L244.9,291.1 L245.9,290.2 L248.1,291.4 L248.0,293.4 L249.5,296.3 L249.9,295.0 L251.6,295.3 L252.9,299.6 L254.8,299.6 L255.6,301.1 L257.4,300.9 L258.7,298.2 L261.2,297.3 L263.9,299.6 L287.5,299.5 L313.8,299.6 L327.7,299.6 L330.0,297.8 L327.8,297.6 L328.7,295.4 L328.2,293.3 L330.3,289.9 L330.8,285.1 L329.0,279.8 L330.7,278.7 L332.5,275.6 L332.3,272.3 L333.9,270.2 L333.7,270.0Z", "RR": "M211.0,49.9 L212.4,53.0 L210.3,58.0 L211.8,59.3 L214.5,63.7 L215.0,67.0 L213.5,69.9 L215.6,70.6 L217.9,70.1 L219.6,71.1 L222.8,70.9 L225.6,72.0 L226.6,70.9 L227.9,72.4 L227.5,75.9 L229.5,77.0 L232.3,76.9 L234.6,79.9 L238.4,79.8 L241.1,81.5 L240.6,86.3 L239.0,88.5 L240.4,89.7 L242.4,91.6 L244.8,98.8 L245.8,98.7 L246.4,101.3 L246.0,105.0 L244.5,107.1 L244.9,111.8 L246.3,113.1 L246.2,116.6 L247.1,119.3 L248.8,120.9 L248.9,122.8 L250.5,124.3 L250.4,126.8 L251.6,127.3 L248.9,131.9 L249.6,133.6 L248.1,135.1 L245.5,134.6 L245.0,136.2 L247.4,137.5 L250.1,140.6 L252.8,141.9 L255.0,144.0 L257.5,149.1 L258.6,149.3 L259.5,148.8 L263.4,150.2 L266.1,152.9 L264.8,149.9 L263.1,149.1 L262.9,147.2 L264.7,142.4 L263.9,140.7 L264.8,136.1 L266.4,134.1 L271.0,132.2 L271.2,131.0 L277.1,131.9 L279.5,134.8 L280.5,138.0 L282.4,138.8 L285.1,138.5 L285.9,136.7 L289.7,135.4 L288.0,132.0 L291.4,123.3 L295.3,115.4 L307.5,115.4 L311.0,115.4 L318.5,115.4 L318.5,95.9 L317.9,94.0 L315.4,93.9 L311.2,92.6 L309.6,90.0 L308.0,89.3 L305.5,85.9 L302.3,85.1 L302.9,83.0 L301.2,83.2 L301.4,80.2 L301.3,74.2 L299.2,73.6 L296.3,66.4 L296.3,61.3 L297.9,55.5 L300.0,52.7 L300.0,49.5 L298.6,48.4 L302.9,45.3 L305.6,41.1 L301.9,36.2 L301.5,33.7 L302.6,32.5 L301.4,30.9 L296.6,29.2 L292.7,29.0 L295.5,25.2 L296.6,17.7 L294.1,16.4 L293.3,14.2 L291.7,13.7 L289.4,15.0 L284.3,15.2 L281.9,14.6 L284.2,20.1 L282.8,21.6 L280.8,24.2 L276.8,26.2 L275.8,29.1 L272.7,29.7 L270.2,28.6 L268.6,31.0 L266.6,30.6 L265.4,33.0 L264.3,34.4 L260.7,34.3 L259.1,36.1 L255.5,36.0 L252.5,38.0 L247.5,35.9 L244.2,37.3 L244.6,38.6 L240.4,38.7 L239.4,41.7 L240.6,43.5 L240.2,46.2 L238.9,45.0 L235.4,47.5 L233.4,45.8 L233.8,44.6 L230.9,43.4 L230.9,40.5 L225.9,40.4 L226.7,41.3 L224.7,42.6 L221.3,39.1 L220.6,41.5 L219.7,40.7 L216.3,41.0 L215.5,42.2 L212.5,37.8 L211.3,36.9 L206.0,36.8 L203.4,37.5 L198.9,33.7 L198.3,36.0 L205.0,43.9 L208.9,45.6 L210.8,48.1 L211.0,49.9Z", "PA": "M535.9,220.6 L538.6,218.4 L539.3,217.9 L543.6,214.5 L546.3,214.4 L547.6,213.4 L551.2,207.9 L552.6,207.1 L553.1,204.3 L558.3,199.2 L559.5,194.0 L559.4,193.2 L561.2,191.4 L561.3,189.4 L564.0,187.9 L564.8,185.3 L566.7,183.7 L566.6,179.6 L568.5,178.6 L566.9,176.4 L568.1,174.4 L570.2,174.0 L571.6,171.0 L571.5,169.8 L572.0,167.0 L574.7,164.6 L575.1,162.4 L575.9,159.7 L576.2,158.0 L574.2,157.5 L574.1,156.2 L576.2,155.9 L577.2,153.8 L576.9,150.8 L578.3,148.0 L577.2,146.8 L578.3,145.2 L579.2,143.3 L578.5,141.5 L576.5,142.7 L576.2,138.8 L573.6,141.5 L570.9,141.6 L570.4,138.5 L569.7,140.2 L567.5,140.5 L567.7,137.1 L564.3,138.5 L563.5,136.0 L561.3,138.3 L560.3,135.3 L558.8,136.9 L558.3,134.5 L556.9,136.3 L556.6,134.5 L554.8,134.0 L552.3,133.1 L551.5,134.1 L550.5,132.8 L550.4,135.8 L548.2,132.5 L547.8,135.0 L547.3,135.1 L547.3,133.0 L544.8,133.1 L541.5,132.3 L540.3,134.7 L538.8,134.2 L536.9,136.1 L536.3,137.4 L533.9,139.5 L531.5,139.2 L530.2,138.5 L529.5,136.1 L530.9,129.2 L532.2,127.0 L531.1,125.4 L524.7,125.9 L521.2,125.5 L516.2,123.4 L511.7,124.7 L510.6,123.4 L512.2,121.3 L511.4,119.5 L506.7,119.3 L505.3,117.7 L506.6,115.9 L509.6,114.0 L507.9,112.3 L501.4,114.2 L495.8,113.9 L495.7,112.7 L498.4,109.9 L497.7,107.9 L494.6,106.7 L490.9,108.1 L487.0,115.7 L486.1,116.6 L484.1,118.1 L479.4,119.9 L476.5,122.8 L474.6,123.2 L471.8,126.9 L470.1,130.4 L466.8,134.0 L465.0,137.0 L464.6,142.4 L463.1,144.0 L460.8,144.5 L459.3,143.7 L456.3,145.5 L456.1,144.1 L451.8,143.5 L450.0,142.2 L449.3,137.7 L448.2,138.2 L448.5,135.2 L447.7,132.5 L445.6,132.7 L444.4,130.9 L444.7,127.2 L439.6,123.7 L438.6,120.1 L436.3,116.8 L434.7,113.0 L435.2,108.6 L436.1,107.0 L429.9,101.9 L428.9,97.8 L429.4,95.7 L427.6,96.2 L427.4,93.9 L420.2,92.2 L420.0,91.2 L416.1,90.5 L415.4,88.1 L410.2,85.0 L407.8,85.3 L405.7,84.5 L402.8,84.7 L402.6,80.7 L401.4,79.4 L402.4,76.1 L400.2,71.4 L398.5,68.3 L395.5,69.5 L394.1,68.8 L391.1,69.7 L389.8,71.7 L387.5,71.2 L383.2,72.0 L383.0,72.0 L378.6,69.3 L376.3,73.4 L374.5,74.8 L376.4,75.5 L378.0,78.4 L379.2,82.4 L377.3,83.6 L374.2,82.4 L372.4,82.6 L368.4,81.1 L365.5,82.1 L362.6,81.7 L361.3,83.1 L358.6,81.6 L357.0,82.0 L355.2,79.6 L351.8,81.2 L350.8,80.2 L348.2,82.1 L347.8,84.1 L345.2,86.5 L340.9,85.7 L340.8,86.5 L336.9,87.1 L336.6,90.3 L334.0,90.3 L333.4,89.1 L330.2,88.9 L329.1,90.7 L326.3,91.1 L327.4,92.9 L326.6,95.0 L322.2,94.6 L321.9,96.0 L319.9,97.0 L318.5,95.9 L318.5,115.4 L318.5,121.0 L319.1,122.4 L319.0,127.9 L321.9,129.8 L321.7,133.2 L323.2,135.4 L327.8,138.9 L327.9,141.7 L330.2,144.1 L331.4,143.8 L333.5,145.8 L336.0,143.1 L337.4,144.6 L336.7,147.8 L337.5,149.2 L342.5,151.3 L343.3,153.2 L345.0,152.9 L349.8,156.1 L351.7,155.3 L355.3,157.0 L356.4,159.8 L359.8,161.8 L362.1,161.7 L361.8,165.0 L363.5,165.7 L365.4,165.0 L366.6,164.3 L368.9,165.0 L372.7,162.6 L375.3,162.0 L373.1,165.1 L369.4,167.1 L367.9,170.2 L369.1,170.7 L361.7,186.7 L360.8,188.5 L358.7,193.2 L357.9,195.1 L349.9,212.3 L339.5,234.6 L331.2,252.4 L328.0,255.2 L326.9,258.6 L327.8,261.2 L329.8,262.7 L333.0,266.7 L333.7,270.0 L333.9,270.2 L335.4,271.0 L338.8,276.8 L340.1,282.5 L343.9,287.8 L343.0,291.6 L344.1,294.0 L344.9,298.7 L348.5,299.4 L348.5,300.8 L352.8,302.0 L356.2,305.6 L355.8,307.3 L357.1,308.4 L360.6,308.6 L362.0,311.9 L363.6,311.1 L371.8,311.8 L374.1,312.0 L380.0,312.5 L397.7,313.9 L405.5,314.5 L415.8,315.3 L426.3,316.1 L435.5,316.8 L446.0,317.5 L453.3,318.0 L472.7,319.3 L482.0,319.9 L494.6,320.7 L497.3,314.5 L498.4,309.5 L499.9,308.3 L502.0,305.3 L502.2,304.9 L505.6,300.7 L507.5,300.4 L509.7,297.0 L511.4,294.4 L512.4,291.8 L513.8,291.0 L515.0,287.5 L515.9,283.5 L516.1,280.4 L516.2,279.1 L512.6,276.3 L512.2,275.5 L511.8,273.1 L514.1,270.4 L515.7,267.0 L515.6,265.6 L515.6,263.8 L515.2,261.5 L517.8,259.8 L518.7,259.1 L522.5,257.9 L526.3,256.2 L526.9,252.7 L527.1,252.4 L529.7,249.8 L532.2,249.7 L531.0,246.8 L531.9,245.7 L534.0,244.7 L533.0,242.8 L535.1,241.6 L533.9,239.4 L534.2,237.1 L536.3,236.8 L537.0,234.6 L533.2,232.5 L532.2,230.6 L530.9,230.7 L527.7,231.0 L524.5,229.5 L530.6,224.7 L535.5,220.9 L535.9,220.6Z", "AP": "M485.3,77.2 L483.1,70.0 L482.4,69.7 L481.2,65.0 L479.8,63.2 L478.2,55.5 L476.7,50.7 L477.2,48.5 L477.2,41.9 L475.8,41.3 L474.5,36.5 L473.1,34.4 L469.0,30.6 L465.9,29.2 L465.1,32.8 L466.2,34.9 L465.5,38.4 L463.0,40.3 L462.6,41.8 L459.1,45.5 L458.8,47.1 L453.8,55.0 L451.4,57.3 L451.9,58.2 L448.8,64.3 L447.3,69.6 L445.1,72.6 L441.4,74.2 L440.2,76.3 L436.5,75.8 L432.6,76.4 L433.6,74.8 L431.7,73.1 L428.6,74.9 L423.0,73.8 L422.7,72.5 L419.1,75.2 L414.1,76.5 L409.1,75.9 L405.7,73.3 L403.9,72.8 L402.8,70.6 L400.2,71.4 L402.4,76.1 L401.4,79.4 L402.6,80.7 L402.8,84.7 L405.7,84.5 L407.8,85.3 L410.2,85.0 L415.4,88.1 L416.1,90.5 L420.0,91.2 L420.2,92.2 L427.4,93.9 L427.6,96.2 L429.4,95.7 L428.9,97.8 L429.9,101.9 L436.1,107.0 L435.2,108.6 L434.7,113.0 L436.3,116.8 L438.6,120.1 L439.6,123.7 L444.7,127.2 L444.4,130.9 L445.6,132.7 L447.7,132.5 L448.5,135.2 L448.2,138.2 L449.3,137.7 L450.0,142.2 L451.8,143.5 L456.1,144.1 L456.3,145.5 L459.3,143.7 L460.8,144.5 L463.1,144.0 L464.6,142.4 L465.0,137.0 L466.8,134.0 L470.1,130.4 L471.8,126.9 L474.6,123.2 L476.5,122.8 L479.4,119.9 L484.1,118.1 L486.1,116.6 L487.0,115.7 L490.9,108.1 L494.6,106.7 L499.4,103.0 L499.4,101.7 L501.4,100.2 L501.2,95.6 L501.6,90.3 L500.8,86.5 L496.0,84.0 L490.6,84.1 L485.3,77.2ZM488.9,76.4 L488.9,78.1 L490.6,77.8 L488.9,76.4ZM490.0,77.9 L488.6,80.1 L489.9,82.4 L492.7,81.2 L491.9,79.0 L490.0,77.9Z", "TO": "M551.4,251.3 L552.4,247.8 L551.4,244.1 L551.2,242.9 L551.2,239.8 L551.2,239.3 L550.4,235.3 L550.4,235.0 L548.8,231.8 L546.3,230.8 L543.3,230.2 L542.5,228.6 L541.1,227.2 L539.5,227.2 L538.4,227.9 L536.1,227.6 L535.3,227.2 L532.4,225.8 L529.9,226.3 L528.4,227.1 L527.5,229.2 L524.5,229.5 L527.7,231.0 L530.9,230.7 L532.2,230.6 L533.2,232.5 L537.0,234.6 L536.3,236.8 L534.2,237.1 L533.9,239.4 L535.1,241.6 L533.0,242.8 L534.0,244.7 L531.9,245.7 L531.0,246.8 L532.2,249.7 L529.7,249.8 L527.1,252.4 L526.9,252.7 L526.3,256.2 L522.5,257.9 L518.7,259.1 L517.8,259.8 L515.2,261.5 L515.6,263.8 L515.6,265.6 L515.7,267.0 L514.1,270.4 L511.8,273.1 L512.2,275.5 L512.6,276.3 L516.2,279.1 L516.1,280.4 L515.9,283.5 L515.0,287.5 L513.8,291.0 L512.4,291.8 L511.4,294.4 L509.7,297.0 L507.5,300.4 L505.6,300.7 L502.2,304.9 L502.0,305.3 L499.9,308.3 L498.4,309.5 L497.3,314.5 L494.6,320.7 L493.0,324.7 L491.1,327.1 L490.7,331.2 L489.6,332.2 L488.2,336.3 L486.9,337.4 L486.9,337.4 L487.6,339.2 L486.3,342.9 L486.8,345.6 L485.0,350.6 L484.2,355.3 L485.6,356.1 L484.6,359.1 L486.2,362.2 L485.3,364.4 L485.3,369.0 L486.1,369.1 L486.5,373.8 L485.3,377.8 L486.5,381.2 L488.8,382.1 L490.4,377.8 L493.0,374.6 L496.3,372.6 L494.8,374.4 L495.3,376.0 L494.2,376.7 L492.9,380.7 L495.4,382.7 L501.0,384.4 L512.0,390.4 L512.3,388.1 L514.7,382.5 L517.1,380.6 L520.0,384.1 L521.9,381.2 L522.1,380.9 L526.7,385.1 L528.1,387.4 L528.0,391.3 L529.3,387.7 L530.5,390.6 L536.9,388.0 L536.4,391.0 L538.3,389.8 L540.5,391.3 L543.9,391.6 L546.3,394.4 L547.5,392.4 L546.6,389.3 L548.6,387.3 L552.2,390.2 L563.1,386.3 L565.2,384.3 L567.5,384.3 L571.2,384.3 L571.4,383.6 L572.0,381.3 L573.1,384.7 L578.2,383.2 L573.8,384.0 L574.7,380.1 L574.4,376.3 L576.4,374.8 L576.4,374.8 L575.0,374.9 L574.6,372.3 L572.9,371.7 L572.9,366.6 L572.6,365.6 L574.1,363.4 L572.7,361.8 L573.6,360.8 L572.8,359.5 L574.2,358.2 L573.1,357.1 L577.5,357.0 L578.8,357.0 L578.2,356.6 L573.3,354.6 L571.5,354.9 L569.1,351.8 L569.2,349.7 L573.5,343.0 L575.0,343.0 L575.2,340.5 L576.3,340.2 L577.9,336.6 L584.1,333.2 L584.6,330.5 L586.6,329.2 L586.1,327.1 L585.7,328.8 L582.6,329.3 L582.3,331.5 L580.2,329.1 L580.0,327.7 L576.5,327.7 L573.9,327.7 L571.4,325.5 L570.8,322.0 L570.0,319.8 L567.4,318.7 L568.4,315.6 L569.5,315.0 L567.6,312.0 L565.1,312.1 L563.2,309.6 L563.8,307.9 L561.6,306.4 L561.4,304.9 L558.7,304.9 L559.4,303.7 L561.8,300.7 L562.1,295.4 L563.3,294.2 L564.6,290.8 L565.7,291.1 L569.4,289.8 L571.0,284.8 L570.3,282.8 L568.1,281.2 L564.1,282.3 L559.8,284.5 L556.3,280.1 L555.1,279.4 L551.4,274.1 L549.9,271.9 L548.1,272.0 L550.4,269.9 L549.1,268.4 L546.9,269.2 L546.2,268.0 L545.0,266.3 L546.7,266.1 L549.0,263.3 L549.6,259.8 L550.1,256.9 L550.7,254.5 L551.5,252.8 L551.4,251.3Z", "MA": "M539.3,217.9 L538.6,218.4 L535.9,220.6 L535.5,220.9 L530.6,224.7 L524.5,229.5 L527.5,229.2 L528.4,227.1 L529.9,226.3 L532.4,225.8 L535.3,227.2 L536.1,227.6 L538.4,227.9 L539.5,227.2 L541.1,227.2 L542.5,228.6 L543.3,230.2 L546.3,230.8 L548.8,231.8 L550.4,235.0 L550.4,235.3 L551.2,239.3 L551.2,239.8 L551.2,242.9 L551.4,244.1 L552.4,247.8 L551.4,251.3 L551.5,252.8 L550.7,254.5 L550.1,256.9 L549.6,259.8 L549.0,263.3 L546.7,266.1 L545.0,266.3 L546.2,268.0 L546.9,269.2 L549.1,268.4 L550.4,269.9 L548.1,272.0 L549.9,271.9 L551.4,274.1 L555.1,279.4 L556.3,280.1 L559.8,284.5 L564.1,282.3 L568.1,281.2 L570.3,282.8 L571.0,284.8 L569.4,289.8 L565.7,291.1 L564.6,290.8 L563.3,294.2 L562.1,295.4 L561.8,300.7 L559.4,303.7 L558.7,304.9 L561.4,304.9 L561.6,306.4 L563.8,307.9 L563.2,309.6 L565.1,312.1 L567.6,312.0 L569.5,315.0 L568.4,315.6 L567.4,318.7 L570.0,319.8 L570.8,322.0 L571.4,325.5 L573.9,327.7 L576.5,327.7 L580.0,327.7 L580.2,329.1 L581.5,329.2 L583.7,322.7 L583.2,321.4 L583.9,317.5 L583.7,315.1 L584.7,313.5 L582.6,310.6 L581.8,304.4 L580.6,302.2 L581.7,299.3 L583.7,297.9 L586.4,291.2 L587.3,288.4 L588.9,286.5 L590.2,281.0 L589.8,280.5 L591.5,276.6 L593.8,274.8 L599.0,273.2 L601.0,272.8 L601.1,272.8 L604.5,270.4 L607.1,271.1 L609.6,267.7 L613.2,265.5 L614.7,265.4 L615.5,264.2 L616.0,263.0 L618.7,259.1 L622.5,258.4 L626.1,257.0 L628.5,257.3 L631.5,259.4 L632.2,259.9 L633.5,259.6 L636.4,258.3 L641.6,257.9 L643.1,255.9 L643.7,252.9 L644.5,248.3 L641.8,245.5 L640.4,244.8 L639.4,240.9 L639.9,240.0 L639.5,234.9 L641.3,233.4 L642.0,231.6 L645.1,228.8 L645.5,226.2 L643.6,220.2 L643.6,220.1 L642.4,216.0 L644.5,212.2 L642.4,209.9 L642.1,209.4 L641.7,206.5 L642.6,205.5 L644.3,203.7 L645.7,201.6 L647.1,199.7 L648.1,197.8 L647.8,195.9 L648.9,194.6 L649.2,194.2 L650.3,193.1 L651.6,190.8 L652.2,191.6 L653.6,191.4 L656.2,190.8 L657.6,190.5 L659.2,188.8 L659.2,187.2 L662.0,186.3 L662.1,186.1 L664.4,183.0 L665.9,180.9 L665.1,180.0 L665.3,176.8 L665.6,176.3 L660.8,176.3 L660.3,175.4 L657.2,175.5 L656.4,176.8 L651.8,175.7 L648.7,174.1 L641.1,170.7 L636.6,168.7 L635.1,168.3 L633.7,168.4 L631.6,169.3 L632.0,171.3 L630.5,170.0 L629.6,171.7 L627.2,171.9 L626.3,170.3 L628.3,169.6 L629.3,167.2 L626.8,167.3 L625.9,169.9 L624.4,169.9 L624.1,171.8 L622.5,172.8 L619.5,176.5 L618.1,177.0 L615.7,176.9 L617.5,175.7 L619.2,173.1 L620.4,172.7 L620.0,170.9 L620.4,169.7 L617.6,170.7 L617.4,170.8 L616.6,171.1 L614.9,171.3 L612.8,177.7 L612.5,180.6 L611.0,182.3 L610.0,182.7 L609.1,182.6 L607.6,182.0 L607.8,179.6 L607.9,177.8 L609.8,173.5 L613.8,168.3 L611.7,164.4 L608.0,167.4 L607.3,167.1 L611.0,161.9 L609.4,162.0 L611.3,161.2 L609.9,159.2 L610.2,157.8 L608.6,156.6 L605.7,157.0 L606.8,155.8 L604.8,155.4 L608.2,153.6 L606.4,152.4 L603.7,153.7 L603.0,153.4 L603.6,149.5 L601.7,152.5 L600.6,151.0 L596.8,151.0 L595.3,153.3 L594.2,153.2 L594.5,147.9 L591.1,150.9 L590.3,147.4 L588.4,146.7 L586.8,146.7 L584.9,145.0 L584.7,144.9 L584.6,144.8 L583.6,145.4 L583.4,142.2 L581.4,145.2 L580.6,142.2 L578.3,145.2 L577.2,146.8 L578.3,148.0 L576.9,150.8 L577.2,153.8 L576.2,155.9 L574.1,156.2 L574.2,157.5 L576.2,158.0 L575.9,159.7 L575.1,162.4 L574.7,164.6 L572.0,167.0 L571.5,169.8 L571.6,171.0 L570.2,174.0 L568.1,174.4 L566.9,176.4 L568.5,178.6 L566.6,179.6 L566.7,183.7 L564.8,185.3 L564.0,187.9 L561.3,189.4 L561.2,191.4 L559.4,193.2 L559.5,194.0 L558.3,199.2 L553.1,204.3 L552.6,207.1 L551.2,207.9 L547.6,213.4 L546.3,214.4 L543.6,214.5 L539.3,217.9ZM611.3,176.2 L609.2,178.0 L608.1,181.4 L609.7,182.2 L611.4,180.9 L611.3,176.2ZM601.5,146.6 L600.2,147.6 L601.0,149.3 L603.5,147.8 L601.5,146.6Z", "PI": "M686.8,288.3 L690.1,285.4 L690.7,283.9 L690.7,283.9 L691.0,283.3 L691.3,282.5 L691.1,279.6 L688.7,278.5 L689.7,276.4 L687.8,272.8 L689.1,271.8 L691.2,271.0 L691.7,269.5 L692.1,267.3 L693.0,264.6 L693.7,261.7 L694.8,259.0 L692.7,257.6 L687.9,256.4 L687.4,254.9 L686.3,252.9 L686.5,249.6 L685.0,247.2 L684.9,244.8 L683.9,243.6 L684.6,242.1 L683.9,237.9 L683.9,235.4 L683.5,232.4 L683.3,231.3 L683.5,225.9 L680.4,224.2 L679.6,222.9 L677.0,219.7 L677.3,218.5 L678.5,215.6 L677.2,213.7 L678.4,211.6 L679.0,209.5 L679.6,208.6 L680.0,205.8 L680.0,205.7 L679.2,204.5 L678.3,202.4 L677.4,201.4 L677.0,200.0 L677.2,196.2 L675.2,195.6 L674.6,193.2 L675.9,191.7 L675.5,189.6 L673.6,188.9 L675.5,185.4 L676.7,182.8 L676.5,181.1 L675.5,180.1 L673.2,179.8 L668.8,179.0 L666.2,176.8 L665.3,176.8 L665.1,180.0 L665.9,180.9 L664.4,183.0 L662.1,186.1 L662.0,186.3 L659.2,187.2 L659.2,188.8 L657.6,190.5 L656.2,190.8 L653.6,191.4 L652.2,191.6 L651.6,190.8 L650.3,193.1 L649.2,194.2 L648.9,194.6 L647.8,195.9 L648.1,197.8 L647.1,199.7 L645.7,201.6 L644.3,203.7 L642.6,205.5 L641.7,206.5 L642.1,209.4 L642.4,209.9 L644.5,212.2 L642.4,216.0 L643.6,220.1 L643.6,220.2 L645.5,226.2 L645.1,228.8 L642.0,231.6 L641.3,233.4 L639.5,234.9 L639.9,240.0 L639.4,240.9 L640.4,244.8 L641.8,245.5 L644.5,248.3 L643.7,252.9 L643.1,255.9 L641.6,257.9 L636.4,258.3 L633.5,259.6 L632.2,259.9 L631.5,259.4 L628.5,257.3 L626.1,257.0 L622.5,258.4 L618.7,259.1 L616.0,263.0 L615.5,264.2 L614.7,265.4 L613.2,265.5 L609.6,267.7 L607.1,271.1 L604.5,270.4 L601.1,272.8 L601.0,272.8 L599.0,273.2 L593.8,274.8 L591.5,276.6 L589.8,280.5 L590.2,281.0 L588.9,286.5 L587.3,288.4 L586.4,291.2 L583.7,297.9 L581.7,299.3 L580.6,302.2 L581.8,304.4 L582.6,310.6 L584.7,313.5 L583.7,315.1 L583.9,317.5 L583.2,321.4 L583.7,322.7 L581.5,329.2 L580.2,329.1 L582.3,331.5 L582.6,329.3 L585.7,328.8 L586.1,327.1 L588.5,326.2 L589.5,328.4 L590.8,330.1 L592.7,333.0 L591.7,334.3 L592.4,337.1 L595.8,340.7 L599.1,341.0 L601.9,342.6 L603.5,341.9 L607.5,339.4 L607.5,337.9 L609.3,336.7 L610.9,337.2 L614.1,335.1 L617.7,337.0 L619.4,335.9 L621.3,332.5 L622.8,331.9 L624.4,330.1 L626.0,325.5 L627.3,325.2 L627.0,322.3 L628.1,320.8 L625.5,319.1 L624.1,314.8 L625.4,312.9 L625.5,312.8 L629.1,310.8 L630.4,309.9 L632.5,309.0 L635.6,312.2 L637.0,311.8 L639.9,311.8 L640.2,311.7 L642.2,312.3 L642.4,314.0 L646.1,316.2 L647.7,314.7 L649.5,314.1 L651.7,313.7 L655.3,310.1 L657.1,309.4 L660.3,308.9 L663.5,309.3 L664.7,308.5 L667.2,305.4 L667.3,303.9 L671.0,302.5 L673.7,299.1 L674.3,297.7 L674.8,297.7 L677.8,296.2 L679.0,294.2 L682.5,291.4 L683.5,292.4 L684.8,290.9 L686.5,289.3 L686.8,288.3Z", "CE": "M694.8,177.9 L693.1,177.8 L690.4,178.6 L686.9,178.7 L680.0,179.7 L676.5,179.5 L675.5,180.1 L676.5,181.1 L676.7,182.8 L675.5,185.4 L673.6,188.9 L675.5,189.6 L675.9,191.7 L674.6,193.2 L675.2,195.6 L677.2,196.2 L677.0,200.0 L677.4,201.4 L678.3,202.4 L679.2,204.5 L680.0,205.7 L680.0,205.8 L679.6,208.6 L679.0,209.5 L678.4,211.6 L677.2,213.7 L678.5,215.6 L677.3,218.5 L677.0,219.7 L679.6,222.9 L680.4,224.2 L683.5,225.9 L683.3,231.3 L683.5,232.4 L683.9,235.4 L683.9,237.9 L684.6,242.1 L683.9,243.6 L684.9,244.8 L685.0,247.2 L686.5,249.6 L686.3,252.9 L687.4,254.9 L687.9,256.4 L692.7,257.6 L694.8,259.0 L693.7,261.7 L693.0,264.6 L692.1,267.3 L691.7,269.5 L693.5,270.5 L695.3,269.7 L697.4,269.5 L699.2,270.6 L704.3,269.9 L704.6,269.9 L707.6,269.6 L710.5,271.7 L711.6,272.8 L713.3,272.6 L713.6,274.6 L714.7,275.4 L715.2,275.6 L717.3,276.5 L719.7,277.6 L720.6,278.7 L720.8,280.4 L722.3,279.5 L723.4,280.2 L723.4,280.2 L724.8,278.3 L728.4,275.7 L728.5,275.6 L729.1,274.8 L731.8,269.8 L731.7,268.1 L730.4,267.5 L729.9,266.7 L729.4,264.0 L729.3,263.9 L727.4,262.9 L727.4,261.2 L729.3,259.9 L730.5,258.6 L729.7,258.1 L729.3,257.0 L729.8,255.4 L730.7,253.5 L730.6,253.5 L732.0,251.3 L731.6,249.9 L731.4,248.6 L732.4,247.2 L733.5,245.2 L734.8,243.9 L736.1,244.3 L737.4,244.0 L737.9,242.9 L739.7,241.5 L739.8,241.2 L741.8,237.7 L741.3,236.0 L742.4,235.0 L745.0,232.5 L746.8,228.8 L747.3,228.4 L747.4,227.3 L747.3,226.8 L749.5,223.4 L750.3,220.9 L753.8,220.1 L754.2,220.0 L756.1,219.5 L758.2,219.0 L756.7,216.3 L752.3,215.2 L751.1,214.6 L747.7,210.7 L746.1,209.8 L740.0,204.1 L738.5,202.2 L734.8,198.5 L733.6,196.1 L731.0,195.9 L729.7,195.6 L726.6,192.9 L724.1,191.2 L721.4,190.0 L719.3,188.4 L717.4,186.2 L715.0,185.5 L711.5,183.4 L708.0,181.7 L703.5,179.0 L698.6,177.9 L694.8,177.9Z", "RN": "M773.4,250.5 L776.6,248.8 L777.6,248.6 L777.9,249.1 L777.6,250.2 L779.0,251.5 L780.1,251.4 L781.7,251.2 L781.7,251.2 L784.3,252.5 L786.3,252.6 L788.1,252.5 L788.2,252.5 L790.5,251.8 L791.0,251.9 L792.1,252.5 L795.0,252.6 L795.7,252.6 L796.5,253.1 L797.0,253.6 L799.4,253.3 L800.0,253.9 L801.0,253.9 L801.7,253.0 L804.6,252.6 L803.3,249.0 L803.3,248.5 L802.0,246.4 L801.9,245.5 L801.5,242.3 L800.8,240.6 L799.8,237.5 L799.3,234.8 L798.7,232.9 L797.3,230.1 L796.2,227.9 L794.0,225.6 L791.4,224.7 L787.9,223.9 L785.5,223.6 L782.9,223.4 L781.6,223.9 L777.4,224.5 L775.4,224.0 L769.1,224.0 L766.2,221.8 L764.1,220.7 L760.5,221.3 L758.8,220.0 L758.2,219.0 L756.1,219.5 L754.2,220.0 L753.8,220.1 L750.3,220.9 L749.5,223.4 L747.3,226.8 L747.4,227.3 L747.3,228.4 L746.8,228.8 L745.0,232.5 L742.4,235.0 L741.3,236.0 L741.8,237.7 L739.8,241.2 L739.7,241.5 L737.9,242.9 L737.4,244.0 L736.1,244.3 L734.8,243.9 L733.5,245.2 L732.4,247.2 L731.4,248.6 L731.6,249.9 L733.7,249.4 L733.9,250.9 L736.0,252.0 L737.1,253.0 L738.3,252.5 L740.5,253.3 L741.5,252.1 L742.4,252.3 L744.6,251.1 L746.2,249.5 L747.5,247.7 L748.9,246.3 L750.8,246.3 L752.7,245.8 L755.6,244.4 L758.1,243.3 L759.8,243.7 L760.1,245.8 L758.6,247.0 L756.5,249.0 L755.4,250.6 L755.6,251.6 L753.9,253.5 L753.5,257.1 L756.9,256.7 L757.9,257.6 L758.5,259.4 L760.2,258.9 L761.8,258.0 L762.6,257.6 L763.2,257.1 L764.1,258.6 L765.1,258.1 L766.7,257.5 L768.8,259.7 L768.2,261.3 L770.3,261.6 L772.1,260.5 L772.2,259.8 L772.6,259.8 L772.8,257.6 L773.0,255.1 L774.7,255.5 L773.8,253.3 L772.9,252.4 L773.4,250.5Z", "PB": "M751.7,272.9 L752.7,271.9 L754.5,270.3 L755.5,270.3 L756.9,268.9 L758.0,268.6 L759.7,269.3 L762.2,270.7 L763.0,271.2 L763.6,272.7 L762.8,273.1 L762.8,273.1 L761.7,273.5 L759.3,275.9 L760.0,277.2 L760.3,277.6 L760.2,278.9 L759.8,279.3 L756.2,282.3 L760.3,283.8 L760.4,285.9 L760.0,286.8 L762.9,289.2 L764.2,289.4 L765.2,288.5 L767.6,287.2 L769.7,286.5 L770.8,285.6 L772.0,282.0 L772.7,281.3 L774.6,281.6 L775.5,279.5 L778.3,279.9 L779.2,278.5 L781.0,278.9 L783.2,279.5 L783.6,279.5 L784.8,279.1 L786.0,278.6 L787.2,278.2 L787.9,278.1 L790.1,277.3 L791.4,276.5 L793.2,276.1 L793.7,273.4 L793.9,272.8 L795.1,272.6 L796.6,272.0 L797.0,271.6 L797.2,271.4 L798.2,270.9 L800.8,271.0 L804.2,272.4 L804.2,273.2 L806.9,274.0 L807.3,274.2 L807.9,270.9 L807.9,268.0 L807.1,264.1 L806.8,263.6 L806.6,262.6 L806.0,260.3 L805.5,258.3 L805.3,257.3 L804.6,254.9 L804.6,252.6 L801.7,253.0 L801.0,253.9 L800.0,253.9 L799.4,253.3 L797.0,253.6 L796.5,253.1 L795.7,252.6 L795.0,252.6 L792.1,252.5 L791.0,251.9 L790.5,251.8 L788.2,252.5 L788.1,252.5 L786.3,252.6 L784.3,252.5 L781.7,251.2 L781.7,251.2 L780.1,251.4 L779.0,251.5 L777.6,250.2 L777.9,249.1 L777.6,248.6 L776.6,248.8 L773.4,250.5 L772.9,252.4 L773.8,253.3 L774.7,255.5 L773.0,255.1 L772.8,257.6 L772.6,259.8 L772.2,259.8 L772.1,260.5 L770.3,261.6 L768.2,261.3 L768.8,259.7 L766.7,257.5 L765.1,258.1 L764.1,258.6 L763.2,257.1 L762.6,257.6 L761.8,258.0 L760.2,258.9 L758.5,259.4 L757.9,257.6 L756.9,256.7 L753.5,257.1 L753.9,253.5 L755.6,251.6 L755.4,250.6 L756.5,249.0 L758.6,247.0 L760.1,245.8 L759.8,243.7 L758.1,243.3 L755.6,244.4 L752.7,245.8 L750.8,246.3 L748.9,246.3 L747.5,247.7 L746.2,249.5 L744.6,251.1 L742.4,252.3 L741.5,252.1 L740.5,253.3 L738.3,252.5 L737.1,253.0 L736.0,252.0 L733.9,250.9 L733.7,249.4 L731.6,249.9 L732.0,251.3 L730.6,253.5 L730.7,253.5 L729.8,255.4 L729.3,257.0 L729.7,258.1 L730.5,258.6 L729.3,259.9 L727.4,261.2 L727.4,262.9 L729.3,263.9 L729.4,264.0 L729.9,266.7 L730.4,267.5 L731.7,268.1 L731.8,269.8 L729.1,274.8 L728.5,275.6 L730.9,278.3 L733.7,277.6 L734.2,277.6 L735.8,276.8 L736.7,278.0 L738.5,279.7 L740.3,279.2 L740.5,279.6 L741.6,278.7 L743.0,278.8 L743.8,278.6 L745.0,277.2 L747.7,276.4 L748.0,275.7 L748.2,275.4 L748.4,275.1 L750.7,273.7 L751.7,272.9Z", "PE": "M674.8,297.7 L676.4,298.3 L679.7,297.6 L679.9,299.2 L682.9,300.4 L685.1,302.7 L685.7,305.3 L688.7,307.4 L686.8,312.7 L687.8,312.8 L689.7,313.5 L693.9,310.8 L695.1,311.3 L696.8,305.3 L698.1,304.9 L699.7,305.9 L702.3,304.9 L702.8,304.8 L704.9,302.4 L704.5,300.2 L709.0,299.3 L709.5,296.7 L713.0,295.4 L715.4,294.4 L717.1,295.2 L718.0,297.8 L721.4,298.2 L723.6,299.7 L725.6,299.3 L728.6,300.8 L728.9,302.0 L730.6,302.8 L731.4,300.2 L733.4,300.9 L732.5,302.8 L734.8,304.4 L736.4,303.4 L736.6,306.7 L738.2,310.3 L739.8,308.7 L741.1,307.2 L742.7,306.8 L744.0,305.6 L746.5,302.3 L748.0,300.5 L749.1,302.3 L750.3,303.7 L752.6,302.9 L752.8,303.0 L755.3,304.2 L757.6,306.7 L758.6,308.3 L759.3,308.0 L759.9,309.0 L762.1,310.1 L762.2,309.9 L763.7,310.9 L764.6,311.3 L765.7,309.3 L767.4,309.3 L769.4,309.6 L770.9,310.4 L773.5,309.0 L775.4,308.2 L776.4,308.1 L777.7,307.2 L779.6,304.6 L781.2,304.2 L781.4,304.0 L781.0,302.8 L782.9,301.8 L783.9,301.7 L784.6,301.5 L786.8,301.1 L787.1,301.0 L789.2,301.8 L790.7,301.3 L792.1,300.5 L792.4,300.4 L793.0,300.0 L795.6,300.4 L796.8,300.8 L799.2,301.3 L800.8,301.9 L801.3,300.8 L801.8,299.3 L802.2,297.4 L803.0,295.7 L804.7,290.8 L805.4,287.9 L805.8,286.5 L806.8,284.2 L807.4,282.5 L807.2,280.2 L807.1,279.6 L807.0,277.0 L807.3,274.2 L806.9,274.0 L804.2,273.2 L804.2,272.4 L800.8,271.0 L798.2,270.9 L797.2,271.4 L797.0,271.6 L796.6,272.0 L795.1,272.6 L793.9,272.8 L793.7,273.4 L793.2,276.1 L791.4,276.5 L790.1,277.3 L787.9,278.1 L787.2,278.2 L786.0,278.6 L784.8,279.1 L783.6,279.5 L783.2,279.5 L781.0,278.9 L779.2,278.5 L778.3,279.9 L775.5,279.5 L774.6,281.6 L772.7,281.3 L772.0,282.0 L770.8,285.6 L769.7,286.5 L767.6,287.2 L765.2,288.5 L764.2,289.4 L762.9,289.2 L760.0,286.8 L760.4,285.9 L760.3,283.8 L756.2,282.3 L759.8,279.3 L760.2,278.9 L760.3,277.6 L760.0,277.2 L759.3,275.9 L761.7,273.5 L762.8,273.1 L762.8,273.1 L763.6,272.7 L763.0,271.2 L762.2,270.7 L759.7,269.3 L758.0,268.6 L756.9,268.9 L755.5,270.3 L754.5,270.3 L752.7,271.9 L751.7,272.9 L750.7,273.7 L748.4,275.1 L748.2,275.4 L748.0,275.7 L747.7,276.4 L745.0,277.2 L743.8,278.6 L743.0,278.8 L741.6,278.7 L740.5,279.6 L740.3,279.2 L738.5,279.7 L736.7,278.0 L735.8,276.8 L734.2,277.6 L733.7,277.6 L730.9,278.3 L728.5,275.6 L728.4,275.7 L724.8,278.3 L723.4,280.2 L723.4,280.2 L722.3,279.5 L720.8,280.4 L720.6,278.7 L719.7,277.6 L717.3,276.5 L715.2,275.6 L714.7,275.4 L713.6,274.6 L713.3,272.6 L711.6,272.8 L710.5,271.7 L707.6,269.6 L704.6,269.9 L704.3,269.9 L699.2,270.6 L697.4,269.5 L695.3,269.7 L693.5,270.5 L691.7,269.5 L691.2,271.0 L689.1,271.8 L687.8,272.8 L689.7,276.4 L688.7,278.5 L691.1,279.6 L691.3,282.5 L691.0,283.3 L690.7,283.9 L690.7,283.9 L690.1,285.4 L686.8,288.3 L686.5,289.3 L684.8,290.9 L683.5,292.4 L682.5,291.4 L679.0,294.2 L677.8,296.2 L674.8,297.7Z", "AL": "M742.7,306.8 L741.1,307.2 L739.8,308.7 L738.2,310.3 L738.6,310.8 L738.8,312.1 L741.4,312.6 L742.9,314.1 L745.1,314.6 L746.2,315.4 L749.8,317.2 L749.9,317.4 L753.8,318.8 L757.3,320.5 L758.7,321.9 L760.6,322.2 L764.2,324.4 L764.4,325.4 L764.4,325.5 L765.0,326.5 L765.7,327.0 L766.3,327.6 L766.5,327.8 L769.0,329.3 L769.4,329.5 L769.7,329.5 L770.8,329.1 L771.7,330.1 L772.2,332.4 L773.7,332.6 L773.7,332.6 L775.6,334.1 L777.5,331.0 L778.3,329.3 L783.0,325.0 L784.4,322.8 L785.6,321.0 L786.6,319.7 L787.9,318.1 L789.2,317.6 L792.6,313.5 L793.3,312.6 L794.3,310.9 L796.1,309.5 L797.0,308.3 L797.9,306.8 L799.0,305.0 L800.8,301.9 L799.2,301.3 L796.8,300.8 L795.6,300.4 L793.0,300.0 L792.4,300.4 L792.1,300.5 L790.7,301.3 L789.2,301.8 L787.1,301.0 L786.8,301.1 L784.6,301.5 L783.9,301.7 L782.9,301.8 L781.0,302.8 L781.4,304.0 L781.2,304.2 L779.6,304.6 L777.7,307.2 L776.4,308.1 L775.4,308.2 L773.5,309.0 L770.9,310.4 L769.4,309.6 L767.4,309.3 L765.7,309.3 L764.6,311.3 L763.7,310.9 L762.2,309.9 L762.1,310.1 L759.9,309.0 L759.3,308.0 L758.6,308.3 L757.6,306.7 L755.3,304.2 L752.8,303.0 L752.6,302.9 L750.3,303.7 L749.1,302.3 L748.0,300.5 L746.5,302.3 L744.0,305.6 L742.7,306.8Z", "SE": "M765.0,326.5 L764.4,325.5 L764.4,325.4 L764.2,324.4 L760.6,322.2 L758.7,321.9 L757.3,320.5 L753.8,318.8 L749.9,317.4 L749.8,317.2 L746.2,315.4 L745.1,314.6 L742.9,314.1 L741.7,315.6 L742.9,322.0 L745.0,322.3 L747.2,324.6 L747.0,326.2 L747.6,326.9 L747.7,327.9 L747.7,329.8 L748.2,330.8 L746.1,333.0 L746.7,334.5 L746.9,336.2 L746.8,338.0 L743.5,339.3 L742.1,338.2 L740.0,338.5 L738.8,338.4 L738.1,340.2 L738.7,342.9 L739.3,343.1 L740.8,344.8 L742.0,348.0 L743.4,348.3 L743.1,351.3 L743.3,351.3 L746.4,354.1 L747.1,354.9 L749.6,355.8 L750.5,354.8 L751.5,355.5 L755.8,353.6 L756.4,353.3 L758.0,350.2 L760.2,347.6 L762.6,343.4 L766.3,339.1 L769.9,336.8 L773.7,334.9 L775.6,334.1 L773.7,332.6 L773.7,332.6 L772.2,332.4 L771.7,330.1 L770.8,329.1 L769.7,329.5 L769.4,329.5 L769.0,329.3 L766.5,327.8 L766.3,327.6 L765.7,327.0 L765.0,326.5Z", "BA": "M715.4,294.4 L713.0,295.4 L709.5,296.7 L709.0,299.3 L704.5,300.2 L704.9,302.4 L702.8,304.8 L702.3,304.9 L699.7,305.9 L698.1,304.9 L696.8,305.3 L695.1,311.3 L693.9,310.8 L689.7,313.5 L687.8,312.8 L686.8,312.7 L688.7,307.4 L685.7,305.3 L685.1,302.7 L682.9,300.4 L679.9,299.2 L679.7,297.6 L676.4,298.3 L674.8,297.7 L674.3,297.7 L673.7,299.1 L671.0,302.5 L667.3,303.9 L667.2,305.4 L664.7,308.5 L663.5,309.3 L660.3,308.9 L657.1,309.4 L655.3,310.1 L651.7,313.7 L649.5,314.1 L647.7,314.7 L646.1,316.2 L642.4,314.0 L642.2,312.3 L640.2,311.7 L639.9,311.8 L637.0,311.8 L635.6,312.2 L632.5,309.0 L630.4,309.9 L629.1,310.8 L625.5,312.8 L625.4,312.9 L624.1,314.8 L625.5,319.1 L628.1,320.8 L627.0,322.3 L627.3,325.2 L626.0,325.5 L624.4,330.1 L622.8,331.9 L621.3,332.5 L619.4,335.9 L617.7,337.0 L614.1,335.1 L610.9,337.2 L609.3,336.7 L607.5,337.9 L607.5,339.4 L603.5,341.9 L601.9,342.6 L599.1,341.0 L595.8,340.7 L592.4,337.1 L591.7,334.3 L592.7,333.0 L590.8,330.1 L589.5,328.4 L588.5,326.2 L586.1,327.1 L586.6,329.2 L584.6,330.5 L584.1,333.2 L577.9,336.6 L576.3,340.2 L575.2,340.5 L575.0,343.0 L573.5,343.0 L569.2,349.7 L569.1,351.8 L571.5,354.9 L573.3,354.6 L578.2,356.6 L578.8,357.0 L577.5,357.0 L573.1,357.1 L574.2,358.2 L572.8,359.5 L573.6,360.8 L572.7,361.8 L574.1,363.4 L572.6,365.6 L572.9,366.6 L572.9,371.7 L574.6,372.3 L575.0,374.9 L576.4,374.8 L576.4,374.8 L574.4,376.3 L574.7,380.1 L573.8,384.0 L578.2,383.2 L574.4,386.2 L573.8,390.0 L574.5,391.3 L578.4,390.1 L579.1,390.9 L575.4,393.8 L576.2,394.4 L575.4,396.7 L577.1,397.2 L575.7,399.3 L575.1,404.2 L576.1,405.4 L575.8,406.2 L576.7,408.4 L579.2,409.9 L582.3,412.4 L580.5,414.3 L580.7,418.5 L580.0,418.8 L579.9,419.0 L579.7,423.0 L579.7,423.0 L581.1,424.8 L578.9,430.9 L581.0,428.7 L585.7,428.0 L588.2,425.8 L594.6,422.2 L596.6,420.4 L598.8,420.5 L600.0,419.1 L603.3,417.4 L604.2,415.4 L606.0,414.7 L609.8,412.1 L612.7,410.9 L615.1,410.4 L620.2,411.0 L621.7,410.8 L625.5,412.1 L624.8,413.1 L623.5,416.7 L623.5,418.5 L626.9,419.8 L630.6,421.8 L630.6,421.8 L631.5,421.3 L635.1,418.8 L637.8,418.5 L642.6,419.6 L644.0,420.8 L649.2,424.3 L651.2,425.2 L652.0,425.8 L656.1,427.9 L656.3,428.1 L658.2,427.3 L660.7,429.0 L662.7,429.1 L665.6,427.6 L665.7,427.6 L666.6,428.3 L672.8,433.9 L674.6,435.6 L674.7,435.6 L675.1,438.5 L675.3,440.6 L679.1,441.2 L685.8,438.7 L686.8,440.1 L688.1,439.1 L689.3,440.4 L691.8,441.7 L693.2,441.0 L693.7,441.9 L697.6,441.9 L699.8,444.0 L702.3,445.9 L704.1,445.9 L705.3,448.2 L704.0,451.6 L702.0,452.9 L700.1,455.0 L699.1,457.6 L696.8,457.5 L696.0,459.6 L696.1,460.0 L696.6,464.2 L694.2,463.9 L694.1,464.1 L693.5,463.9 L692.4,463.9 L690.6,469.2 L691.2,471.9 L690.1,473.4 L691.8,475.3 L692.5,476.1 L693.9,478.6 L695.4,478.7 L697.5,481.1 L697.8,481.1 L698.0,484.4 L697.8,486.1 L697.9,486.1 L704.1,490.1 L709.1,493.3 L709.8,491.2 L712.7,486.4 L717.4,483.0 L719.9,480.1 L718.8,475.2 L718.4,469.5 L720.3,464.0 L719.8,461.3 L720.6,460.0 L721.4,454.7 L722.5,452.9 L722.4,450.9 L723.7,447.7 L725.7,442.8 L724.8,441.1 L724.0,439.1 L723.2,433.4 L722.7,427.3 L722.1,421.1 L721.4,420.4 L722.0,415.7 L722.3,413.7 L722.9,409.6 L724.1,403.3 L723.7,402.6 L723.3,402.2 L723.2,402.0 L722.9,399.5 L723.3,398.6 L724.9,397.9 L724.0,396.0 L724.9,394.3 L723.7,392.8 L724.3,389.2 L726.8,387.7 L729.9,385.2 L731.1,385.2 L733.5,385.2 L736.8,383.1 L737.3,382.5 L742.4,376.7 L745.2,372.9 L747.7,369.4 L749.4,366.6 L752.9,359.3 L756.4,353.3 L755.8,353.6 L751.5,355.5 L750.5,354.8 L749.6,355.8 L747.1,354.9 L746.4,354.1 L743.3,351.3 L743.1,351.3 L743.4,348.3 L742.0,348.0 L740.8,344.8 L739.3,343.1 L738.7,342.9 L738.1,340.2 L738.8,338.4 L740.0,338.5 L742.1,338.2 L743.5,339.3 L746.8,338.0 L746.9,336.2 L746.7,334.5 L746.1,333.0 L748.2,330.8 L747.7,329.8 L747.7,327.9 L747.6,326.9 L747.0,326.2 L747.2,324.6 L745.0,322.3 L742.9,322.0 L741.7,315.6 L742.9,314.1 L741.4,312.6 L738.8,312.1 L738.6,310.8 L738.2,310.3 L736.6,306.7 L736.4,303.4 L734.8,304.4 L732.5,302.8 L733.4,300.9 L731.4,300.2 L730.6,302.8 L728.9,302.0 L728.6,300.8 L725.6,299.3 L723.6,299.7 L721.4,298.2 L718.0,297.8 L717.1,295.2 L715.4,294.4Z", "MG": "M546.3,493.7 L544.5,495.0 L542.7,495.4 L542.6,495.6 L540.7,496.6 L539.3,495.4 L535.2,493.5 L534.3,493.2 L532.9,494.0 L526.5,493.5 L523.8,493.7 L521.2,492.7 L520.3,493.1 L518.4,494.7 L515.3,494.9 L514.4,497.1 L513.6,497.9 L511.9,499.4 L509.6,497.3 L508.4,497.5 L504.8,498.9 L504.1,498.9 L503.4,499.6 L498.6,498.7 L497.6,500.1 L493.7,500.4 L492.0,501.9 L489.6,505.2 L488.3,508.8 L486.1,509.5 L484.3,510.6 L484.1,511.1 L482.4,513.1 L481.4,515.4 L482.4,516.4 L480.2,516.3 L480.3,518.8 L478.1,520.9 L478.2,522.9 L478.9,528.9 L481.2,526.9 L482.0,526.5 L485.2,525.4 L486.7,524.3 L487.8,523.3 L490.0,522.8 L492.3,524.5 L495.7,524.6 L497.0,524.6 L498.3,525.4 L501.1,525.8 L504.3,525.6 L507.0,525.5 L510.3,526.7 L514.4,526.5 L513.3,529.5 L514.1,531.8 L514.2,532.4 L515.8,533.5 L517.1,532.6 L518.2,530.2 L519.8,530.6 L520.3,535.3 L521.8,536.0 L522.2,535.2 L521.8,532.7 L523.1,530.4 L525.0,530.2 L526.7,530.5 L528.9,529.8 L530.6,529.7 L535.4,529.7 L535.7,528.0 L538.3,530.1 L540.2,527.9 L541.9,529.7 L542.5,528.7 L542.9,526.9 L544.6,526.8 L547.1,528.1 L549.0,527.0 L550.2,526.5 L553.5,529.5 L555.4,531.6 L555.4,531.7 L554.5,533.0 L554.2,535.6 L555.6,537.1 L557.2,538.1 L557.3,538.5 L557.2,538.6 L558.1,541.0 L556.4,542.0 L555.5,544.5 L555.5,544.5 L556.5,546.5 L557.1,548.2 L557.7,550.6 L557.7,551.2 L559.2,552.9 L560.2,554.7 L559.9,556.0 L562.5,555.7 L564.6,555.0 L564.9,554.8 L567.3,555.2 L567.9,556.2 L570.1,557.4 L570.1,558.9 L569.2,560.7 L568.0,561.2 L567.6,563.1 L566.4,564.5 L567.9,567.7 L567.3,568.0 L565.8,569.4 L568.3,570.5 L567.3,571.4 L566.8,571.4 L566.6,572.2 L565.8,574.0 L567.0,575.2 L567.9,576.7 L569.3,577.3 L571.2,578.4 L571.8,579.9 L572.5,581.2 L570.8,582.1 L573.7,583.3 L572.8,584.4 L573.4,586.1 L576.6,585.3 L579.4,586.0 L581.3,585.0 L583.1,585.5 L585.2,584.7 L586.3,583.4 L584.4,582.7 L586.7,581.0 L585.9,580.3 L587.0,579.4 L587.2,581.0 L589.1,580.0 L589.0,581.0 L591.0,579.8 L592.2,580.4 L592.6,581.0 L595.3,580.2 L597.4,578.5 L598.2,577.9 L598.7,577.7 L601.5,577.4 L603.9,576.4 L604.6,576.0 L604.6,576.0 L604.8,575.8 L607.6,575.3 L607.6,575.5 L610.0,574.5 L611.8,573.0 L613.8,572.9 L615.8,573.2 L617.2,572.6 L617.4,572.4 L621.6,570.7 L625.9,569.0 L627.0,569.3 L627.8,569.5 L629.4,568.9 L632.5,569.0 L634.4,567.8 L634.8,567.9 L636.8,568.3 L638.7,568.4 L638.8,568.5 L638.5,569.9 L641.4,568.4 L643.2,567.6 L648.2,565.2 L649.4,564.6 L652.3,563.4 L652.4,563.4 L654.0,562.6 L656.3,562.0 L654.6,559.5 L654.7,559.3 L656.5,557.3 L656.1,556.1 L656.9,554.4 L657.2,554.3 L657.6,551.9 L657.8,550.7 L658.2,550.1 L659.3,549.0 L660.1,548.1 L660.0,547.9 L658.7,546.9 L662.2,546.1 L663.1,544.3 L663.2,543.3 L664.3,542.7 L664.8,541.2 L665.3,536.9 L665.8,536.8 L665.7,535.7 L665.0,535.4 L664.6,534.7 L665.3,533.4 L666.3,532.4 L666.7,531.3 L668.5,531.3 L673.6,531.3 L673.7,531.3 L676.0,525.9 L676.5,526.0 L678.2,524.9 L678.5,522.4 L678.6,520.5 L682.6,517.1 L682.7,515.4 L683.4,511.9 L683.4,511.3 L682.8,509.3 L680.8,508.0 L680.7,505.7 L679.3,504.6 L677.1,503.8 L677.3,502.7 L679.1,502.7 L681.5,503.5 L683.7,503.1 L683.2,500.5 L681.0,499.4 L681.5,497.2 L681.6,495.8 L678.3,495.4 L679.1,494.7 L678.8,492.8 L681.0,489.8 L686.6,488.7 L684.0,486.2 L686.1,485.6 L688.9,486.7 L691.6,484.3 L694.9,484.9 L697.8,486.1 L698.0,484.4 L697.8,481.1 L697.5,481.1 L695.4,478.7 L693.9,478.6 L692.5,476.1 L691.8,475.3 L690.1,473.4 L691.2,471.9 L690.6,469.2 L692.4,463.9 L693.5,463.9 L694.1,464.1 L694.2,463.9 L696.6,464.2 L696.1,460.0 L696.0,459.6 L696.8,457.5 L699.1,457.6 L700.1,455.0 L702.0,452.9 L704.0,451.6 L705.3,448.2 L704.1,445.9 L702.3,445.9 L699.8,444.0 L697.6,441.9 L693.7,441.9 L693.2,441.0 L691.8,441.7 L689.3,440.4 L688.1,439.1 L686.8,440.1 L685.8,438.7 L679.1,441.2 L675.3,440.6 L675.1,438.5 L674.7,435.6 L674.6,435.6 L672.8,433.9 L666.6,428.3 L665.7,427.6 L665.6,427.6 L662.7,429.1 L660.7,429.0 L658.2,427.3 L656.3,428.1 L656.1,427.9 L652.0,425.8 L651.2,425.2 L649.2,424.3 L644.0,420.8 L642.6,419.6 L637.8,418.5 L635.1,418.8 L631.5,421.3 L630.6,421.8 L630.6,421.8 L626.9,419.8 L623.5,418.5 L623.5,416.7 L624.8,413.1 L625.5,412.1 L621.7,410.8 L620.2,411.0 L615.1,410.4 L612.7,410.9 L609.8,412.1 L606.0,414.7 L604.2,415.4 L603.3,417.4 L600.0,419.1 L598.8,420.5 L596.6,420.4 L594.6,422.2 L588.2,425.8 L585.7,428.0 L581.0,428.7 L578.9,430.9 L581.1,424.8 L579.7,423.0 L579.7,423.0 L576.9,424.5 L574.0,423.5 L573.9,421.8 L570.2,419.5 L569.1,421.8 L570.2,426.6 L569.8,426.7 L567.7,427.4 L563.0,425.8 L561.7,426.7 L561.4,429.7 L562.7,431.3 L563.2,433.1 L561.6,434.5 L561.2,437.0 L562.5,437.9 L564.1,443.2 L561.1,444.2 L557.4,444.4 L553.8,446.6 L553.9,446.9 L553.6,450.1 L550.9,455.3 L551.8,457.5 L554.1,458.6 L555.6,460.5 L555.9,463.6 L557.6,465.7 L556.4,467.5 L553.0,469.6 L550.2,473.3 L549.8,472.8 L549.5,474.5 L549.2,475.5 L550.7,477.0 L553.8,477.2 L554.8,478.6 L552.6,483.1 L554.4,487.3 L551.9,489.4 L551.4,489.8 L547.8,491.5 L547.7,492.9 L546.3,493.7Z", "ES": "M676.5,526.0 L676.0,525.9 L673.7,531.3 L673.6,531.3 L668.5,531.3 L666.7,531.3 L666.3,532.4 L665.3,533.4 L664.6,534.7 L665.0,535.4 L665.7,535.7 L665.8,536.8 L665.3,536.9 L664.8,541.2 L664.3,542.7 L664.9,542.9 L666.3,543.4 L667.0,544.9 L667.1,546.3 L667.5,549.6 L668.9,550.4 L670.7,551.0 L672.5,551.6 L676.4,552.3 L679.3,552.1 L682.8,553.6 L683.5,551.3 L685.9,547.4 L686.9,544.7 L688.1,544.1 L690.8,542.7 L694.7,538.0 L696.8,533.6 L698.0,532.1 L698.5,528.2 L699.2,527.4 L701.2,523.4 L704.1,520.8 L706.2,520.0 L708.7,513.0 L708.1,508.8 L707.5,500.8 L707.9,497.0 L709.1,493.3 L704.1,490.1 L697.9,486.1 L697.8,486.1 L694.9,484.9 L691.6,484.3 L688.9,486.7 L686.1,485.6 L684.0,486.2 L686.6,488.7 L681.0,489.8 L678.8,492.8 L679.1,494.7 L678.3,495.4 L681.6,495.8 L681.5,497.2 L681.0,499.4 L683.2,500.5 L683.7,503.1 L681.5,503.5 L679.1,502.7 L677.3,502.7 L677.1,503.8 L679.3,504.6 L680.7,505.7 L680.8,508.0 L682.8,509.3 L683.4,511.3 L683.4,511.9 L682.7,515.4 L682.6,517.1 L678.6,520.5 L678.5,522.4 L678.2,524.9 L676.5,526.0Z", "RJ": "M608.1,586.3 L605.0,587.7 L604.3,591.4 L603.2,592.2 L606.4,595.5 L609.2,595.3 L610.2,594.0 L607.8,591.9 L606.4,592.2 L607.5,589.2 L610.5,588.6 L614.1,586.5 L614.0,588.7 L617.7,588.8 L621.0,586.9 L623.5,586.4 L625.2,586.4 L630.0,589.2 L635.6,588.4 L638.1,586.2 L635.9,584.2 L637.0,582.5 L640.6,581.8 L640.9,582.5 L640.9,582.9 L639.3,585.1 L639.2,587.1 L641.1,587.6 L648.7,586.8 L654.0,586.8 L656.0,586.8 L661.0,586.7 L662.3,584.5 L662.3,582.6 L661.9,579.9 L662.1,579.2 L665.4,576.2 L668.0,573.9 L671.0,572.5 L679.3,569.7 L682.0,568.2 L682.4,566.0 L681.1,560.0 L680.6,557.6 L682.8,553.6 L679.3,552.1 L676.4,552.3 L672.5,551.6 L670.7,551.0 L668.9,550.4 L667.5,549.6 L667.1,546.3 L667.0,544.9 L666.3,543.4 L664.9,542.9 L664.3,542.7 L663.2,543.3 L663.1,544.3 L662.2,546.1 L658.7,546.9 L660.0,547.9 L660.1,548.1 L659.3,549.0 L658.2,550.1 L657.8,550.7 L657.6,551.9 L657.2,554.3 L656.9,554.4 L656.1,556.1 L656.5,557.3 L654.7,559.3 L654.6,559.5 L656.3,562.0 L654.0,562.6 L652.4,563.4 L652.3,563.4 L649.4,564.6 L648.2,565.2 L643.2,567.6 L641.4,568.4 L638.5,569.9 L638.8,568.5 L638.7,568.4 L636.8,568.3 L634.8,567.9 L634.4,567.8 L632.5,569.0 L629.4,568.9 L627.8,569.5 L627.0,569.3 L625.9,569.0 L621.6,570.7 L617.4,572.4 L617.2,572.6 L615.8,573.2 L613.8,572.9 L611.8,573.0 L610.0,574.5 L607.6,575.5 L607.6,575.3 L604.8,575.8 L604.6,576.0 L604.6,576.0 L607.1,578.4 L608.0,580.0 L611.6,580.3 L613.8,580.2 L614.1,579.7 L616.5,580.0 L617.7,581.4 L614.6,584.9 L611.0,585.0 L608.3,586.1 L608.1,586.3ZM614.0,592.5 L618.2,591.5 L616.3,589.9 L613.5,591.5 L614.0,592.5ZM625.3,589.3 L621.6,589.0 L622.0,589.8 L625.3,589.4 L627.8,589.2 L627.9,588.9 L625.3,589.3Z", "SP": "M566.4,564.5 L567.6,563.1 L568.0,561.2 L569.2,560.7 L570.1,558.9 L570.1,557.4 L567.9,556.2 L567.3,555.2 L564.9,554.8 L564.6,555.0 L562.5,555.7 L559.9,556.0 L560.2,554.7 L559.2,552.9 L557.7,551.2 L557.7,550.6 L557.1,548.2 L556.5,546.5 L555.5,544.5 L555.5,544.5 L556.4,542.0 L558.1,541.0 L557.2,538.6 L557.3,538.5 L557.2,538.1 L555.6,537.1 L554.2,535.6 L554.5,533.0 L555.4,531.7 L555.4,531.6 L553.5,529.5 L550.2,526.5 L549.0,527.0 L547.1,528.1 L544.6,526.8 L542.9,526.9 L542.5,528.7 L541.9,529.7 L540.2,527.9 L538.3,530.1 L535.7,528.0 L535.4,529.7 L530.6,529.7 L528.9,529.8 L526.7,530.5 L525.0,530.2 L523.1,530.4 L521.8,532.7 L522.2,535.2 L521.8,536.0 L520.3,535.3 L519.8,530.6 L518.2,530.2 L517.1,532.6 L515.8,533.5 L514.2,532.4 L514.1,531.8 L513.3,529.5 L514.4,526.5 L510.3,526.7 L507.0,525.5 L504.3,525.6 L501.1,525.8 L498.3,525.4 L497.0,524.6 L495.7,524.6 L492.3,524.5 L490.0,522.8 L487.8,523.3 L486.7,524.3 L485.2,525.4 L482.0,526.5 L481.2,526.9 L478.9,528.9 L478.8,529.1 L476.7,532.8 L471.9,534.3 L470.4,536.6 L467.3,539.7 L467.2,539.8 L466.0,542.5 L466.2,546.3 L463.2,548.5 L461.0,551.5 L461.4,554.3 L459.3,557.5 L456.5,559.0 L457.4,561.2 L455.3,563.1 L452.1,567.2 L450.6,570.1 L449.3,571.5 L445.2,573.9 L439.3,577.4 L436.7,578.9 L436.1,580.4 L437.5,580.3 L438.0,579.9 L439.8,579.2 L442.7,580.0 L443.0,580.1 L446.6,579.3 L447.6,580.3 L449.5,580.1 L450.0,580.2 L452.7,580.5 L454.8,581.1 L455.5,579.3 L455.8,578.5 L457.9,578.7 L458.0,578.7 L460.6,580.0 L460.8,580.2 L461.5,580.6 L464.3,581.3 L466.1,581.1 L466.1,581.1 L468.4,581.8 L469.8,581.0 L472.1,581.3 L472.8,581.4 L474.5,582.5 L475.3,582.8 L478.8,583.9 L479.3,583.7 L480.3,584.0 L482.5,585.4 L483.0,587.1 L486.2,586.2 L487.5,586.1 L488.5,586.7 L491.9,586.4 L492.3,587.0 L495.0,587.1 L496.5,586.9 L498.1,586.2 L499.7,587.1 L499.7,587.2 L502.6,589.4 L502.9,589.6 L503.1,589.9 L504.9,591.1 L506.8,593.8 L506.5,595.2 L507.4,597.4 L506.8,598.7 L507.3,601.3 L507.8,601.8 L508.1,604.2 L507.2,605.1 L508.6,606.9 L508.9,606.7 L509.6,608.9 L512.7,611.2 L512.4,612.9 L514.3,614.8 L514.4,616.6 L514.4,617.2 L514.4,617.4 L513.1,619.7 L513.2,621.9 L515.3,622.6 L516.3,622.0 L516.9,622.2 L521.3,622.1 L523.3,622.1 L527.6,622.0 L528.9,623.1 L528.3,627.0 L527.7,628.8 L528.5,630.4 L531.5,628.3 L533.2,629.5 L535.0,628.5 L537.9,635.0 L541.6,631.9 L541.7,629.8 L545.3,626.3 L551.7,622.1 L558.6,617.5 L562.2,613.5 L566.0,611.3 L568.2,610.2 L572.5,608.4 L573.2,607.8 L574.2,608.3 L576.7,608.2 L577.7,605.5 L583.7,603.5 L589.5,604.2 L590.3,605.2 L592.7,604.5 L592.1,602.5 L592.5,600.7 L595.2,599.8 L599.4,598.1 L602.6,594.9 L603.9,595.9 L606.4,595.5 L603.2,592.2 L604.3,591.4 L605.0,587.7 L608.1,586.3 L608.3,586.1 L611.0,585.0 L614.6,584.9 L617.7,581.4 L616.5,580.0 L614.1,579.7 L613.8,580.2 L611.6,580.3 L608.0,580.0 L607.1,578.4 L604.6,576.0 L603.9,576.4 L601.5,577.4 L598.7,577.7 L598.2,577.9 L597.4,578.5 L595.3,580.2 L592.6,581.0 L592.2,580.4 L591.0,579.8 L589.0,581.0 L589.1,580.0 L587.2,581.0 L587.0,579.4 L585.9,580.3 L586.7,581.0 L584.4,582.7 L586.3,583.4 L585.2,584.7 L583.1,585.5 L581.3,585.0 L579.4,586.0 L576.6,585.3 L573.4,586.1 L572.8,584.4 L573.7,583.3 L570.8,582.1 L572.5,581.2 L571.8,579.9 L571.2,578.4 L569.3,577.3 L567.9,576.7 L567.0,575.2 L565.8,574.0 L566.6,572.2 L566.8,571.4 L567.3,571.4 L568.3,570.5 L565.8,569.4 L567.3,568.0 L567.9,567.7 L566.4,564.5ZM594.9,605.7 L596.1,603.9 L593.8,602.9 L591.7,607.1 L595.7,606.4 L594.9,605.7Z", "PR": "M516.9,622.2 L516.3,622.0 L515.3,622.6 L513.2,621.9 L513.1,619.7 L514.4,617.4 L514.4,617.2 L514.4,616.6 L514.3,614.8 L512.4,612.9 L512.7,611.2 L509.6,608.9 L508.9,606.7 L508.6,606.9 L507.2,605.1 L508.1,604.2 L507.8,601.8 L507.3,601.3 L506.8,598.7 L507.4,597.4 L506.5,595.2 L506.8,593.8 L504.9,591.1 L503.1,589.9 L502.9,589.6 L502.6,589.4 L499.7,587.2 L499.7,587.1 L498.1,586.2 L496.5,586.9 L495.0,587.1 L492.3,587.0 L491.9,586.4 L488.5,586.7 L487.5,586.1 L486.2,586.2 L483.0,587.1 L482.5,585.4 L480.3,584.0 L479.3,583.7 L478.8,583.9 L475.3,582.8 L474.5,582.5 L472.8,581.4 L472.1,581.3 L469.8,581.0 L468.4,581.8 L466.1,581.1 L466.1,581.1 L464.3,581.3 L461.5,580.6 L460.8,580.2 L460.6,580.0 L458.0,578.7 L457.9,578.7 L455.8,578.5 L455.5,579.3 L454.8,581.1 L452.7,580.5 L450.0,580.2 L449.5,580.1 L447.6,580.3 L446.6,579.3 L443.0,580.1 L442.7,580.0 L439.8,579.2 L438.0,579.9 L437.5,580.3 L436.1,580.4 L435.6,581.0 L433.4,582.7 L431.6,583.3 L429.9,584.3 L427.1,585.8 L425.4,588.1 L425.3,590.6 L423.7,593.8 L422.8,595.4 L418.7,597.1 L417.3,600.8 L416.9,602.0 L416.2,604.4 L416.2,605.6 L414.5,608.4 L412.1,609.8 L410.9,611.6 L412.6,616.0 L411.9,617.1 L411.5,620.4 L411.3,621.8 L411.2,622.5 L410.0,624.2 L408.6,629.5 L409.3,631.8 L408.3,633.0 L405.3,637.9 L405.9,640.7 L408.9,642.2 L411.9,640.0 L414.3,640.6 L415.0,639.3 L418.1,640.6 L421.0,642.7 L421.1,644.4 L421.6,647.2 L421.2,648.4 L423.3,649.9 L424.6,652.6 L425.0,653.2 L425.3,654.1 L429.5,654.8 L429.5,654.8 L429.5,654.8 L431.3,654.1 L434.8,656.1 L435.0,656.1 L437.7,656.5 L439.5,656.4 L440.1,656.3 L443.1,656.2 L444.3,656.3 L445.5,656.8 L447.2,657.3 L447.9,657.1 L449.6,657.9 L455.3,658.5 L458.0,660.1 L462.1,660.8 L468.5,660.8 L470.5,663.6 L470.9,662.5 L474.0,661.8 L474.4,661.1 L472.8,657.5 L473.4,656.9 L473.7,656.2 L474.8,655.1 L477.3,653.6 L479.0,653.8 L480.9,654.9 L484.9,652.8 L485.0,652.7 L486.4,650.3 L487.6,649.1 L491.8,651.3 L493.7,649.9 L495.3,650.4 L499.3,649.3 L500.5,649.4 L501.9,649.8 L505.5,652.9 L507.3,653.6 L509.6,653.0 L509.6,652.8 L510.8,652.5 L512.2,651.8 L514.7,649.6 L520.1,648.8 L520.5,648.8 L526.0,648.7 L527.7,648.6 L528.7,646.0 L530.1,643.2 L532.5,640.6 L533.5,638.7 L535.5,638.3 L537.9,635.0 L535.0,628.5 L533.2,629.5 L531.5,628.3 L528.5,630.4 L527.7,628.8 L528.3,627.0 L528.9,623.1 L527.6,622.0 L523.3,622.1 L521.3,622.1 L516.9,622.2ZM424.9,635.8 L425.5,635.7 L425.5,635.7 L424.9,635.8ZM430.6,593.0 L430.6,593.0 L430.6,592.9 L430.6,593.0Z", "SC": "M449.6,657.9 L447.9,657.1 L447.2,657.3 L445.5,656.8 L444.3,656.3 L443.1,656.2 L440.1,656.3 L439.5,656.4 L437.7,656.5 L435.0,656.1 L434.8,656.1 L431.3,654.1 L429.5,654.8 L429.5,654.8 L425.3,654.1 L424.2,657.7 L424.3,658.0 L423.6,659.9 L423.4,661.2 L423.7,664.3 L424.5,666.2 L424.5,667.2 L424.6,668.2 L423.4,669.4 L421.2,672.8 L421.6,672.9 L423.7,673.0 L426.1,673.2 L427.1,672.9 L428.3,673.3 L431.0,671.6 L432.2,672.0 L431.7,673.6 L434.4,673.2 L436.7,671.5 L437.9,671.2 L438.4,672.2 L438.8,673.8 L441.3,672.8 L442.3,673.5 L442.6,673.5 L444.5,675.1 L447.5,674.2 L447.7,674.6 L449.8,673.8 L450.0,675.1 L450.5,675.3 L452.5,675.8 L453.2,674.6 L454.0,676.1 L456.4,676.3 L457.6,676.4 L458.9,677.0 L461.4,679.0 L461.9,679.9 L462.9,679.8 L464.6,679.1 L466.0,679.3 L467.1,681.1 L467.7,680.7 L469.6,681.7 L472.6,684.0 L473.3,684.3 L477.8,687.0 L477.7,687.4 L478.8,688.9 L479.3,688.6 L481.4,690.5 L484.0,694.7 L485.1,695.1 L486.7,697.7 L490.6,698.5 L497.8,699.4 L499.8,698.6 L502.9,699.2 L504.7,700.2 L505.2,702.4 L505.2,702.5 L503.6,702.0 L502.4,704.1 L500.5,704.4 L500.2,707.8 L500.1,708.9 L500.1,711.4 L498.9,713.7 L496.4,713.9 L496.3,715.5 L498.4,717.2 L498.5,717.1 L496.9,715.2 L500.1,714.0 L501.2,714.3 L503.4,715.8 L505.0,716.6 L506.4,714.8 L509.0,711.9 L511.9,709.1 L513.6,707.6 L515.7,706.0 L522.4,702.2 L524.7,699.9 L525.5,696.6 L526.9,692.0 L527.2,688.5 L527.9,687.7 L528.1,686.5 L529.3,685.2 L532.3,678.5 L531.3,677.1 L529.1,677.6 L527.7,675.8 L527.6,673.8 L528.1,673.6 L529.8,673.4 L529.5,671.6 L527.9,672.3 L527.9,670.6 L527.1,668.5 L526.8,667.6 L527.2,665.8 L526.4,664.7 L526.0,663.6 L526.3,660.8 L526.6,660.1 L527.7,658.2 L529.8,653.5 L528.3,652.4 L527.7,648.6 L526.0,648.7 L520.5,648.8 L520.1,648.8 L514.7,649.6 L512.2,651.8 L510.8,652.5 L509.6,652.8 L509.6,653.0 L507.3,653.6 L505.5,652.9 L501.9,649.8 L500.5,649.4 L499.3,649.3 L495.3,650.4 L493.7,649.9 L491.8,651.3 L487.6,649.1 L486.4,650.3 L485.0,652.7 L484.9,652.8 L480.9,654.9 L479.0,653.8 L477.3,653.6 L474.8,655.1 L473.7,656.2 L473.4,656.9 L472.8,657.5 L474.4,661.1 L474.0,661.8 L470.9,662.5 L470.5,663.6 L468.5,660.8 L462.1,660.8 L458.0,660.1 L455.3,658.5 L449.6,657.9Z", "RS": "M419.0,770.0 L423.5,772.9 L424.5,775.8 L425.2,778.7 L429.4,782.1 L434.7,784.3 L438.3,782.9 L438.9,780.9 L442.3,780.0 L443.8,778.4 L441.9,777.7 L444.0,774.1 L445.9,773.9 L444.6,777.4 L446.3,780.3 L445.9,783.9 L443.9,787.9 L441.6,789.5 L438.2,787.1 L435.7,787.0 L434.7,791.3 L433.0,793.4 L431.6,792.6 L428.7,796.4 L429.6,800.1 L427.9,802.0 L427.6,805.2 L429.7,806.4 L430.7,806.4 L442.8,797.0 L445.9,793.4 L448.5,788.5 L450.0,783.7 L452.6,777.8 L456.6,774.2 L456.2,769.7 L453.3,767.9 L454.0,766.6 L455.5,764.8 L457.8,764.7 L458.3,762.7 L458.3,760.8 L460.2,756.9 L462.4,756.4 L466.3,756.1 L466.1,753.7 L467.9,752.9 L469.9,752.4 L468.7,750.1 L469.8,748.0 L471.3,748.0 L471.1,743.4 L472.4,743.4 L473.5,740.0 L476.1,739.2 L474.6,736.4 L472.2,734.9 L472.8,731.4 L473.3,731.1 L474.1,734.0 L477.6,735.6 L477.7,738.3 L480.3,739.1 L480.6,736.9 L485.9,736.1 L486.6,734.3 L488.2,735.4 L487.4,740.2 L484.4,737.8 L485.2,740.5 L485.2,744.7 L483.9,746.9 L479.5,748.5 L479.8,750.7 L475.2,753.3 L475.7,756.4 L474.0,759.9 L471.5,761.4 L470.2,760.6 L465.5,766.2 L461.9,766.9 L460.5,768.3 L456.6,767.6 L458.2,769.3 L457.0,773.8 L462.0,769.3 L470.2,764.7 L475.1,760.9 L482.1,754.5 L483.6,752.8 L492.4,740.5 L494.1,736.5 L494.6,735.1 L495.7,732.3 L496.8,729.8 L497.7,727.9 L497.9,727.4 L498.8,725.7 L500.5,722.7 L500.8,722.3 L503.2,719.0 L505.0,716.6 L503.4,715.8 L501.2,714.3 L500.1,714.0 L496.9,715.2 L498.5,717.1 L498.4,717.2 L496.3,715.5 L496.4,713.9 L498.9,713.7 L500.1,711.4 L500.1,708.9 L500.2,707.8 L500.5,704.4 L502.4,704.1 L503.6,702.0 L505.2,702.5 L505.2,702.4 L504.7,700.2 L502.9,699.2 L499.8,698.6 L497.8,699.4 L490.6,698.5 L486.7,697.7 L485.1,695.1 L484.0,694.7 L481.4,690.5 L479.3,688.6 L478.8,688.9 L477.7,687.4 L477.8,687.0 L473.3,684.3 L472.6,684.0 L469.6,681.7 L467.7,680.7 L467.1,681.1 L466.0,679.3 L464.6,679.1 L462.9,679.8 L461.9,679.9 L461.4,679.0 L458.9,677.0 L457.6,676.4 L456.4,676.3 L454.0,676.1 L453.2,674.6 L452.5,675.8 L450.5,675.3 L450.0,675.1 L449.8,673.8 L447.7,674.6 L447.5,674.2 L444.5,675.1 L442.6,673.5 L442.3,673.5 L441.3,672.8 L438.8,673.8 L438.4,672.2 L437.9,671.2 L436.7,671.5 L434.4,673.2 L431.7,673.6 L432.2,672.0 L431.0,671.6 L428.3,673.3 L427.1,672.9 L426.1,673.2 L423.7,673.0 L421.6,672.9 L421.2,672.8 L419.0,672.4 L416.8,674.7 L415.7,675.5 L414.1,674.7 L413.5,677.2 L412.2,678.4 L409.6,677.6 L408.3,679.1 L405.9,678.6 L405.1,680.4 L403.2,680.8 L401.3,680.2 L399.6,683.5 L397.6,685.4 L396.6,686.7 L393.5,686.8 L392.0,688.3 L390.7,689.0 L390.0,690.3 L388.7,691.4 L381.9,694.6 L384.0,696.6 L383.5,698.1 L380.3,696.9 L379.6,699.4 L376.8,700.3 L377.2,701.4 L373.3,705.4 L371.2,706.1 L370.7,708.4 L368.5,711.6 L365.3,712.4 L363.8,716.0 L361.4,718.5 L357.6,723.0 L354.3,725.6 L352.2,725.8 L350.3,728.0 L350.3,729.7 L347.5,732.5 L344.9,733.9 L345.4,735.4 L349.1,736.4 L352.8,736.1 L354.6,732.6 L360.0,732.1 L363.9,734.4 L366.2,737.6 L367.9,738.1 L369.6,740.5 L371.4,741.1 L373.5,742.6 L374.2,744.6 L376.8,746.3 L377.1,752.3 L379.9,752.1 L384.1,749.7 L385.9,747.2 L388.7,750.7 L390.5,751.4 L392.6,755.7 L396.1,757.4 L396.9,756.4 L400.9,759.6 L403.7,759.5 L406.0,759.9 L408.3,762.2 L408.7,763.9 L416.1,769.5 L419.0,770.0Z", "MS": "M430.0,486.3 L428.4,487.3 L425.8,486.0 L422.5,486.5 L418.9,484.8 L420.9,480.5 L422.9,479.8 L423.9,479.6 L424.4,471.3 L421.6,472.2 L418.5,475.8 L417.5,475.9 L416.4,478.7 L414.0,478.5 L411.8,479.6 L407.7,475.9 L402.7,476.7 L400.4,478.9 L394.8,479.4 L394.8,479.3 L391.5,477.2 L387.3,476.0 L385.4,473.6 L385.3,473.6 L377.6,471.4 L376.4,469.7 L372.2,470.6 L368.3,472.9 L362.6,472.4 L359.5,477.0 L357.3,478.0 L357.2,479.6 L354.6,482.0 L349.3,483.0 L347.9,484.0 L344.7,482.5 L343.1,480.7 L342.9,478.9 L341.7,477.6 L341.1,479.1 L342.5,481.0 L342.3,483.0 L345.3,489.2 L347.7,491.2 L345.6,491.4 L341.4,504.8 L342.5,507.5 L341.1,507.5 L334.0,522.2 L339.5,526.5 L333.2,530.5 L334.7,532.3 L335.2,535.0 L336.7,536.1 L336.4,539.5 L337.5,541.4 L339.4,542.3 L337.5,543.3 L339.5,543.9 L338.1,545.3 L340.0,546.1 L339.4,548.2 L339.6,553.9 L337.4,558.9 L339.0,561.3 L337.3,564.6 L338.4,565.2 L336.8,569.6 L341.8,570.6 L344.6,569.7 L346.5,571.3 L350.5,572.7 L356.0,572.5 L360.1,573.9 L365.7,572.0 L367.1,569.7 L369.3,569.3 L370.3,571.4 L373.0,573.4 L380.5,573.6 L382.0,575.6 L382.9,579.0 L385.1,581.8 L384.1,585.1 L385.5,591.2 L386.7,593.0 L387.4,595.8 L386.2,597.9 L386.8,600.8 L388.7,602.6 L388.5,606.7 L389.4,607.9 L392.3,608.2 L396.3,608.3 L404.0,604.9 L409.3,607.0 L412.1,609.8 L414.5,608.4 L416.2,605.6 L416.2,604.4 L416.9,602.0 L417.3,600.8 L418.7,597.1 L422.8,595.4 L423.7,593.8 L425.3,590.6 L425.4,588.1 L427.1,585.8 L429.9,584.3 L431.6,583.3 L433.4,582.7 L435.6,581.0 L436.1,580.4 L436.7,578.9 L439.3,577.4 L445.2,573.9 L449.3,571.5 L450.6,570.1 L452.1,567.2 L455.3,563.1 L457.4,561.2 L456.5,559.0 L459.3,557.5 L461.4,554.3 L461.0,551.5 L463.2,548.5 L466.2,546.3 L466.0,542.5 L467.2,539.8 L467.3,539.7 L470.4,536.6 L471.9,534.3 L476.7,532.8 L478.8,529.1 L478.9,528.9 L478.2,522.9 L478.1,520.9 L480.3,518.8 L480.2,516.3 L477.0,513.1 L469.8,510.1 L467.9,509.7 L464.8,509.2 L461.6,507.9 L459.8,506.2 L456.9,505.8 L454.8,503.7 L451.8,503.3 L450.2,501.6 L448.4,500.2 L443.4,500.6 L440.8,499.6 L439.8,499.0 L439.0,497.7 L441.5,495.1 L443.1,493.9 L441.9,492.8 L436.2,492.9 L435.3,488.2 L436.8,487.2 L433.4,486.6 L430.0,486.3Z", "MT": "M371.8,311.8 L363.6,311.1 L362.0,311.9 L360.6,308.6 L357.1,308.4 L355.8,307.3 L356.2,305.6 L352.8,302.0 L348.5,300.8 L348.5,299.4 L344.9,298.7 L344.1,294.0 L343.0,291.6 L343.9,287.8 L340.1,282.5 L338.8,276.8 L335.4,271.0 L333.9,270.2 L332.3,272.3 L332.5,275.6 L330.7,278.7 L329.0,279.8 L330.8,285.1 L330.3,289.9 L328.2,293.3 L328.7,295.4 L327.8,297.6 L330.0,297.8 L327.7,299.6 L313.8,299.6 L287.5,299.5 L263.9,299.6 L266.2,302.0 L264.4,305.5 L265.0,308.7 L262.9,308.9 L263.2,310.3 L263.9,313.0 L266.0,316.4 L264.0,318.2 L265.4,321.1 L264.7,324.0 L263.8,325.2 L264.5,330.2 L266.3,332.5 L266.0,339.5 L264.5,344.0 L267.0,344.0 L275.7,344.1 L286.7,344.1 L288.1,346.2 L296.5,346.8 L296.4,349.1 L297.7,351.2 L297.4,352.9 L293.8,356.1 L294.0,361.5 L296.3,362.9 L296.4,365.2 L298.1,367.0 L298.3,369.6 L300.5,371.5 L297.1,376.8 L295.4,377.2 L293.6,384.1 L292.3,384.3 L290.6,386.5 L289.3,390.2 L288.5,391.4 L288.1,394.1 L283.2,396.5 L281.6,399.0 L286.4,401.0 L286.9,403.9 L288.2,405.1 L286.3,407.2 L286.8,411.6 L290.5,417.8 L291.0,427.5 L284.3,427.5 L291.2,435.2 L292.5,451.3 L306.8,451.5 L320.7,452.1 L327.9,452.4 L330.1,451.3 L329.7,456.4 L327.8,457.9 L327.0,464.9 L328.7,467.0 L328.6,469.9 L331.6,473.4 L336.7,476.7 L339.0,475.3 L341.7,477.6 L342.9,478.9 L343.1,480.7 L344.7,482.5 L347.9,484.0 L349.3,483.0 L354.6,482.0 L357.2,479.6 L357.3,478.0 L359.5,477.0 L362.6,472.4 L368.3,472.9 L372.2,470.6 L376.4,469.7 L377.6,471.4 L385.3,473.6 L385.4,473.6 L387.3,476.0 L391.5,477.2 L394.8,479.3 L394.8,479.4 L400.4,478.9 L402.7,476.7 L407.7,475.9 L411.8,479.6 L414.0,478.5 L416.4,478.7 L417.5,475.9 L418.5,475.8 L421.6,472.2 L424.4,471.3 L423.9,479.6 L422.9,479.8 L420.9,480.5 L418.9,484.8 L422.5,486.5 L425.8,486.0 L428.4,487.3 L430.0,486.3 L433.4,486.6 L436.8,487.2 L434.9,481.7 L433.5,480.7 L433.4,478.4 L433.3,476.4 L433.8,472.2 L436.0,468.4 L437.0,467.7 L438.0,463.4 L439.7,462.9 L440.0,462.4 L441.6,461.5 L444.0,458.8 L443.7,457.8 L445.8,456.4 L444.7,452.0 L447.5,450.4 L449.0,448.4 L451.2,447.5 L453.4,443.7 L458.4,443.5 L459.1,442.6 L461.0,442.3 L463.3,438.8 L463.0,436.6 L464.7,435.4 L465.7,429.1 L468.0,426.9 L471.7,425.4 L470.4,425.3 L471.8,425.3 L471.9,425.1 L472.0,425.0 L472.1,424.9 L472.6,425.2 L473.3,426.4 L476.8,424.0 L476.9,424.0 L477.1,423.9 L477.0,423.4 L477.0,423.3 L479.6,416.0 L478.9,413.6 L480.7,408.2 L482.1,407.3 L481.4,399.8 L482.8,399.1 L483.8,395.5 L485.7,393.7 L486.8,391.4 L487.6,385.6 L488.8,382.1 L486.5,381.2 L485.3,377.8 L486.5,373.8 L486.1,369.1 L485.3,369.0 L485.3,364.4 L486.2,362.2 L484.6,359.1 L485.6,356.1 L484.2,355.3 L485.0,350.6 L486.8,345.6 L486.3,342.9 L487.6,339.2 L486.9,337.4 L486.9,337.4 L488.2,336.3 L489.6,332.2 L490.7,331.2 L491.1,327.1 L493.0,324.7 L494.6,320.7 L482.0,319.9 L472.7,319.3 L453.3,318.0 L446.0,317.5 L435.5,316.8 L426.3,316.1 L415.8,315.3 L405.5,314.5 L397.7,313.9 L380.0,312.5 L374.1,312.0 L371.8,311.8Z", "GO": "M535.1,439.0 L535.8,435.7 L538.3,435.7 L538.7,435.7 L538.7,435.7 L539.1,435.7 L550.1,435.7 L553.6,437.5 L553.7,440.7 L552.4,443.5 L552.6,445.9 L553.8,446.6 L557.4,444.4 L561.1,444.2 L564.1,443.2 L562.5,437.9 L561.2,437.0 L561.6,434.5 L563.2,433.1 L562.7,431.3 L561.4,429.7 L561.7,426.7 L563.0,425.8 L567.7,427.4 L569.8,426.7 L570.2,426.6 L569.1,421.8 L570.2,419.5 L573.9,421.8 L574.0,423.5 L576.9,424.5 L579.7,423.0 L579.9,419.0 L580.0,418.8 L580.7,418.5 L580.5,414.3 L582.3,412.4 L579.2,409.9 L576.7,408.4 L575.8,406.2 L576.1,405.4 L575.1,404.2 L575.7,399.3 L577.1,397.2 L575.4,396.7 L576.2,394.4 L575.4,393.8 L579.1,390.9 L578.4,390.1 L574.5,391.3 L573.8,390.0 L574.4,386.2 L578.2,383.2 L573.1,384.7 L572.0,381.3 L571.4,383.6 L571.2,384.3 L567.5,384.3 L565.2,384.3 L563.1,386.3 L552.2,390.2 L548.6,387.3 L546.6,389.3 L547.5,392.4 L546.3,394.4 L543.9,391.6 L540.5,391.3 L538.3,389.8 L536.4,391.0 L536.9,388.0 L530.5,390.6 L529.3,387.7 L528.0,391.3 L528.1,387.4 L526.7,385.1 L522.1,380.9 L521.9,381.2 L520.0,384.1 L517.1,380.6 L514.7,382.5 L512.3,388.1 L512.0,390.4 L501.0,384.4 L495.4,382.7 L492.9,380.7 L494.2,376.7 L495.3,376.0 L494.8,374.4 L496.3,372.6 L493.0,374.6 L490.4,377.8 L488.8,382.1 L487.6,385.6 L486.8,391.4 L485.7,393.7 L483.8,395.5 L482.8,399.1 L481.4,399.8 L482.1,407.3 L480.7,408.2 L478.9,413.6 L479.6,416.0 L477.0,423.3 L477.0,423.4 L477.1,423.9 L476.9,424.0 L476.8,424.0 L473.3,426.4 L472.6,425.2 L472.0,425.0 L471.9,425.1 L471.8,425.3 L471.7,425.4 L468.0,426.9 L465.7,429.1 L464.7,435.4 L463.0,436.6 L463.3,438.8 L461.0,442.3 L459.1,442.6 L458.4,443.5 L453.4,443.7 L451.2,447.5 L449.0,448.4 L447.5,450.4 L444.7,452.0 L445.8,456.4 L443.7,457.8 L444.0,458.8 L441.6,461.5 L440.0,462.4 L439.7,462.9 L438.0,463.4 L437.0,467.7 L436.0,468.4 L433.8,472.2 L433.3,476.4 L433.4,478.4 L433.5,480.7 L434.9,481.7 L436.8,487.2 L435.3,488.2 L436.2,492.9 L441.9,492.8 L443.1,493.9 L441.5,495.1 L439.0,497.7 L439.8,499.0 L440.8,499.6 L443.4,500.6 L448.4,500.2 L450.2,501.6 L451.8,503.3 L454.8,503.7 L456.9,505.8 L459.8,506.2 L461.6,507.9 L464.8,509.2 L467.9,509.7 L469.8,510.1 L477.0,513.1 L480.2,516.3 L482.4,516.4 L481.4,515.4 L482.4,513.1 L484.1,511.1 L484.3,510.6 L486.1,509.5 L488.3,508.8 L489.6,505.2 L492.0,501.9 L493.7,500.4 L497.6,500.1 L498.6,498.7 L503.4,499.6 L504.1,498.9 L504.8,498.9 L508.4,497.5 L509.6,497.3 L511.9,499.4 L513.6,497.9 L514.4,497.1 L515.3,494.9 L518.4,494.7 L520.3,493.1 L521.2,492.7 L523.8,493.7 L526.5,493.5 L532.9,494.0 L534.3,493.2 L535.2,493.5 L539.3,495.4 L540.7,496.6 L542.6,495.6 L542.7,495.4 L544.5,495.0 L546.3,493.7 L547.7,492.9 L547.8,491.5 L551.4,489.8 L551.9,489.4 L554.4,487.3 L552.6,483.1 L554.8,478.6 L553.8,477.2 L550.7,477.0 L549.2,475.5 L549.5,474.5 L549.8,472.8 L550.2,473.3 L553.0,469.6 L556.4,467.5 L557.6,465.7 L555.9,463.6 L555.6,460.5 L554.1,458.6 L551.8,457.5 L550.9,455.3 L553.6,450.1 L553.9,446.9 L546.3,446.9 L541.1,446.9 L539.5,446.9 L539.5,446.9 L539.5,446.9 L538.1,446.9 L534.2,446.9 L534.1,442.4 L535.6,440.1 L535.1,439.0Z", "DF": "M539.5,446.9 L541.1,446.9 L546.3,446.9 L553.9,446.9 L553.8,446.6 L552.6,445.9 L552.4,443.5 L553.7,440.7 L553.6,437.5 L550.1,435.7 L539.1,435.7 L538.7,435.7 L538.7,435.7 L538.3,435.7 L535.8,435.7 L535.1,439.0 L535.6,440.1 L534.1,442.4 L534.2,446.9 L538.1,446.9 L539.5,446.9 L539.5,446.9Z"}};
+const UF = DATA.uf_paths, TI = DATA.ti_xy;
+const C = DATA.comms.map(a=>({
+  nome:a[0],aldeia:a[1],ti:a[2],etnia:a[3],uf:a[4],mun:a[5],cr:a[6],pop:a[7],fam:a[8],tipo:a[9],
+  acesso:a[10],lon:a[11],lat:a[12],vuln:a[13],rh:a[14],ra:a[15],status:a[16],q:a[17],sens:a[18],
+  oc:a[19],atu:a[20],etapa:a[21],pend:a[22],dentro:a[23],x:a[24],y:a[25]
+}));
+const SV=DATA.services, AG=DATA.agents, NAV=DATA.nav, INTEGR=DATA.integr, AUDIT=DATA.audit;
+
+function qcolor(q){return q>=81?'#1f8a4c':q>=61?'#2e8b57':q>=41?'#c77c12':'#c0392b';}
+function qclass(q){return q>=81?'validado':q>=61?'adequado':q>=41?'atenção':'crítico';}
+function vcolor(v){return v>=80?'#c0392b':v>=60?'#c77c12':v>=40?'#d4a017':'#2e8b57';}
+function rcolor(r){return r=='Alto'?'#c0392b':r=='Médio'?'#c77c12':'#2e8b57';}
+function sensClass(s){return s=='Alta'?'crit':s=='Média'?'warn':'neu';}
+const esc=s=>(''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+let selIdx=2, curPage='overview', curTab='resumo';
+
+// counts for nav badges
+function navCount(id){
+  if(id=='list')return C.length;
+  if(id=='valid')return C.reduce((n,c)=>n+(c.pend.length>0?1:0),0);
+  if(id=='vuln')return C.filter(c=>c.vuln>=80).length;
+  if(id=='dispatch')return 4;
+  if(id=='kanban')return C.filter(c=>c.status!='Publicado').length;
+  return 0;
+}
+function renderSide(){
+  let h='<div class="snav">Operação cadastral</div>';
+  NAV.forEach(n=>{const cnt=navCount(n[0]);
+    h+=`<div class="nav ${n[0]==curPage?'active':''}" onclick="go('${n[0]}')">
+      <span class="ico">${n[2]}</span><span>${n[1]}</span>${cnt?`<span class="cnt">${cnt}</span>`:''}</div>`;
+  });
+  h+='<div class="snav">Sistema</div>';
+  h+=`<div class="nav" onclick="go('config')"><span class="ico">⚙️</span><span>Configurações</span></div>`;
+  document.getElementById('side').innerHTML=h;
+}
+function go(p){curPage=p;renderSide();render();document.querySelector('.main').scrollTop=0;}
+
+/* ===== MAP ===== */
+function mapSVG(mode='vuln',pts=C,withTI=true){
+  let s='<svg viewBox="0 0 820 820" preserveAspectRatio="xMidYMid meet">';
+  for(const u in UF){const hl=pts.some(c=>c.uf==u)?'hl':'';s+=`<path class="uf ${hl}" d="${UF[u]}"></path>`;}
+  if(withTI){for(const t in TI){const[x,y]=TI[t];
+    s+=`<circle cx="${x}" cy="${y}" r="15" fill="rgba(31,107,59,.10)" stroke="#2e8b57" stroke-width="1.2" stroke-dasharray="3 3"></circle>`;
+  }}
+  pts.forEach((c,i)=>{
+    let col, r=5.5;
+    if(mode=='vuln')col=vcolor(c.vuln);
+    else if(mode=='quality')col=qcolor(c.q);
+    else if(mode=='water')col=rcolor(c.rh);
+    else if(mode=='status')col=c.status=='Publicado'?'#1f8a4c':c.status=='Em validação'?'#c77c12':'#2167a8';
+    else if(mode=='sens')col=c.sens=='Alta'?'#6a2fb0':c.sens=='Média'?'#9a6b12':'#8a93a6';
+    else col=vcolor(c.vuln);
+    if(c.oc)r=7;
+    const idx=C.indexOf(c);
+    s+=`<circle class="dot-c" cx="${c.x}" cy="${c.y}" r="${r}" fill="${col}" stroke="#fff" stroke-width="1.6"
+        onclick="selectComm(${idx});event.stopPropagation()"
+        onmousemove="tip(event,'${esc(c.nome)}','${esc(c.ti)} · ${c.uf}','Vuln ${c.vuln} · Hídrico ${c.rh} · Score ${c.q}${c.oc?' · ⚠ ocorrência ativa':''}')"
+        onmouseleave="untip()"></circle>`;
+    if(c.oc)s+=`<circle cx="${c.x}" cy="${c.y}" r="${r+4}" fill="none" stroke="${col}" stroke-width="1" opacity=".5"></circle>`;
+  });
+  s+='</svg>';return s;
+}
+function tip(e,t,s,x){const m=document.getElementById('mtip');m.innerHTML=`<b>${t}</b><br><span class="s">${s}</span><br>${x}`;
+  m.style.opacity=1;m.style.left=(e.clientX+14)+'px';m.style.top=(e.clientY+10)+'px';}
+function untip(){document.getElementById('mtip').style.opacity=0;}
+
+function legendHTML(mode){
+  const sets={
+    vuln:[['#c0392b','Crítica (80+)'],['#c77c12','Alta (60–79)'],['#d4a017','Média (40–59)'],['#2e8b57','Baixa (<40)']],
+    quality:[['#1f8a4c','Validado (81+)'],['#2e8b57','Adequado (61–80)'],['#c77c12','Atenção (41–60)'],['#c0392b','Crítico (≤40)']],
+    water:[['#c0392b','Risco hídrico alto'],['#c77c12','Médio'],['#2e8b57','Baixo']],
+    status:[['#1f8a4c','Publicado'],['#c77c12','Em validação'],['#2167a8','Em produção']],
+    sens:[['#6a2fb0','Sensibilidade alta'],['#9a6b12','Média'],['#8a93a6','Baixa']]
+  };
+  const ttl={vuln:'Vulnerabilidade',quality:'Qualidade cadastral',water:'Segurança hídrica',status:'Status cadastral',sens:'Sensibilidade'};
+  let h=`<div class="lt">${ttl[mode]}</div>`;
+  sets[mode].forEach(s=>h+=`<div class="lk"><span class="sw" style="background:${s[0]}"></span>${s[1]}</div>`);
+  h+=`<div class="lk" style="margin-top:6px;border-top:1px solid var(--line2);padding-top:6px"><span class="sw" style="background:transparent;border:1.5px dashed #2e8b57"></span>Limite de Terra Indígena</div>`;
+  return h;
+}
+let mapMode='vuln';
+function mapBlock(){
+  return `<div class="maparea">
+    ${mapSVG(mapMode)}
+    <div class="maplayers">
+      <div class="lt">Camadas GIS</div>
+      <div class="ly" onclick="this.classList.toggle('off')"><span class="tog"></span>Comunidades / aldeias</div>
+      <div class="ly" onclick="this.classList.toggle('off')"><span class="tog"></span>Terras Indígenas</div>
+      <div class="ly off" onclick="this.classList.toggle('off')"><span class="tog"></span>Hidrografia</div>
+      <div class="ly off" onclick="this.classList.toggle('off')"><span class="tog"></span>Rotas de acesso</div>
+      <div class="ly off" onclick="this.classList.toggle('off')"><span class="tog"></span>Serviços públicos</div>
+      <div class="ly off" onclick="this.classList.toggle('off')"><span class="tog"></span>Eventos críticos</div>
+    </div>
+    <div class="maptools">
+      <div class="mt" title="Criar ponto">📍</div><div class="mt" title="Editar coordenada">✎</div>
+      <div class="mt" title="Medir distância">📏</div><div class="mt" title="Buffer de risco">⭕</div>
+      <div class="mt" title="Cruzar camadas">🧩</div><div class="mt" title="Comparar temporal">🕓</div>
+      <div class="mt" title="Exportar mapa">⬇</div>
+    </div>
+    <div class="legend">${legendHTML(mapMode)}</div>
+  </div>`;
+}
+function setMapMode(m){mapMode=m;render();}
+
+/* ===== RIGHT PANELS ===== */
+function detailPanel(){
+  const c=C[selIdx];
+  const ring=`<div class="ring" style="background:conic-gradient(${qcolor(c.q)} ${c.q*3.6}deg,#eef1f6 0);">
+     <div style="width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:${qcolor(c.q)}">${c.q}</div></div>`;
+  let pend = c.pend.length? c.pend.map(p=>`<div class="alert"><span class="ai2" style="background:var(--crit)"></span><div><div class="at">${esc(p)}</div></div></div>`).join('')
+    : `<div class="alert"><span class="ai2" style="background:var(--ok)"></span><div><div class="at">Sem pendências cadastrais</div><div class="ax">Registro consistente</div></div></div>`;
+  return `<div class="card detail">
+    <div class="dh">
+      <div class="nm">${esc(c.nome)}</div>
+      <div class="mt2">Aldeia ${esc(c.aldeia)} · ${esc(c.etnia)} · ${esc(c.ti)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <span class="chip ${c.status=='Publicado'?'ok':'info'}">${esc(c.status)}</span>
+        <span class="chip ${sensClass(c.sens)}">🔒 Sensib. ${c.sens}</span>
+        ${c.oc?'<span class="chip crit">⚠ Ocorrência ativa</span>':''}
+      </div>
+      <div class="score-ring">${ring}<div><div style="font-weight:800;font-size:13px;color:${qcolor(c.q)}">${qclass(c.q).toUpperCase()}</div><div class="muted" style="font-size:11px">Score de qualidade cadastral</div></div></div>
+    </div>
+    <div class="cb">
+      <div class="kv"><span class="muted">Terra Indígena</span><b>${esc(c.ti)}</b></div>
+      <div class="kv"><span class="muted">UF / Município</span><b>${c.uf} · ${esc(c.mun)}</b></div>
+      <div class="kv"><span class="muted">Coordenação Regional</span><b>${esc(c.cr)}</b></div>
+      <div class="kv"><span class="muted">População / famílias</span><b>${c.pop.toLocaleString('pt-BR')} · ${c.fam}</b></div>
+      <div class="kv"><span class="muted">Acesso logístico</span><b>${esc(c.acesso)}</b></div>
+      <div class="kv"><span class="muted">Vulnerabilidade</span><b style="color:${vcolor(c.vuln)}">${c.vuln} / 100</b></div>
+      <div class="kv"><span class="muted">Risco hídrico / alimentar</span><b style="color:${rcolor(c.rh)}">${c.rh} · ${c.ra}</b></div>
+      <div class="kv"><span class="muted">Última atualização</span><b>${c.atu}</b></div>
+      <div class="kv"><span class="muted">Vínculo territorial</span><b style="color:${c.dentro?'var(--ok)':'var(--crit)'}">${c.dentro?'Dentro da TI ✓':'⚠ Fora da TI'}</b></div>
+      <div class="act">
+        <button onclick="go('ficha')">📋 Abrir ficha</button>
+        <button>✎ Editar</button>
+        <button>✅ Validar</button>
+        <button onclick="go('dispatch')">✉ Despachar</button>
+        <button>📲 Atualizar campo</button>
+        <button>📄 Relatório</button>
+        <button class="full" onclick="go('ficha')">Ver detalhes completos →</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><h3>Alertas de inconsistência</h3></div>
+    ${pend}
+  </div>`;
+}
+function aiPanel(){
+  const c=C[selIdx];
+  return `<div class="card ai">
+    <div class="ach"><div class="orb">✦</div><div><b style="font-size:13px">Copiloto INITI</b><br><span class="muted" style="font-size:11px">Síntese Comunitária · IA</span></div></div>
+    <div class="aimsg"><b>Resumo automático.</b> ${esc(c.nome)} está vinculada à <b>${esc(c.ti)}</b>, com atualização em ${c.atu}.
+    Apresenta risco hídrico <b>${c.rh.toLowerCase()}</b>, vulnerabilidade <b>${c.vuln>=80?'alta':c.vuln>=60?'média-alta':'moderada'}</b>,
+    acesso <b>${esc(c.acesso.toLowerCase())}</b>${c.oc?' e <b>uma ocorrência ativa</b> associada':''}.
+    ${c.pend.length?'Há '+c.pend.length+' pendência(s) impedindo a publicação.':'Registro apto para consumo pelos demais módulos.'}</div>
+    <div class="suggest">
+      <button>Quais riscos incidem?</button><button>Há ocorrência aberta?</button>
+      <button>Localização validada?</button><button>Dados desatualizados?</button>
+      <button>Gerar relatório comunitário</button><button>Criar despacho regional</button>
+      <button>Planejar coleta de campo</button>
+    </div>
+  </div>`;
+}
+function agentsPanel(){
+  let h=`<div class="card"><div class="ch"><h3>Agentes inteligentes do A2</h3><span class="chip ok sp">8 ativos</span></div>`;
+  AG.forEach((a,i)=>{const sb=a[2]=='standby';
+    h+=`<div class="agent"><div class="ab">${['🧭','🔗','📐','🔒','🌡️','📲','🏥','📄'][i]}</div>
+    <div><div class="an">Agente de ${esc(a[0])}<span class="stat ${sb?'sb':''}"></span></div>
+    <div class="ad">${esc(a[1])}</div><div class="ao">${esc(a[3])}</div></div></div>`;});
+  h+='</div>';return h;
+}
+
+/* ===== PAGES ===== */
+function pageOverview(){
+  const tot=C.length, pub=C.filter(c=>c.status=='Publicado').length;
+  const val=C.filter(c=>c.dentro).length;
+  const vulnH=C.filter(c=>c.vuln>=80).length;
+  const rh=C.filter(c=>c.rh=='Alto').length;
+  const ra=C.filter(c=>c.ra=='Alto').length;
+  const oc=C.filter(c=>c.oc).length;
+  const desat=C.filter(c=>c.atu<'2026-01-01').length;
+  const sens=C.filter(c=>c.sens=='Alta').length;
+  const fora=C.filter(c=>!c.dentro).length;
+  const kpi=[
+    ['Comunidades cadastradas',tot,'g','+3 este mês','up'],
+    ['Aldeias / localidades',C.filter(c=>c.tipo=='Aldeia').length,'i','vinculadas a 10 TIs',''],
+    ['Localização validada',val,'g',Math.round(val/tot*100)+'% da base','up'],
+    ['Alta vulnerabilidade',vulnH,'c','prioridade de resposta','dn'],
+    ['Risco hídrico alto',rh,'w','monitoramento ANA/CEMADEN',''],
+    ['Insegurança alimentar',ra,'w','registro social','dn'],
+    ['Ocorrência ativa',oc,'c','vínculo c/ Monitoramento','dn'],
+    ['Sem atualização recente',desat,'w','>180 dias',''],
+    ['Dados sensíveis / restritos',sens,'g','controle LGPD',''],
+    ['Fora do limite da TI',fora,'c','validação territorial','dn'],
+  ];
+  let kh='';kpi.forEach(k=>kh+=`<div class="kpi ${k[2]}"><div class="lab">${k[0]}</div><div class="val">${k[1]}</div><div class="dlt ${k[4]}">${k[3]}</div></div>`);
+
+  const flow=`<div class="flow">
+    <span class="fstep done">Comunidade identificada</span><span class="farrow">→</span>
+    <span class="fstep done">Cadastro preliminar</span><span class="farrow">→</span>
+    <span class="fstep done">Localização no mapa</span><span class="farrow">→</span>
+    <span class="fstep now">Validação regional</span><span class="farrow">→</span>
+    <span class="fstep">Análise de sensibilidade</span><span class="farrow">→</span>
+    <span class="fstep">Cálculo de vulnerabilidade</span><span class="farrow">→</span>
+    <span class="fstep">Publicação</span><span class="farrow">→</span>
+    <span class="fstep">Consumo pelos módulos</span></div>`;
+
+  return `<div class="phead"><div><div class="crumb">INITI · Fase 1 · Cadastros estruturantes / <b>A2 — Comunidades e Aldeias</b></div><h1>Visão geral do cadastro comunitário</h1></div>
+    <div class="seg"><button class="on">Operacional</button><button>Executivo</button></div></div>
+  ${flow}
+  <div class="kpis" style="grid-template-columns:repeat(5,1fr)">${kh}</div>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <div class="ch"><h3>Mapa comunitário nacional</h3>
+          <div class="seg sp" style="padding:2px">
+            <button class="${mapMode=='vuln'?'on':''}" onclick="setMapMode('vuln')">Vulnerab.</button>
+            <button class="${mapMode=='water'?'on':''}" onclick="setMapMode('water')">Hídrico</button>
+            <button class="${mapMode=='status'?'on':''}" onclick="setMapMode('status')">Status</button>
+            <button class="${mapMode=='sens'?'on':''}" onclick="setMapMode('sens')">Sensib.</button>
+            <button class="${mapMode=='quality'?'on':''}" onclick="setMapMode('quality')">Qualidade</button>
+          </div></div>
+        <div class="cb" style="padding:11px">${mapBlock()}</div>
+      </div>
+    </div>
+    <div class="rp">
+      ${aiPanel()}
+      <div class="card">
+        <div class="ch"><h3>Painel de alertas</h3><span class="chip crit sp">${C.reduce((n,c)=>n+c.pend.length,0)}</span></div>
+        <div class="alert"><span class="ai2" style="background:var(--crit)"></span><div><div class="at">Kapôt fora do limite da TI associada</div><div class="ax">Validação territorial · 1,4 km do limite</div></div></div>
+        <div class="alert"><span class="ai2" style="background:var(--crit)"></span><div><div class="at">Palimiú · ocorrência crítica aberta</div><div class="ax">Vínculo com Monitoramento</div></div></div>
+        <div class="alert"><span class="ai2" style="background:var(--warn)"></span><div><div class="at">Sawré Aboy × Sawré Muybu · possível duplicidade</div><div class="ax">Conciliação Comunitária · 88%</div></div></div>
+        <div class="alert"><span class="ai2" style="background:var(--warn)"></span><div><div class="at">Lagoa Comprida · insegurança alimentar</div><div class="ax">Risco climático (fogo) elevado</div></div></div>
+        <div class="alert"><span class="ai2" style="background:var(--warn)"></span><div><div class="at">Maturacá · dados populacionais desatualizados</div><div class="ax">Sugerir coleta de campo</div></div></div>
+        <div class="alert"><span class="ai2" style="background:var(--info)"></span><div><div class="at">Alto Jamari sem atualização há >180 dias</div><div class="ax">Agente de Atualização de Campo</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:14px">
+    ${agentsPanel()}
+    ${detailPanel()}
+  </div>`;
+}
+
+function pageList(){
+  let rows='';
+  C.forEach((c,i)=>{
+    rows+=`<tr class="${i==selIdx?'sel':''}" onclick="selectComm(${i})">
+      <td><b>${esc(c.nome)}</b><br><span class="muted" style="font-size:10.5px">${esc(c.tipo)} · ${esc(c.etnia)}</span></td>
+      <td>${esc(c.ti)}</td><td>${c.uf}</td><td>${esc(c.cr)}</td>
+      <td>${c.pop.toLocaleString('pt-BR')}</td>
+      <td><span class="chip ${c.vuln>=80?'crit':c.vuln>=60?'warn':'ok'}" style="font-size:10px">${c.vuln}</span></td>
+      <td><span style="color:${rcolor(c.rh)};font-weight:700">${c.rh}</span></td>
+      <td><span class="chip ${sensClass(c.sens)}" style="font-size:10px">${c.sens}</span></td>
+      <td><span class="qbar"><i style="width:${c.q}%;background:${qcolor(c.q)}"></i></span> <b style="color:${qcolor(c.q)}">${c.q}</b></td>
+      <td><span class="chip ${c.status=='Publicado'?'ok':c.status=='Em validação'?'warn':'info'}" style="font-size:10px">${esc(c.status)}</span></td>
+      <td>${c.oc?'<span class="chip crit" style="font-size:10px">ativa</span>':'<span class="muted">—</span>'}</td>
+    </tr>`;
+  });
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Comunidades e aldeias</b></div><h1>Base de comunidades e aldeias</h1></div>
+    <div style="display:flex;gap:8px">
+      <button class="tbtn">⬇ Exportar lista</button>
+      <button class="tbtn primary" onclick="openForm()">＋ Nova</button>
+    </div></div>
+  <div class="card cb" style="padding:11px 14px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <span class="muted" style="font-weight:600">Filtros:</span>
+    <select class="ff" style="height:32px"><option>Todas as TIs</option><option>Yanomami</option><option>Munduruku</option><option>Alto Rio Negro</option></select>
+    <select class="ff" style="height:32px"><option>Todas as UF</option><option>AM</option><option>PA</option><option>RR</option><option>MA</option><option>MT</option><option>RO</option></select>
+    <select class="ff" style="height:32px"><option>Coord. Regional</option><option>CR Roraima</option><option>CR Sul do Pará</option></select>
+    <select class="ff" style="height:32px"><option>Status</option><option>Publicado</option><option>Em validação</option><option>Em produção</option></select>
+    <select class="ff" style="height:32px"><option>Vulnerabilidade</option><option>Alta (80+)</option><option>Média</option></select>
+    <select class="ff" style="height:32px"><option>Sensibilidade</option><option>Alta</option><option>Média</option><option>Baixa</option></select>
+  </div>
+  <div class="card"><div class="cb" style="padding:0;max-height:560px;overflow:auto">
+    <table><thead><tr>
+      <th>Comunidade</th><th>Terra Indígena</th><th>UF</th><th>Coord. Regional</th><th>Pop.</th>
+      <th>Vuln.</th><th>Hídrico</th><th>Sensib.</th><th>Qualidade</th><th>Status</th><th>Ocorr.</th>
+    </tr></thead><tbody>${rows}</tbody></table>
+  </div></div>`;
+}
+
+function pageMap(){
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Mapa comunitário</b></div><h1>Mapa territorial — GIS integrador</h1></div>
+   <div class="seg"><button class="${mapMode=='vuln'?'on':''}" onclick="setMapMode('vuln')">Vulnerabilidade</button>
+   <button class="${mapMode=='water'?'on':''}" onclick="setMapMode('water')">Hídrico</button>
+   <button class="${mapMode=='status'?'on':''}" onclick="setMapMode('status')">Cadastral</button>
+   <button class="${mapMode=='sens'?'on':''}" onclick="setMapMode('sens')">Sensibilidade</button></div></div>
+  <div class="note">🛰️ O GIS é a plataforma integradora do A2: cada comunidade está ancorada à sua Terra Indígena (limites tracejados), aos rios, rotas, serviços públicos e eventos críticos. Selecione um ponto para abrir a ficha.</div>
+  <div class="cols">
+    <div class="card"><div class="cb" style="padding:11px">${mapBlock()}</div></div>
+    <div class="rp">${detailPanel()}</div>
+  </div>`;
+}
+
+const KCOLS=['Em triagem','Em complementação','Validação territorial','Validação regional','Análise de sensibilidade','Revisão técnica','Aguardando despacho','Em edição','Publicado'];
+function pageKanban(){
+  let cols='';
+  KCOLS.forEach(col=>{
+    const items=C.filter(c=>c.etapa==col);
+    let cards='';
+    items.forEach(c=>{
+      cards+=`<div class="kcard" onclick="selectComm(${C.indexOf(c)});go('ficha')">
+        <div class="kn">${esc(c.nome)}</div>
+        <div class="km">${esc(c.ti)} · ${c.uf} · ${esc(c.cr)}</div>
+        <div class="kf">
+          <span class="kbadge" style="background:${qcolor(c.q)}22;color:${qcolor(c.q)}">Q ${c.q}</span>
+          <span class="kbadge ${sensClass(c.sens)}" style="background:#f0f0f5">🔒${c.sens}</span>
+          ${c.oc?'<span class="kbadge" style="background:#fdeceb;color:#c0392b">⚠ ocorr.</span>':''}
+          ${c.pend.length?`<span class="kbadge" style="background:#fdf3e3;color:#c77c12">${c.pend.length} pend.</span>`:''}
+        </div>
+        <div class="km" style="margin-top:6px">⏱ ${c.atu}${c.pend.length?' · '+esc(c.pend[0]):''}</div>
+      </div>`;
+    });
+    cols+=`<div class="kcol"><div class="kh">${esc(col)}<span class="kc">${items.length}</span></div>${cards||'<div class="muted" style="font-size:11px;padding:8px;text-align:center">—</div>'}</div>`;
+  });
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Produção cadastral</b></div><h1>Esteira de produção comunitária</h1></div>
+    <div class="seg"><button class="on">Kanban</button><button onclick="go('list')">Tabela</button></div></div>
+  <div class="note">Fluxo: recebido → triagem → complementação → validação territorial → validação regional → análise de sensibilidade → revisão técnica → aguardando despacho → aprovado → publicado → arquivado.</div>
+  <div class="kanban">${cols}</div>`;
+}
+
+function pageValid(){
+  const rows=[
+    ['Validação territorial','Comunidade dentro da TI associada',1,'Kapôt fora do limite (1,4 km)','crit'],
+    ['Validação territorial','Município / UF compatível',0,'Todos compatíveis','ok'],
+    ['Validação cadastral','Nome, tipo, fonte e responsável',0,'Completos','ok'],
+    ['Validação cadastral','Duplicidade por nome / proximidade',1,'Sawré Aboy × Sawré Muybu (88%)','crit'],
+    ['Validação cadastral','Campos essenciais preenchidos',2,'Sawré Muybu, Pari-Cachoeira incompletos','warn'],
+    ['Validação de sensibilidade','Classificação de sensibilidade definida',0,'100% classificadas','ok'],
+    ['Validação de sensibilidade','Mascaramento de coordenada (perfil ext.)',1,'Palimiú recomendado','warn'],
+    ['Social e operacional','População dentro de padrão',1,'Maturacá desatualizada','warn'],
+    ['Social e operacional','Dados de acesso / hídrico / alimentar',2,'2 sem dados de acesso','warn'],
+    ['Social e operacional','Atualização recente (<180d)',2,'Alto Jamari, Iauaretê','warn'],
+  ];
+  let tr='';rows.forEach(r=>{tr+=`<tr style="cursor:default">
+    <td>${r[0]}</td><td>${r[1]}</td>
+    <td>${r[2]?`<span class="chip ${r[4]}">${r[2]} ocorrência(s)</span>`:'<span class="chip ok">OK</span>'}</td>
+    <td class="muted">${esc(r[3])}</td></tr>`;});
+  // score composition for selected
+  const c=C[selIdx];
+  const comp=[['Completude cadastral',c.q-5],['Validade territorial',c.dentro?92:40],['Atualização recente',c.atu>='2026-05-01'?88:45],
+    ['Qualidade da localização',c.q],['Validação regional',c.status=='Publicado'?95:55],['Classificação de sensibilidade',90],['Vínculo com serviços',c.q-10],['Existência de evidências',c.q-12]];
+  let bars='';comp.forEach(b=>{const v=Math.max(8,Math.min(100,b[1]));bars+=`<div class="barrow"><span class="bl">${b[0]}</span><span class="bt"><i style="width:${v}%;background:${qcolor(v)}"></i></span><span class="bn" style="color:${qcolor(v)}">${v}</span></div>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Validações</b></div><h1>Painel de validações automáticas</h1></div>
+   <button class="tbtn primary">✅ Revalidar base</button></div>
+  <div class="cols">
+    <div class="card"><div class="ch"><h3>Regras de qualidade</h3><span class="chip warn sp">7 com ocorrência</span></div>
+      <div class="cb" style="padding:0"><table><thead><tr><th>Categoria</th><th>Regra</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody>${tr}</tbody></table></div></div>
+    <div class="card"><div class="ch"><h3>Score de qualidade · ${esc(C[selIdx].nome)}</h3></div>
+      <div class="cb"><div class="bars">${bars}</div>
+      <div class="note" style="margin-top:14px">Classificação final: <b style="color:${qcolor(c.q)}">${qclass(c.q).toUpperCase()} (${c.q})</b>. Faixas: 0–40 crítico · 41–60 atenção · 61–80 adequado · 81–100 validado.</div></div></div>
+  </div>`;
+}
+
+function pageVuln(){
+  let bars='';C.slice().sort((a,b)=>b.vuln-a.vuln).forEach(c=>{
+    bars+=`<div class="barrow"><span class="bl" style="width:160px">${esc(c.nome)} <span class="muted">(${c.uf})</span></span><span class="bt"><i style="width:${c.vuln}%;background:${vcolor(c.vuln)}"></i></span><span class="bn" style="color:${vcolor(c.vuln)}">${c.vuln}</span></div>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Vulnerabilidade</b></div><h1>Vulnerabilidade comunitária</h1></div></div>
+  <div class="note">🌡️ <b>Agente de Vulnerabilidade Comunitária:</b> cruza risco climático, segurança hídrica, situação alimentar, isolamento logístico e ocorrências. Resultado alimenta os módulos de <b>Análise de Risco Territorial</b>, <b>Zoneamento Climático</b> e <b>Painéis Executivos</b>.</div>
+  <div class="cols">
+    <div class="card"><div class="ch"><h3>Ranking de vulnerabilidade preliminar</h3></div><div class="cb"><div class="bars">${bars}</div></div></div>
+    <div class="rp">${detailPanel()}</div>
+  </div>`;
+}
+
+function pageWater(){
+  let r='';C.forEach(c=>{r+=`<tr onclick="selectComm(${C.indexOf(c)})"><td><b>${esc(c.nome)}</b></td><td>${esc(c.ti)}</td><td><span style="color:${rcolor(c.rh)};font-weight:700">${c.rh}</span></td><td>${esc(c.acesso)}</td><td class="muted">ANA/CEMADEN · INPE</td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Segurança hídrica</b></div><h1>Segurança hídrica comunitária</h1></div></div>
+  <div class="note">💧 Relaciona comunidades a rios, fontes de água, precipitação e água superficial. Integração com <b>ANA</b>, <b>CEMADEN</b> e o módulo de <b>Segurança Hídrica</b>.</div>
+  <div class="card"><div class="cb" style="padding:0"><table><thead><tr><th>Comunidade</th><th>Terra Indígena</th><th>Risco hídrico</th><th>Acesso</th><th>Fonte</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
+}
+function pageFood(){
+  let r='';C.forEach(c=>{r+=`<tr onclick="selectComm(${C.indexOf(c)})"><td><b>${esc(c.nome)}</b></td><td>${esc(c.ti)}</td><td><span style="color:${rcolor(c.ra)};font-weight:700">${c.ra}</span></td><td>${c.pop.toLocaleString('pt-BR')}</td><td class="muted">MDS / CadÚnico · SESAI</td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Segurança alimentar</b></div><h1>Insegurança alimentar comunitária</h1></div></div>
+  <div class="note">🌾 Indicadores sociais cruzados com população e isolamento. Alimenta <b>Vulnerabilidade Social Indígena</b> e <b>Análise de Impacto Social</b>.</div>
+  <div class="card"><div class="cb" style="padding:0"><table><thead><tr><th>Comunidade</th><th>Terra Indígena</th><th>Risco alimentar</th><th>População</th><th>Fonte</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
+}
+function pageLogist(){
+  let r='';C.forEach(c=>{r+=`<tr onclick="selectComm(${C.indexOf(c)})"><td><b>${esc(c.nome)}</b></td><td>${esc(c.acesso)}</td><td>${c.acesso.includes('Aéreo')?'Sim':'—'}</td><td>${c.acesso.includes('Fluvial')?'Sazonal':'—'}</td><td>${esc(c.cr)}</td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Acesso logístico</b></div><h1>Mapa de acesso logístico</h1></div></div>
+  <div class="cols"><div class="card"><div class="cb" style="padding:11px">${mapBlock()}</div></div>
+  <div class="card"><div class="ch"><h3>Condições de acesso</h3></div><div class="cb" style="padding:0;max-height:520px;overflow:auto"><table><thead><tr><th>Comunidade</th><th>Acesso</th><th>Pista</th><th>Fluvial</th><th>CR</th></tr></thead><tbody>${r}</tbody></table></div></div></div>`;
+}
+function pageServices(){
+  let sv='';SV.forEach(s=>{sv+=`<tr style="cursor:default"><td>${s[1]=='saude'?'🏥':'🏫'} <b>${esc(s[0])}</b></td><td>${s[1]=='saude'?'Saúde indígena':'Educação'}</td><td>${s[2]}</td><td><span class="chip ok" style="font-size:10px">ativo</span></td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Serviços públicos</b></div><h1>Serviços públicos e cobertura</h1></div></div>
+  <div class="note">🏥 <b>Agente de Integração com Serviços Públicos:</b> calcula distância até polo de saúde / escola e identifica lacunas de cobertura. Cruzamento com <b>SESAI</b>, <b>DSEIs</b> e secretarias de educação. <b>Alerta:</b> Pari-Cachoeira sem vínculo de serviço.</div>
+  <div class="cols"><div class="card"><div class="cb" style="padding:11px">${mapBlock()}</div></div>
+  <div class="card"><div class="ch"><h3>Equipamentos públicos</h3></div><div class="cb" style="padding:0"><table><thead><tr><th>Equipamento</th><th>Tipo</th><th>UF</th><th>Status</th></tr></thead><tbody>${sv}</tbody></table></div></div></div>`;
+}
+function pagePartners(){
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Parceiros</b></div><h1>Parceiros e cooperação</h1></div></div>
+  <div class="grid3">
+    ${['ISA — Instituto Socioambiental','Universidade Federal (pesquisa)','Defesa Civil Estadual','SESAI / DSEI','ONG de saúde indígena','Ministério Público Federal'].map(p=>`<div class="card cb"><b>🤝 ${p}</b><div class="muted" style="margin-top:6px;font-size:11.5px">Projetos ativos vinculados a comunidades · cooperação técnica e dados de campo.</div><div style="margin-top:8px"><span class="chip ok">ativo</span></div></div>`).join('')}
+  </div>`;
+}
+function pageDocs(){
+  const c=C[selIdx];
+  const docs=[['Formulário de campo','PDF',c.atu,'Coleta'],['Foto georreferenciada','JPG',c.atu,'Evidência'],['Relatório social','PDF','2026-05-10','Análise'],['Croqui de localização','PNG','2026-04-22','Mapa']];
+  let dl='';docs.forEach(d=>dl+=`<tr style="cursor:default"><td>📎 <b>${d[0]}</b></td><td><span class="chip neu">${d[1]}</span></td><td>${d[2]}</td><td>${d[3]}</td><td class="muted">Téc. regional</td></tr>`);
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Documentos e evidências</b></div><h1>Documentos — ${esc(c.nome)}</h1></div><button class="tbtn primary">⬆ Anexar evidência</button></div>
+  <div class="note">📄 <b>Agente de Leitura Documental</b> extrai automaticamente nome, etnia, população e observações dos formulários de campo, sugerindo preenchimento.</div>
+  <div class="card"><div class="cb" style="padding:0"><table><thead><tr><th>Documento</th><th>Tipo</th><th>Data</th><th>Categoria</th><th>Responsável</th></tr></thead><tbody>${dl}</tbody></table></div></div>`;
+}
+function pageField(){
+  const camp=C.filter(c=>c.atu<'2026-04-01'||c.pend.some(p=>p.includes('campo')||p.includes('atualiz')||p.includes('precisão')||p.includes('acesso')));
+  let r='';C.forEach(c=>{const need=c.atu<'2026-04-01';r+=`<tr onclick="selectComm(${C.indexOf(c)})"><td><b>${esc(c.nome)}</b></td><td>${esc(c.cr)}</td><td>${c.atu}</td><td>${need?'<span class="chip crit" style="font-size:10px">prioridade</span>':'<span class="chip ok" style="font-size:10px">recente</span>'}</td><td>${esc(c.acesso)}</td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Coleta de campo</b></div><h1>Coleta de campo & sincronização</h1></div><button class="tbtn primary">📲 Nova missão de coleta</button></div>
+  <div class="note">📲 <b>Agente de Atualização de Campo:</b> identifica cadastros vencidos, agrupa por rota e sugere prioridade de visita. Fluxo: coleta offline → sincronização → triagem automática → validação regional → atualização da ficha.</div>
+  <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi i"><div class="lab">Registros sincronizados</div><div class="val">38</div></div>
+    <div class="kpi w"><div class="lab">Com erro de sync</div><div class="val">5</div></div>
+    <div class="kpi g"><div class="lab">Evidências anexadas</div><div class="val">112</div></div>
+    <div class="kpi c"><div class="lab">Coletas prioritárias</div><div class="val">${camp.length}</div></div>
+  </div>
+  <div class="card"><div class="ch"><h3>Fila de atualização de campo</h3></div><div class="cb" style="padding:0;max-height:480px;overflow:auto"><table><thead><tr><th>Comunidade</th><th>CR</th><th>Última atualização</th><th>Prioridade</th><th>Acesso</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
+}
+function pageDispatch(){
+  const disp=[
+    ['Solicitar validação regional','Palimiú','Validador Regional · CR Roraima','Alta','2026-06-22','Em andamento','warn'],
+    ['Solicitar correção de localização','Kapôt','Analista GIS','Alta','2026-06-21','Em andamento','warn'],
+    ['Revisão de duplicidade','Sawré Aboy','Analista territorial','Média','2026-06-24','Aguardando','info'],
+    ['Solicitar evidência complementar','Sawré Muybu','Téc. regional CR Sul Pará','Alta','2026-06-20','Devolvido','crit'],
+  ];
+  let dc='';disp.forEach(d=>dc+=`<div class="dispcard">
+    <div class="dt">✉ ${d[0]} <span class="chip ${d[6]} sp" style="margin-left:auto">${d[5]}</span></div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:12px">
+      <span><span class="muted">Comunidade:</span> <b>${d[1]}</b></span>
+      <span><span class="muted">Destinatário:</span> <b>${d[2]}</b></span>
+      <span><span class="muted">Prioridade:</span> <b>${d[3]}</b></span>
+      <span><span class="muted">Prazo:</span> <b>${d[4]}</b></span>
+    </div></div>`);
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Despachos</b></div><h1>Despachos técnicos</h1></div><button class="tbtn primary">＋ Novo despacho</button></div>
+  <div class="note">✉ <b>Agente de Despacho Técnico</b> sugere encaminhamentos a partir das pendências. Tipos: correção de localização, validação regional, confirmação de nome, atualização populacional, classificação de sensibilidade, evidência complementar, revisão de duplicidade, aprovação de publicação.</div>
+  <div class="cols">
+    <div>${dc}</div>
+    <div class="card"><div class="ch"><h3>Nova minuta (sugerida pela IA)</h3></div><div class="cb">
+      <div class="gridform">
+        <div class="ff"><label>Comunidade relacionada</label><input value="${esc(C[selIdx].nome)}"></div>
+        <div class="ff"><label>Tipo de despacho</label><select><option>Validação regional</option><option>Correção de localização</option><option>Revisão de duplicidade</option><option>Classificação de sensibilidade</option></select></div>
+        <div class="ff"><label>Destinatário</label><select><option>Validador Regional · ${esc(C[selIdx].cr)}</option><option>Analista GIS</option></select></div>
+        <div class="ff"><label>Prioridade</label><select><option>Alta</option><option>Média</option><option>Baixa</option></select></div>
+        <div class="ff"><label>Prazo</label><input type="date" value="2026-06-25"></div>
+        <div class="ff"><label>Status</label><input value="Em andamento" disabled></div>
+        <div class="ff full"><label>Justificativa</label><textarea rows="3">Pendência de validação de localização e classificação de sensibilidade identificadas pelo Agente de Qualidade.</textarea></div>
+      </div>
+      <button class="tbtn primary" style="margin-top:12px;width:100%">Enviar despacho</button>
+    </div></div>
+  </div>`;
+}
+function pageIntegr(){
+  let r='';INTEGR.forEach(s=>{const st=s[4];const cl=st=='ok'?'ok':st=='alerta'?'warn':'crit';
+    r+=`<tr style="cursor:default"><td><b>${esc(s[0])}</b><br><span class="muted" style="font-size:10.5px">${esc(s[1])}</span></td>
+    <td>${s[2]}</td><td>${s[3]}</td><td><span class="chip ${cl}" style="font-size:10px">${st}</span></td>
+    <td><span class="chip ${s[5]=='Alta'||s[5]=='Restrita'?'crit':'neu'}" style="font-size:10px">${s[5]}</span></td>
+    <td>${s[6]}</td><td>${s[7].toLocaleString('pt-BR')}</td><td>${s[8]?`<span style="color:var(--crit)">${s[8]}</span>`:'0'}</td>
+    <td>${s[10]}</td></tr>`;});
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Integrações</b></div><h1>Status das integrações externas</h1></div></div>
+  <div class="card"><div class="cb" style="padding:0"><table><thead><tr><th>Fonte</th><th>Última atualização</th><th>Periodicidade</th><th>Status</th><th>Sensibilidade</th><th>Qualidade</th><th>Recebidos</th><th>Erros</th><th>Pend. validação</th></tr></thead><tbody>${r}</tbody></table></div></div>`;
+}
+function pageAudit(){
+  let r='';AUDIT.forEach(a=>r+=`<div class="tl"><div class="tt">${esc(a[2])} · ${esc(a[3])}</div><div class="td">${a[0]} · ${esc(a[1])}</div><div class="tx">${esc(a[4])}</div></div>`);
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Auditoria</b></div><h1>Trilha de auditoria & histórico</h1></div></div>
+  <div class="note">🔍 Exclusão lógica: registros nunca são apagados fisicamente. Inativação, fusão e arquivamento exigem motivo, responsável, data, justificativa e evidência — tudo preservado aqui.</div>
+  <div class="cols"><div class="card"><div class="ch"><h3>Eventos recentes</h3></div><div class="cb"><div class="timeline">${r}</div></div></div>
+  <div class="card"><div class="ch"><h3>Integração com módulos consumidores</h3></div><div class="cb">${modLinks()}</div></div></div>`;
+}
+function modLinks(){
+  const mods=[
+    ['📊','Análise de Risco Territorial','Comunidade = unidade sensível p/ exposição','#1f8a4c','alimenta'],
+    ['🌦️','Zoneamento Climático','Exposição a seca, cheia, fogo, calor','#2167a8','alimenta'],
+    ['💧','Segurança Hídrica','Comunidades × rios e precipitação','#0f5ea8','alimenta'],
+    ['👥','Vulnerabilidade Social Indígena','Base de indicadores sociais','#9a6b12','alimenta'],
+    ['🛰️','Monitoramento & Ocorrências','Eventos críticos → comunidades afetadas','#c0392b','bidirecional'],
+    ['🚨','Gestão de Emergências','Priorização de resposta e logística','#c77c12','alimenta'],
+    ['📈','Painéis Executivos','Indicadores por TI, região e CR','#2e8b57','alimenta'],
+    ['🗺️','Cadastro Territorial (A1)','Vínculo e validação de limites','#1f6b3b','consome'],
+  ];
+  return mods.map(m=>`<div class="modlink"><div class="mi" style="background:${m[3]}1a;color:${m[3]}">${m[0]}</div>
+    <div><div class="mt3">${m[1]}</div><div class="mx">${m[2]}</div></div>
+    <div class="mflow">${m[4]} →</div></div>`).join('');
+}
+
+/* ===== FICHA (detail page w/ internal tabs) ===== */
+const FTABS=[['resumo','Resumo'],['mapa','Mapa'],['attr','Atributos'],['vuln','População & vulnerab.'],['logist','Acesso & logística'],['serv','Serviços públicos'],['oc','Ocorrências & eventos'],['docs','Documentos'],['valid','Validações'],['hist','Histórico'],['disp','Despachos'],['audit','Auditoria']];
+function pageFicha(){
+  const c=C[selIdx];
+  let tabs='';FTABS.forEach(t=>tabs+=`<div class="ftab ${t[0]==curTab?'on':''}" onclick="setTab('${t[0]}')">${t[1]}</div>`);
+  return `<div class="phead"><div><div class="crumb"><span onclick="go('list')" style="cursor:pointer">Comunidades</span> · <b>${esc(c.nome)}</b></div>
+    <h1>${esc(c.nome)} <span class="chip ${c.status=='Publicado'?'ok':'info'}" style="vertical-align:middle">${esc(c.status)}</span> <span class="chip ${sensClass(c.sens)}" style="vertical-align:middle">🔒 ${c.sens}</span></h1>
+    <div class="muted" style="margin-top:3px">${esc(c.ti)} · ${c.uf} · ${esc(c.mun)} · ${esc(c.cr)} · Score <b style="color:${qcolor(c.q)}">${c.q}</b></div></div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="tbtn">✎ Editar</button><button class="tbtn">✅ Validar</button>
+      <button class="tbtn" onclick="go('dispatch')">✉ Despachar</button><button class="tbtn">📲 Atualizar campo</button>
+      <button class="tbtn primary">📄 Gerar relatório</button></div></div>
+  <div class="ftabs">${tabs}</div>
+  <div class="fade" id="ftabbody">${fichaBody(c)}</div>`;
+}
+function fichaBody(c){
+  if(curTab=='resumo')return `<div class="cols">
+    <div>
+      <div class="card"><div class="ch"><h3>Resumo executivo</h3></div><div class="cb"><div class="grid3">
+        ${[['Localização',c.lat.toFixed(2)+', '+c.lon.toFixed(2)],['População estimada',c.pop.toLocaleString('pt-BR')],['Famílias',c.fam],
+           ['Etnia / povo',c.etnia],['Tipo',c.tipo],['Última atualização',c.atu],
+           ['Risco hídrico',c.rh],['Risco alimentar',c.ra],['Vulnerabilidade',c.vuln+'/100'],
+           ['Acesso logístico',c.acesso],['Vínculo territorial',c.dentro?'Dentro da TI':'Fora da TI'],['Ocorrências ativas',c.oc?'1':'0']]
+          .map(f=>`<div class="field"><div class="fl">${f[0]}</div><div class="fv">${esc(''+f[1])}</div></div>`).join('')}
+      </div></div></div>
+      <div class="card" style="margin-top:14px"><div class="ch"><h3>Mini mapa</h3></div><div class="cb" style="padding:11px"><div class="maparea" style="height:340px">${mapSVG('vuln')}</div></div></div>
+    </div>
+    <div class="rp">${aiPanel()}
+      <div class="card"><div class="ch"><h3>Alertas</h3></div>
+      ${c.pend.length?c.pend.map(p=>`<div class="alert"><span class="ai2" style="background:var(--crit)"></span><div class="at">${esc(p)}</div></div>`).join(''):'<div class="alert"><span class="ai2" style="background:var(--ok)"></span><div class="at">Sem pendências</div></div>'}</div>
+    </div></div>`;
+  if(curTab=='mapa')return `<div class="card"><div class="cb" style="padding:11px"><div class="maparea" style="height:520px">${mapSVG('vuln')}</div></div></div>`;
+  if(curTab=='attr'){const f=[['Nome',c.nome],['Aldeia',c.aldeia],['Tipo de localidade',c.tipo],['Terra Indígena associada',c.ti],['Coordenação Regional',c.cr],['UF',c.uf],['Município',c.mun],['Etnia / povo',c.etnia],['População estimada',c.pop],['Nº famílias',c.fam],['Coordenadas',c.lat.toFixed(4)+', '+c.lon.toFixed(4)],['Precisão da localização','GPS · ±15m'],['Método de coleta','Coleta de campo'],['Fonte da informação','Téc. regional / formulário'],['Responsável pelo cadastro',c.cr],['Nível de sensibilidade',c.sens],['Última atualização',c.atu],['Status cadastral',c.status]];
+    return `<div class="card"><div class="ch"><h3>Atributos cadastrais completos</h3></div><div class="cb"><div class="grid3">${f.map(x=>`<div class="field"><div class="fl">${x[0]}</div><div class="fv">${esc(''+x[1])}</div></div>`).join('')}</div></div></div>`;}
+  if(curTab=='vuln'){const comp=[['Risco climático',c.rh=='Alto'?85:c.rh=='Médio'?55:25],['Segurança hídrica',c.rh=='Alto'?80:c.rh=='Médio'?50:20],['Insegurança alimentar',c.ra=='Alto'?82:c.ra=='Médio'?52:22],['Isolamento logístico',c.acesso.includes('Aéreo')?75:c.acesso.includes('Fluvial')?60:30],['Exposição a ocorrências',c.oc?90:30]];
+    let bars='';comp.forEach(b=>bars+=`<div class="barrow"><span class="bl">${b[0]}</span><span class="bt"><i style="width:${b[1]}%;background:${vcolor(b[1])}"></i></span><span class="bn" style="color:${vcolor(b[1])}">${b[1]}</span></div>`);
+    return `<div class="cols"><div class="card"><div class="ch"><h3>Fatores de vulnerabilidade</h3></div><div class="cb"><div class="bars">${bars}</div>
+      <div class="note" style="margin-top:14px">Vulnerabilidade preliminar consolidada: <b style="color:${vcolor(c.vuln)}">${c.vuln}/100</b>. Resultado publicado para os módulos de Risco e Zoneamento Climático.</div></div></div>
+      <div class="card"><div class="ch"><h3>População & organização</h3></div><div class="cb"><div class="grid2">
+      ${[['População',c.pop.toLocaleString('pt-BR')],['Famílias',c.fam],['Densidade','—'],['Etnia',c.etnia]].map(f=>`<div class="field"><div class="fl">${f[0]}</div><div class="fv">${f[1]}</div></div>`).join('')}</div></div></div></div>`;}
+  if(curTab=='logist')return `<div class="card"><div class="ch"><h3>Acesso & logística</h3></div><div class="cb"><div class="grid3">
+    ${[['Forma de acesso',c.acesso],['Tempo estimado',c.acesso.includes('Aéreo')?'1h voo + 4h barco':'6–10h'],['Sazonalidade',c.acesso.includes('Fluvial')?'Restrição na seca':'Ano todo'],['Pista de pouso',c.acesso.includes('Aéreo')?'Sim':'Não'],['Porto / atracadouro',c.acesso.includes('Fluvial')?'Sim':'—'],['Restrições','Período chuvoso']].map(f=>`<div class="field"><div class="fl">${f[0]}</div><div class="fv">${esc(f[1])}</div></div>`).join('')}</div></div></div>`;
+  if(curTab=='serv')return pageServices().split('<div class="cols">')[1] ? `<div class="card"><div class="ch"><h3>Serviços públicos próximos</h3></div><div class="cb"><div class="note">🏥 Polo de saúde mais próximo e escola indígena vinculados. ${c.nome=='Pari-Cachoeira'?'<b style="color:var(--crit)">Lacuna: sem vínculo de serviço ativo.</b>':'Cobertura adequada.'}</div><div class="grid3" style="margin-top:10px">${[['Polo de saúde','SESAI · DSEI'],['Escola indígena','Sim'],['Assistência social',c.ra=='Alto'?'Demanda':'—'],['Distância até polo','~28 km'],['Cobertura','Parcial'],['Parceiros','ISA / universidade']].map(f=>`<div class="field"><div class="fl">${f[0]}</div><div class="fv">${esc(f[1])}</div></div>`).join('')}</div></div></div>`:'';
+  if(curTab=='oc')return `<div class="card"><div class="ch"><h3>Ocorrências & eventos</h3>${c.oc?'<span class="chip crit sp">1 ativa</span>':'<span class="chip ok sp">nenhuma</span>'}</div><div class="cb">
+    ${c.oc?`<div class="dispcard"><div class="dt">⚠ Ocorrência ativa <span class="chip crit sp">crítica</span></div><div style="margin-top:6px;font-size:12px">Evento registrado e vinculado via módulo de <b>Monitoramento & Ocorrências</b>. Impacto observado sobre a comunidade.</div></div>`:'<div class="note">Sem ocorrências ativas. Eventos próximos monitorados por INPE/DETER e CEMADEN.</div>'}
+    <div class="note" style="margin-top:10px">🛰️ Vínculo bidirecional com Monitoramento: alertas próximos passam a considerar esta comunidade no cálculo de criticidade.</div></div></div>`;
+  if(curTab=='docs')return pageDocs().split('</div>').slice(2).join('</div>');
+  if(curTab=='valid')return pageValid().split('<div class="cols">')[1].replace('</div>','');
+  if(curTab=='hist')return `<div class="card"><div class="ch"><h3>Histórico de versões</h3></div><div class="cb"><div class="timeline">
+    <div class="tl"><div class="tt">v3 · Publicada</div><div class="td">${c.atu} · Validador Regional</div><div class="tx">Atualização aprovada e publicada</div></div>
+    <div class="tl"><div class="tt">v2 · Revisão técnica</div><div class="td">2026-05-02 · Analista social</div><div class="tx">Inclusão de dados de vulnerabilidade</div></div>
+    <div class="tl"><div class="tt">v1 · Cadastro inicial</div><div class="td">2025-11-10 · Téc. regional</div><div class="tx">Criação a partir de coleta de campo</div></div>
+  </div></div></div>`;
+  if(curTab=='disp')return pageDispatch().split('<div class="cols">')[1].split('<div>')[1].split('</div>\n    <div class="card">')[0]||`<div class="card"><div class="ch"><h3>Despachos da comunidade</h3></div><div class="cb"><div class="note">Use o menu Despachos para criar e acompanhar encaminhamentos.</div></div></div>`;
+  if(curTab=='audit')return pageAudit().split('<div class="cols">')[1].split('<div class="card">')[1] ? `<div class="card"><div class="ch"><h3>Auditoria do registro</h3></div><div class="cb"><div class="timeline">${AUDIT.filter(a=>a[3]==c.nome||true).slice(0,4).map(a=>`<div class="tl"><div class="tt">${esc(a[2])}</div><div class="td">${a[0]} · ${esc(a[1])}</div><div class="tx">${esc(a[4])}</div></div>`).join('')}</div></div></div>`:'';
+  return '';
+}
+function setTab(t){curTab=t;document.getElementById('ftabbody').innerHTML=fichaBody(C[selIdx]);document.querySelectorAll('.ftab').forEach(e=>e.classList.remove('on'));event.target.classList.add('on');}
+
+/* form modal (simplified inline page) */
+function openForm(){curPage='form';renderSide();render();}
+function pageForm(){
+  return `<div class="phead"><div><div class="crumb">A2 · <b>Nova Comunidade / Aldeia</b></div><h1>Cadastro de comunidade ou aldeia</h1></div>
+    <div style="display:flex;gap:8px"><button class="tbtn" onclick="go('list')">Cancelar</button><button class="tbtn primary">Salvar rascunho & enviar p/ validação</button></div></div>
+  <div class="note">🧭 <b>Agente de Cadastro Assistido:</b> ao informar a coordenada, o sistema sugere a Terra Indígena associada, preenche município/UF, classifica sensibilidade inicial e verifica duplicidades.</div>
+  <div class="cols"><div>
+    <div class="card"><div class="ch"><h3>Identificação</h3></div><div class="cb"><div class="gridform">
+      <div class="ff"><label>Nome da comunidade <span class="req">*</span></label><input placeholder="Ex.: Nova Aldeia"></div>
+      <div class="ff"><label>Nome da aldeia</label><input></div>
+      <div class="ff"><label>Tipo de localidade <span class="req">*</span></label><select><option>Aldeia</option><option>Comunidade</option><option>Localidade</option><option>Ponto de referência</option></select></div>
+      <div class="ff"><label>Etnia / povo</label><input></div>
+      <div class="ff"><label>Terra Indígena associada <span class="req">*</span></label><select><option>Sugerida: Munduruku</option><option>Yanomami</option><option>Xingu</option></select></div>
+      <div class="ff"><label>Coordenação Regional</label><input value="auto (CR Sul do Pará)" disabled></div>
+    </div></div></div>
+    <div class="card" style="margin-top:14px"><div class="ch"><h3>Localização</h3></div><div class="cb"><div class="gridform">
+      <div class="ff"><label>Latitude <span class="req">*</span></label><input placeholder="-6.30"></div>
+      <div class="ff"><label>Longitude <span class="req">*</span></label><input placeholder="-57.30"></div>
+      <div class="ff"><label>UF (auto)</label><input value="PA" disabled></div>
+      <div class="ff"><label>Município (auto)</label><input value="Itaituba" disabled></div>
+      <div class="ff"><label>Precisão</label><select><option>GPS ±15m</option><option>Aproximada</option></select></div>
+      <div class="ff"><label>Método de coleta</label><select><option>Coleta de campo</option><option>Imagem de satélite</option><option>Documento</option></select></div>
+    </div></div></div>
+    <div class="card" style="margin-top:14px"><div class="ch"><h3>Riscos, sensibilidade & governança</h3></div><div class="cb"><div class="gridform">
+      <div class="ff"><label>Nível de sensibilidade</label><select><option>Alta (sugerida)</option><option>Média</option><option>Baixa</option></select></div>
+      <div class="ff"><label>Exposição pública permitida</label><select><option>Restrita</option><option>Agregada</option><option>Pública</option></select></div>
+      <div class="ff full"><label>Observações técnicas</label><textarea rows="3"></textarea></div>
+    </div></div></div>
+  </div>
+  <div class="rp">
+    <div class="card"><div class="ch"><h3>Pré-visualização no mapa</h3></div><div class="cb" style="padding:11px"><div class="maparea" style="height:300px">${mapSVG('vuln')}</div></div></div>
+    <div class="card ai"><div class="ach"><div class="orb">✦</div><div><b>Validações em tempo real</b></div></div>
+      <div class="aimsg"><b>✓ TI sugerida:</b> Munduruku (coordenada dentro do limite).<br><b>⚠ Duplicidade:</b> 88% com "Sawré Muybu" a 1,2 km — confirmar.<br><b>🔒 Sensibilidade:</b> recomendado nível Alta + mascaramento de coordenada.</div></div>
+  </div></div>`;
+}
+
+/* ===== ROUTER ===== */
+function selectComm(i){selIdx=i;render();}
+function render(){
+  const v=document.getElementById('view');let h='';
+  switch(curPage){
+    case'overview':h=pageOverview();break;
+    case'list':h=pageList();break;
+    case'map':h=pageMap();break;
+    case'kanban':h=pageKanban();break;
+    case'field':h=pageField();break;
+    case'valid':h=pageValid();break;
+    case'vuln':h=pageVuln();break;
+    case'water':h=pageWater();break;
+    case'food':h=pageFood();break;
+    case'logist':h=pageLogist();break;
+    case'services':h=pageServices();break;
+    case'partners':h=pagePartners();break;
+    case'docs':h=pageDocs();break;
+    case'dispatch':h=pageDispatch();break;
+    case'integr':h=pageIntegr();break;
+    case'audit':h=pageAudit();break;
+    case'ficha':h=pageFicha();break;
+    case'form':h=pageForm();break;
+    case'config':h='<div class="phead"><h1>Configurações</h1></div><div class="note">Perfis de acesso, domínios de valores, regras de validação, níveis de sensibilidade e LGPD, periodicidade de integrações.</div>';break;
+    default:h=pageOverview();
+  }
+  v.innerHTML='<div class="fade">'+h+'</div>';
+}
+renderSide();render();
+</script>
+</body></html>
