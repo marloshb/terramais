@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Terra+ A2 — Comunidades e Aldeias</title>
+<style>
+:root{--green:#0E7C66;--green-d:#0a5d4c;--blue:#1F6FB2;--purple:#7A3FF2;--orange:#E8732A;
+--bg:#F4F6F8;--panel:#FFFFFF;--line:#E3E8EE;--ink:#1B2733;--muted:#5B6470;--soft:#8A94A0;
+--crit:#D92D20;--high:#E8732A;--med:#E0A100;--low:#0E7C66;
+--shadow:0 1px 3px rgba(16,40,60,.06),0 8px 24px rgba(16,40,60,.05);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Inter,Roboto,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.45}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{display:grid;grid-template-columns:230px 1fr;grid-template-rows:54px 1fr;height:100vh;overflow:hidden}
+/* TOPBAR */
+.topbar{grid-column:1/3;display:flex;align-items:center;gap:16px;background:var(--panel);border-bottom:1px solid var(--line);padding:0 16px;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--green),var(--blue));display:grid;place-items:center;color:#fff;font-weight:900;font-size:14px}
+.brand small{display:block;font-weight:500;font-size:9.5px;color:var(--muted)}
+.modtag{background:#eef6f3;color:var(--green-d);font-size:11px;font-weight:700;padding:4px 10px;border-radius:7px;border:1px solid #cce7de}
+.search{flex:1;max-width:430px;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 11px;color:var(--muted)}
+.search input{border:none;background:none;outline:none;flex:1;font-size:12.5px;color:var(--ink)}
+.tb-actions{margin-left:auto;display:flex;align-items:center;gap:9px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:#c8d2dc}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}.btn.primary:hover{background:var(--green-d)}
+.btn.amber{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn.sm{padding:5px 9px;font-size:11px}
+.tb-ic{position:relative;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--muted);background:var(--bg)}
+.badge{position:absolute;top:-3px;right:-3px;background:var(--crit);color:#fff;font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px}
+.avatar{width:31px;height:31px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;display:grid;place-items:center;font-weight:700;font-size:11px}
+/* SIDEBAR */
+.sidebar{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:8px 0}
+.nav-sec{padding:12px 16px 5px;font-size:9.5px;font-weight:700;letter-spacing:1px;color:var(--soft);text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;color:var(--ink);font-size:13px;font-weight:500;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:#eef6f3;border-left-color:var(--green);color:var(--green-d);font-weight:700}
+.nav-item .ic{width:17px;text-align:center}
+.nav-item .cnt{margin-left:auto;font-size:10px;background:var(--bg);color:var(--muted);border-radius:10px;padding:1px 7px;font-weight:700}
+.nav-item.active .cnt{background:#d8efe7;color:var(--green-d)}
+.back{display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:12px;color:var(--blue);font-weight:600;border-bottom:1px solid var(--line)}
+/* MAIN */
+.main{overflow-y:auto;padding:16px 20px 30px}
+.crumbs{display:flex;gap:6px;font-size:11.5px;color:var(--muted);margin-bottom:3px}.crumbs b{color:var(--ink)}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.page-head h1{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.page-head p{color:var(--muted);font-size:12.5px;margin-top:2px;max-width:680px}
+.head-tools{display:flex;gap:7px;flex-wrap:wrap}
+/* FILTERS */
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:14px;box-shadow:var(--shadow)}
+.chip{display:flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:5px 11px;font-size:11.5px}
+.chip select{border:none;background:none;outline:none;font-weight:600;color:var(--blue);font-size:11.5px}
+.chip.on{background:#eef6f3;border-color:var(--green)}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer}
+.kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+.kpi.b:before{background:var(--blue)}.kpi.o:before{background:var(--orange)}.kpi.p:before{background:var(--purple)}.kpi.r:before{background:var(--crit)}.kpi.g:before{background:var(--low)}
+.kpi .lab{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.kpi .val{font-size:25px;font-weight:800;margin:3px 0;letter-spacing:-.5px}
+.kpi .trend{font-size:11px;font-weight:600}.kpi .up{color:var(--low)}.kpi .down{color:var(--crit)}
+/* CARD */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow)}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
+.card-h h3{font-size:13.5px;font-weight:700}.card-h .sub{font-size:11px;color:var(--muted)}
+.card-b{padding:14px}
+.work{display:grid;grid-template-columns:1fr 314px;gap:14px}
+@media(max-width:1150px){.work{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:14px}
+.tag{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;display:inline-block}
+.t-crit{background:#fdeceb;color:var(--crit)}.t-high{background:#fdf0e6;color:var(--high)}.t-med{background:#fdf6e0;color:#b98700}
+.t-low{background:#e8f4f0;color:var(--green-d)}.t-blue{background:#e8f1f9;color:var(--blue)}.t-purple{background:#f1ebfe;color:var(--purple)}.t-gray{background:#eef1f4;color:var(--muted)}
+/* MAP */
+.mapwrap{position:relative;background:linear-gradient(180deg,#eef3f7,#e6edf3);border-radius:10px;overflow:hidden;min-height:430px}
+.map-toolbar{position:absolute;top:9px;left:9px;display:flex;flex-direction:column;gap:5px;z-index:5}
+.map-toolbar button{width:31px;height:31px;background:var(--panel);border:1px solid var(--line);border-radius:7px;display:grid;place-items:center;color:var(--muted);box-shadow:var(--shadow);font-size:13px}
+.map-toolbar button:hover{color:var(--green);border-color:var(--green)}
+.gis-tools{position:absolute;top:9px;left:48px;display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px;box-shadow:var(--shadow);z-index:5;flex-wrap:wrap;max-width:330px}
+.gis-tools button{font-size:11px;padding:5px 8px;border-radius:6px;color:var(--muted)}
+.gis-tools button:hover{background:var(--bg);color:var(--ink)}
+.map-legend{position:absolute;bottom:9px;left:9px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:10.5px;z-index:5;box-shadow:var(--shadow)}
+.map-legend .row{display:flex;align-items:center;gap:6px;margin:2px 0}.map-legend .sw{width:10px;height:10px;border-radius:3px}
+.layers-pop{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:11px;z-index:5;box-shadow:var(--shadow);width:172px;max-height:300px;overflow:auto}
+.layers-pop .ly{display:flex;align-items:center;justify-content:space-between;padding:3px 2px}
+.toggle{width:28px;height:15px;background:#cdd5dd;border-radius:10px;position:relative;transition:.2s;flex:0 0 28px}
+.toggle.on{background:var(--green)}.toggle:after{content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;background:#fff;border-radius:50%;transition:.2s}.toggle.on:after{left:15px}
+.modesel{position:absolute;bottom:9px;right:9px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:8px;padding:5px;z-index:5;box-shadow:var(--shadow);display:flex;gap:3px;flex-wrap:wrap;max-width:330px}
+.modesel button{font-size:10.5px;padding:4px 8px;border-radius:6px;color:var(--muted)}
+.modesel button.on{background:var(--green);color:#fff}
+svg .uf{fill:#d4e3dc;stroke:#fff;stroke-width:.8}
+.ti-mark{cursor:pointer}.ti-mark circle{transition:r .15s,opacity .15s}
+/* RIGHT PANEL */
+.detail .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.detail .row:last-child{border:none}.detail .row span{color:var(--muted)}
+.ring{width:66px;height:66px;border-radius:50%;display:grid;place-items:center}
+.ring i{width:48px;height:48px;background:var(--panel);border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:16px;font-style:normal}
+.qbar{height:7px;border-radius:4px;background:#eef1f4;overflow:hidden;margin-top:5px}.qbar>i{display:block;height:100%}
+.ai{background:linear-gradient(160deg,#f1ebfe,#fff);border:1px solid #e4d8fb}
+.ai-msg{display:flex;gap:8px;margin-bottom:9px}
+.ai-ic{flex:0 0 24px;height:24px;border-radius:7px;background:var(--purple);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.ai-msg p{font-size:12px;background:var(--bg);border-radius:9px;padding:7px 10px}.ai-msg p b{color:var(--purple)}
+.ai-sug button{display:block;width:100%;text-align:left;font-size:11.5px;border:1px solid #e4d8fb;background:#faf7ff;border-radius:8px;padding:6px 9px;color:var(--purple);font-weight:600;margin-top:5px}
+.ai-sug button:hover{background:#f1ebfe}
+.alert{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.alert:last-child{border:none}.alert .ai-dot{flex:0 0 8px;height:8px;border-radius:50%;margin-top:4px}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 11px;color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--line);background:#fafbfc;position:sticky;top:0}
+td{padding:8px 11px;border-bottom:1px solid var(--line)}
+tr:hover td{background:#fafbfc;cursor:pointer}
+.bar{height:6px;border-radius:4px;background:#eef1f4;overflow:hidden;width:62px;display:inline-block;vertical-align:middle}.bar>i{display:block;height:100%}
+/* KANBAN */
+.kanban{display:flex;gap:11px;overflow-x:auto;padding-bottom:8px}
+.kcol{flex:0 0 230px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px}
+.kcol h4{font-size:11px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.kcol h4 span{background:var(--panel);border-radius:10px;padding:1px 7px;color:var(--ink)}
+.kcard{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;border-left:3px solid var(--blue)}
+.kcard:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,40,60,.1)}
+.kcard b{font-size:12.5px}.kcard .meta{font-size:10.5px;color:var(--muted);margin:4px 0}
+.kcard .pend{font-size:11px;color:var(--high);font-weight:600}
+.kcard .foot{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:10.5px;color:var(--muted)}
+/* AGENTS */
+.agcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:var(--shadow);margin-bottom:9px;border-left:3px solid var(--purple)}
+.agcard h4{font-size:12px;display:flex;align-items:center;gap:7px}
+.agcard p{font-size:11px;color:var(--muted);margin-top:4px}
+.st{width:7px;height:7px;border-radius:50%;display:inline-block}.st.online{background:var(--low);box-shadow:0 0 0 3px #e8f4f0}.st.standby{background:var(--med);box-shadow:0 0 0 3px #fdf6e0}
+.agcard .out{font-size:11px;background:#f1ebfe;color:var(--purple);border-radius:7px;padding:5px 8px;margin-top:6px;font-weight:600}
+/* TABS */
+.tabs{display:flex;gap:3px;border-bottom:1px solid var(--line);margin-bottom:0;overflow-x:auto}
+.tab{padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--green-d);border-bottom-color:var(--green)}
+.tab:hover{color:var(--ink)}
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:flex;flex-direction:column;gap:4px}.fld.full{grid-column:1/3}
+.fld label{font-size:11px;font-weight:600;color:var(--muted)}
+.fld label .req{color:var(--crit)}
+.fld input,.fld select,.fld textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none;background:var(--panel)}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--green)}
+.fld .ai-fill{font-size:10px;color:var(--purple);font-weight:600;cursor:pointer}
+.modal-bg{position:fixed;inset:0;background:rgba(16,40,60,.45);display:none;place-items:center;z-index:60;padding:20px}
+.modal-bg.show{display:grid}
+.modal{background:var(--panel);border-radius:14px;width:min(860px,96vw);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.modal-h{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:2}
+.modal-h h2{font-size:16px}.modal-b{padding:18px}
+.modal-f{padding:13px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;position:sticky;bottom:0;background:var(--panel)}
+.x{font-size:20px;color:var(--muted);cursor:pointer}
+.steps{display:flex;align-items:center;gap:4px;overflow-x:auto;font-size:11px;margin-bottom:14px}
+.steps .s{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 9px;white-space:nowrap;font-weight:600}
+.steps .s.done{background:#e8f4f0;border-color:#bfe0d4;color:var(--green-d)}
+.steps .s.active{background:#fdf0e6;border-color:#f4c7a4;color:var(--orange)}
+.steps .ar{color:var(--soft)}
+/* misc */
+.spark{display:flex;align-items:flex-end;gap:3px;height:48px}.spark>i{flex:1;border-radius:3px 3px 0 0;opacity:.85}
+.donut i{font-style:normal}
+.flow{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:4px 0}
+.flow .step{flex:0 0 auto;display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.flow .step .n{width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:10px}
+.flow .step.done{background:#e8f4f0;border-color:#bfe0d4}
+.flow .step.active{background:#fdf0e6;border-color:#f4c7a4;color:var(--orange)}.flow .step.active .n{background:var(--orange)}
+.flow .step.future{opacity:.55}.flow .arrow{color:var(--soft)}
+.hubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.hubcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:var(--shadow);border-top:3px solid var(--blue);text-align:left}
+.hubcard:hover{transform:translateY(-2px)}
+.hubcard b{font-size:12.5px}.hubcard p{font-size:11px;color:var(--muted);margin-top:3px;min-height:30px}
+.hubcard .go{font-size:11px;color:var(--blue);font-weight:700;margin-top:6px}
+.footer-bar{position:fixed;bottom:0;left:230px;right:0;height:24px;background:#10202c;color:#9fb0bd;font-size:10.5px;display:flex;align-items:center;gap:16px;padding:0 14px;z-index:20}
+.footer-bar .dot{width:6px;height:6px;border-radius:50%;background:var(--low);display:inline-block;margin-right:4px}
+.toast{position:fixed;bottom:38px;right:16px;background:#10202c;color:#fff;padding:11px 15px;border-radius:10px;font-size:12.5px;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:70;opacity:0;transform:translateY(10px);transition:.25s;max-width:340px}
+.toast.show{opacity:1;transform:translateY(0)}.toast b{color:#7cf0d0}
+.hide{display:none!important}
+@media(max-width:1150px){.footer-bar{left:0}.app{grid-template-columns:64px 1fr}.nav-item span.lbl,.nav-sec,.brand small,.nav-item .cnt{display:none}}
+
+.main{padding:22px 28px;overflow:auto}
+.crumb{font-size:11.5px;color:var(--soft);margin-bottom:6px}
+h1{font-size:22px;margin-bottom:4px}.sub{color:var(--muted);margin-bottom:16px}
+.rowflex{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.btn{padding:8px 14px;border-radius:9px;font-weight:700;font-size:12.5px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:hover{filter:brightness(.97)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card h3{font-size:14px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+.kpi-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.kpi-v{font-size:26px;font-weight:800;margin:4px 0}.kpi-d{font-size:11.5px;font-weight:700}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line)}.tbl tr:hover td{background:var(--bg)}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.lnk{color:var(--blue);font-weight:700;font-size:12px}.nowrap{white-space:nowrap}
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:12px 10px;display:flex;flex-direction:column;gap:3px;overflow:auto}
+.navitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;font-weight:600;font-size:12.5px;color:var(--muted);text-align:left;width:100%}
+.navitem:hover{background:var(--bg)}.navitem.on{background:#eef6f3;color:var(--green-d)}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flow-step{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12px;font-weight:600;display:flex;gap:7px;align-items:center}
+.flow-step .fn{width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:10px}
+.farr{color:var(--soft)}
+.agent{display:flex;flex-direction:column;padding:9px 0;border-bottom:1px dashed var(--line)}
+.agent b{font-size:12.5px;color:var(--blue)}.agent span{font-size:11.5px;color:var(--muted)}
+.kanban{display:flex;gap:12px;overflow:auto;padding-bottom:8px}
+.kbcol{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;min-width:230px;flex:1}
+.kbcard{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin-bottom:8px;cursor:pointer;box-shadow:var(--shadow)}
+.kbcard b{font-size:12.5px}
+.kbh{font-weight:800;font-size:12px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.kbh .cnt{background:var(--bg);border-radius:20px;padding:1px 8px;font-size:11px}
+.ruleln,.scoreln{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+.dot{width:9px;height:9px;border-radius:50%}
+.bar{flex:1;height:8px;background:var(--bg);border-radius:6px;overflow:hidden;max-width:300px}.bar i{display:block;height:100%}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.fld input,.fld select,.fld textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff}
+.tabbar{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.tabbar button{padding:8px 12px;border-radius:8px 8px 0 0;font-weight:700;font-size:12px;color:var(--muted)}
+.tabbar button.on{background:var(--panel);color:var(--blue);border:1px solid var(--line);border-bottom:2px solid var(--blue)}
+.wsteps{display:flex;gap:6px;margin-bottom:16px}
+.wsteps div{flex:1;text-align:center;padding:8px;border-radius:8px;background:var(--bg);font-size:11.5px;font-weight:700;color:var(--muted)}
+.wsteps div.on{background:var(--blue);color:#fff}.wsteps div.done{background:#eef6f3;color:var(--green-d)}
+.dl dt{font-size:10.5px;color:var(--muted);text-transform:uppercase;margin-top:10px}.dl dd{font-size:13px;font-weight:600}
+</style></head><body>
+<div class="app">
+ <div class="topbar">
+   <div class="brand"><div class="logo">T+</div><div>TERRA+ <small>Comunidades & Aldeias</small></div></div>
+   <span class="modtag">MÓDULO A2</span>
+   <div class="search"><span>&#128269;</span><input style="border:none;background:none;outline:none;flex:1;font:inherit" placeholder="Buscar em Comunidades..."></div>
+ </div>
+ <nav class="sidebar" id="sb"></nav>
+ <main class="main" id="main"></main>
+</div>
+<div id="toast" class="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:12.5px;font-weight:600;opacity:0;transition:.3s;z-index:200"></div>
+<script>
+const MOD={"code": "A2", "name": "Comunidades e Aldeias", "short": "Comunidades", "entity": "comunidade", "desc": "Cadastro socioterritorial de comunidades, aldeias e populações indígenas vinculadas às TIs.", "statusColors": {"Validado": "#0E7C66", "Em revisão": "#E0A100", "Em coleta": "#1F6FB2", "Pendência": "#D92D20"}, "kanban": ["Em coleta", "Em revisão", "Pendência", "Validado"], "kpis": [{"l": "Aldeias", "v": "1.842", "d": "+24 no mês", "up": 1}, {"l": "População", "v": "312 mil", "d": "censo 2024", "up": 1}, {"l": "Famílias", "v": "68.405", "d": "+1,2%", "up": 1}, {"l": "Pendências", "v": "37", "d": "-5", "up": 1}], "flow": ["Coleta de campo", "Conferência", "Vinculação à TI", "Validação", "Publicação"], "cols": [{"h": "Aldeia", "k": "aldeia"}, {"h": "Povo", "k": "povo"}, {"h": "TI vinculada", "k": "ti"}, {"h": "Famílias", "k": "familias"}, {"h": "UF", "k": "uf"}, {"h": "Status", "k": "status"}], "agents": [{"n": "AgentCenso", "d": "Consolida dados demográficos das aldeias"}, {"n": "AgentVínculo", "d": "Sugere associação aldeia↔TI por geolocalização"}, {"n": "AgentLíngua", "d": "Normaliza etnônimos e línguas"}, {"n": "AgentSaúde", "d": "Cruza com DSEI/SESAI para indicadores"}], "formSteps": [{"t": "Identificação", "fields": [{"l": "Nome da aldeia", "k": "aldeia"}, {"l": "Povo / etnia", "k": "povo"}, {"l": "TI vinculada", "k": "ti"}, {"l": "UF", "k": "uf", "t": "select", "o": ["AC", "AM", "MG", "PA", "RR", "RS", "SP", "TO"]}]}, {"t": "Demografia", "fields": [{"l": "Nº de famílias", "k": "familias"}, {"l": "População total", "k": "pessoas"}, {"l": "Nº de homens", "k": "h"}, {"l": "Nº de mulheres", "k": "m"}]}, {"t": "Infraestrutura", "fields": [{"l": "Escola indígena", "k": "escola", "t": "select", "o": ["Sim", "Não"]}, {"l": "Posto de saúde", "k": "saude", "t": "select", "o": ["Sim", "Não"]}, {"l": "Acesso", "k": "acesso", "t": "select", "o": ["Terrestre", "Fluvial", "Aéreo"]}, {"l": "Observações", "k": "obs", "t": "textarea", "full": 1}]}, {"t": "Revisão", "fields": [{"l": "Responsável", "k": "resp"}, {"l": "Status", "k": "status", "t": "select", "o": ["Em coleta", "Em revisão", "Pendência", "Validado"]}]}], "fichaTabs": [{"t": "Identificação", "body": "@@FN@@'<dl class=\"dl\" style=\"columns:2;gap:30px\"><dt>Aldeia</dt><dd>'+(r.aldeia||'&mdash;')+'</dd><dt>Povo</dt><dd>'+(r.povo||'&mdash;')+'</dd><dt>TI vinculada</dt><dd>'+(r.ti||'&mdash;')+'</dd><dt>Famílias</dt><dd>'+(r.familias||'&mdash;')+'</dd><dt>UF</dt><dd>'+(r.uf||'&mdash;')+'</dd><dt>Status</dt><dd>'+(r.status||'&mdash;')+'</dd></dl>'"}, {"t": "Demografia", "body": "@@FN@@'<p style=\"color:var(--muted);font-size:13px;line-height:1.7\">Se&ccedil;&atilde;o <b>Demografia</b> &mdash; dados consolidados, evid&ecirc;ncias e hist&oacute;rico versionado do registro <b>'+(r.aldeia||'&mdash;')+'</b>. Trilha de auditoria completa: autor, data/hora e justificativa de cada altera&ccedil;&atilde;o.</p>'"}, {"t": "Infraestrutura", "body": "@@FN@@'<p style=\"color:var(--muted);font-size:13px;line-height:1.7\">Se&ccedil;&atilde;o <b>Infraestrutura</b> &mdash; dados consolidados, evid&ecirc;ncias e hist&oacute;rico versionado do registro <b>'+(r.aldeia||'&mdash;')+'</b>. Trilha de auditoria completa: autor, data/hora e justificativa de cada altera&ccedil;&atilde;o.</p>'"}, {"t": "Localização", "body": "@@FN@@'<p style=\"color:var(--muted);font-size:13px;line-height:1.7\">Se&ccedil;&atilde;o <b>Localização</b> &mdash; dados consolidados, evid&ecirc;ncias e hist&oacute;rico versionado do registro <b>'+(r.aldeia||'&mdash;')+'</b>. Trilha de auditoria completa: autor, data/hora e justificativa de cada altera&ccedil;&atilde;o.</p>'"}, {"t": "Histórico", "body": "@@FN@@'<p style=\"color:var(--muted);font-size:13px;line-height:1.7\">Se&ccedil;&atilde;o <b>Histórico</b> &mdash; dados consolidados, evid&ecirc;ncias e hist&oacute;rico versionado do registro <b>'+(r.aldeia||'&mdash;')+'</b>. Trilha de auditoria completa: autor, data/hora e justificativa de cada altera&ccedil;&atilde;o.</p>'"}], "rules": [{"n": "Aldeia vinculada a uma TI existente", "ok": 1, "s": "OK"}, {"n": "População ≥ soma por gênero", "ok": 1, "s": "OK"}, {"n": "Coordenadas dentro do polígono da TI", "ok": 0, "s": "2 alertas"}, {"n": "Etnônimo na tabela oficial", "ok": 1, "s": "OK"}], "nav": [{"id": "overview", "icon": "🏠", "label": "Visão Geral"}, {"id": "list", "icon": "📋", "label": "Registros"}, {"id": "kanban", "icon": "🗂️", "label": "Produção"}, {"id": "valid", "icon": "✅", "label": "Qualidade"}]};
+let DATA=[{"aldeia": "Aldeia Watu", "povo": "Krenak", "ti": "Resgate Krenak", "familias": 62, "uf": "MG", "status": "Validado"}, {"aldeia": "Boca da Mata", "povo": "Guarani Mbyá", "ti": "Tenondé Porã", "familias": 140, "uf": "SP", "status": "Em revisão"}, {"aldeia": "Sawré Muybu", "povo": "Munduruku", "ti": "Sawré Muybu", "familias": 88, "uf": "PA", "status": "Em coleta"}, {"aldeia": "Maturuca", "povo": "Macuxi", "ti": "Raposa Serra do Sol", "familias": 210, "uf": "RR", "status": "Validado"}, {"aldeia": "Pyhcyn", "povo": "Apinajé", "ti": "Apinajé", "familias": 75, "uf": "TO", "status": "Pendência"}, {"aldeia": "Rio Pardinho", "povo": "Kaingang", "ti": "Nonoai", "familias": 54, "uf": "RS", "status": "Em revisão"}].map((r,i)=>({...r,_id:i+1}));
+let page='overview', seq=DATA.length, fstep=1, draft={}, fichaTab=0, current=null;
+function toast(m){const t=document.getElementById('toast');t.innerHTML=m;t.style.opacity=1;t.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>{t.style.opacity=0;t.style.transform='translateX(-50%) translateY(80px)';},2200);}
+function badge(s){const m=MOD.statusColors[s]||'#5B6470';return '<span class="pill" style="background:'+m+'22;color:'+m+';border:1px solid '+m+'55">'+s+'</span>';}
+function renderSB(){document.getElementById('sb').innerHTML=MOD.nav.map(n=>'<button class="navitem'+(page===n.id?' on':'')+'" onclick="go(\''+n.id+'\')"><span>'+n.icon+'</span>'+n.label+'</button>').join('')+'<div style="margin-top:auto;padding:12px;font-size:10.5px;color:var(--soft)">TERRA+ &middot; '+MOD.code+'<br>v1.0 &middot; '+DATA.length+' registros</div>';}
+function go(p){page=p;render();}
+function kpis(){return '<div class="kpis">'+MOD.kpis.map(k=>'<div class="kpi"><div class="kpi-l">'+k.l+'</div><div class="kpi-v">'+k.v+'</div><div class="kpi-d" style="color:'+(k.up?'var(--low)':'var(--high)')+'">'+k.d+'</div></div>').join('')+'</div>';}
+function miniTable(rows){return '<table class="tbl"><thead><tr>'+MOD.cols.map(c=>'<th>'+c.h+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+MOD.cols.map(c=>'<td>'+(c.k==='status'?badge(r[c.k]):(r[c.k]??'&mdash;'))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';}
+function pageOverview(){return '<div class="crumb">In&iacute;cio &rsaquo; Vis&atilde;o Geral</div><h1>'+MOD.name+'</h1><p class="sub">'+MOD.desc+'</p>'+kpis()+'<div class="card"><h3>Fluxo do m&oacute;dulo</h3><div class="flow">'+MOD.flow.map((f,i)=>'<div class="flow-step"><span class="fn">'+(i+1)+'</span>'+f+'</div>').join('<span class="farr">&rarr;</span>')+'</div></div><div class="grid2"><div class="card"><h3>Registros recentes</h3>'+miniTable(DATA.slice(0,5))+'</div><div class="card"><h3>Agentes de IA</h3>'+MOD.agents.map(a=>'<div class="agent"><b>&#129302; '+a.n+'</b><span>'+a.d+'</span></div>').join('')+'</div></div>';}
+function pageList(){return '<div class="crumb">'+MOD.short+' &rsaquo; Registros</div><div class="rowflex"><h1>Registros</h1><button class="btn primary" onclick="openNew()">&#65291; Novo</button></div><div class="card"><table class="tbl"><thead><tr>'+MOD.cols.map(c=>'<th>'+c.h+'</th>').join('')+'<th>A&ccedil;&otilde;es</th></tr></thead><tbody>'+DATA.map(r=>'<tr>'+MOD.cols.map(c=>'<td>'+(c.k==='status'?badge(r[c.k]):(r[c.k]??'&mdash;'))+'</td>').join('')+'<td class="nowrap"><button class="lnk" onclick="openFicha('+r._id+')">Abrir</button> &middot; <button class="lnk" onclick="openEdit('+r._id+')">Editar</button></td></tr>').join('')+'</tbody></table></div>';}
+function pageKanban(){return '<div class="crumb">'+MOD.short+' &rsaquo; Produ&ccedil;&atilde;o</div><h1>Kanban de produ&ccedil;&atilde;o</h1><p class="sub">Acompanhe o status de cada registro no fluxo de trabalho.</p><div class="kanban">'+MOD.kanban.map(col=>{const items=DATA.filter(r=>r.status===col);return '<div class="kbcol"><div class="kbh">'+col+' <span class="cnt">'+items.length+'</span></div>'+items.map(r=>'<div class="kbcard" onclick="openFicha('+r._id+')"><b>'+r[MOD.cols[0].k]+'</b><div style="font-size:11px;color:var(--muted)">'+(r[MOD.cols[1].k]||'')+'</div></div>').join('')+'</div>';}).join('')+'</div>';}
+function pageValid(){return '<div class="crumb">'+MOD.short+' &rsaquo; Valida&ccedil;&atilde;o</div><h1>Valida&ccedil;&atilde;o &amp; Qualidade</h1><div class="card"><h3>Regras autom&aacute;ticas</h3>'+MOD.rules.map(r=>'<div class="ruleln"><span class="dot" style="background:'+(r.ok?'var(--low)':'var(--crit)')+'"></span><b>'+r.n+'</b><span style="margin-left:auto;color:var(--muted)">'+r.s+'</span></div>').join('')+'</div><div class="card"><h3>Score de qualidade por registro</h3>'+DATA.map(r=>{const sc=60+((r._id*17)%40);return '<div class="scoreln"><b style="min-width:170px">'+r[MOD.cols[0].k]+'</b><div class="bar"><i style="width:'+sc+'%;background:'+(sc>80?'var(--low)':sc>65?'var(--med)':'var(--crit)')+'"></i></div><span>'+sc+'%</span></div>';}).join('')+'</div>';}
+function openNew(){draft={};current=null;fstep=1;page='form';render();}
+function openEdit(id){current=DATA.find(r=>r._id===id);draft={...current};fstep=1;page='form';render();}
+function renderForm(){const steps=MOD.formSteps;const fields=steps[fstep-1].fields.map(f=>fld(f)).join('');document.getElementById('main').innerHTML='<div class="crumb">'+MOD.short+' &rsaquo; '+(current?'Editar registro':'Novo registro')+'</div><h1>'+(current?'Editar &mdash; '+(draft[MOD.cols[0].k]||''):'Novo '+MOD.entity)+'</h1><div class="wsteps">'+steps.map((s,i)=>'<div class="'+(i+1===fstep?'on':(i+1<fstep?'done':''))+'">'+(i+1)+'. '+s.t+'</div>').join('')+'</div><div class="card"><h3>'+steps[fstep-1].t+'</h3><div class="fgrid">'+fields+'</div></div><div class="rowflex"><button class="btn" onclick="cancelForm()">Cancelar</button><div style="margin-left:auto;display:flex;gap:8px">'+(fstep>1?'<button class="btn" onclick="fmove(-1)">&larr; Voltar</button>':'')+(fstep<steps.length?'<button class="btn primary" onclick="fmove(1)">Avan&ccedil;ar &rarr;</button>':'<button class="btn primary" onclick="saveForm()">&#128190; Salvar</button>')+'</div></div>';}
+function fld(f){const v=draft[f.k]??'';let input;if(f.t==='select')input='<select onchange="draft[\''+f.k+'\']=this.value">'+['',...f.o].map(o=>'<option'+(o===v?' selected':'')+'>'+o+'</option>').join('')+'</select>';else if(f.t==='textarea')input='<textarea rows="3" oninput="draft[\''+f.k+'\']=this.value">'+v+'</textarea>';else input='<input value="'+v+'" oninput="draft[\''+f.k+'\']=this.value">';return '<div class="fld"'+(f.full?' style="grid-column:1/3"':'')+'><label>'+f.l+'</label>'+input+'</div>';}
+function fmove(d){fstep+=d;renderForm();}
+function cancelForm(){current=null;go('list');}
+function saveForm(){if(current){Object.assign(current,draft);toast('&#10004; Registro atualizado &middot; auditoria registrada');}else{seq++;DATA.unshift({...draft,_id:seq,status:draft.status||MOD.kanban[0]});toast('&#10004; Registro criado &middot; auditoria registrada');}current=null;go('list');}
+function openFicha(id){current=DATA.find(r=>r._id===id);fichaTab=0;page='ficha';render();}
+function setTab(i){fichaTab=i;renderFicha();}
+function renderFicha(){const r=current,tabs=MOD.fichaTabs;document.getElementById('main').innerHTML='<div class="crumb">'+MOD.short+' &rsaquo; Registros &rsaquo; '+(r[MOD.cols[0].k])+'</div><div class="rowflex"><h1>'+r[MOD.cols[0].k]+'</h1><div style="margin-left:auto;display:flex;gap:8px"><button class="btn" onclick="openEdit('+r._id+')">&#9999;&#65039; Editar</button><button class="btn primary" onclick="toast(\'&#128196; Relat&oacute;rio PDF gerado &#10004;\')">&#128196; Relat&oacute;rio</button></div></div>'+badge(r.status)+'<div class="tabbar" style="margin-top:14px">'+tabs.map((t,i)=>'<button class="'+(i===fichaTab?'on':'')+'" onclick="setTab('+i+')">'+t.t+'</button>').join('')+'</div><div class="card">'+tabs[fichaTab].body(r)+'</div>';}
+function render(){renderSB();if(page==='form'){renderForm();return;}if(page==='ficha'){renderFicha();return;}const map={overview:pageOverview,list:pageList,kanban:pageKanban,valid:pageValid};document.getElementById('main').innerHTML=(map[page]||pageOverview)();}
+render();
+</script></body></html>

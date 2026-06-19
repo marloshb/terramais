@@ -1,0 +1,36 @@
+<div class="map">
+ <div class="grid-lines"></div>
+ <div class="maptools"><div class="mt" onclick="toast('Zoom +')">+</div><div class="mt" onclick="toast('Zoom -')">−</div><div class="mt" onclick="toast('Medir')">📐</div><div class="mt" onclick="toast('Filtrar por UF / Coordenação')">▦</div></div>
+ <div class="heat" style="left:46%;top:30%;width:140px;height:140px;background:radial-gradient(rgba(224,96,110,.5),transparent 70%)"></div>
+ <div class="heat" style="left:60%;top:62%;width:120px;height:120px;background:radial-gradient(rgba(224,96,110,.42),transparent 70%)"></div>
+ <div class="heat" style="left:20%;top:24%;width:110px;height:110px;background:radial-gradient(rgba(224,189,122,.4),transparent 70%)"></div>
+ <div class="ti ok" style="left:14%;top:18%;width:118px;height:88px">TI Yanomami<br><b>Validada · 86</b></div>
+ <div class="ti bad" style="left:40%;top:26%;width:98px;height:74px">TI Vale do Javari<br><b style="color:var(--red)">Pendência · 41 ⚠</b></div>
+ <div class="ti ok" style="left:62%;top:20%;width:108px;height:80px">TI Raposa S.Sol<br><b>Validada · 88</b></div>
+ <div class="ti" style="left:30%;top:54%;width:112px;height:82px">TI Xingu<br><b style="color:var(--cy)">74</b></div>
+ <div class="ti bad" style="left:56%;top:58%;width:102px;height:72px">TI Kayapó<br><b style="color:var(--red)">Pendência · 39 ⚠</b></div>
+ <div class="ti" style="left:75%;top:48%;width:96px;height:70px">TI Araribóia<br><b style="color:var(--ylw)">63</b></div>
+ <div class="dot err pulse" style="left:43%;top:30%" onclick="toast('Comunidade fora da TI · A2')" title="Comunidade fora da TI"></div>
+ <div class="dot err" style="left:58%;top:60%" title="Geometria inválida (A1)"></div>
+ <div class="dot sens" style="left:16%;top:22%" title="Dado sensível (povo isolado)"></div>
+ <div class="dot warn" style="left:33%;top:56%" title="Sem validação regional"></div>
+ <div class="dot int" style="left:76%;top:50%" title="Integração externa defasada (A4)"></div>
+ <div class="dot ok" style="left:64%;top:24%" title="Camada oficial validada"></div>
+ <div class="dot warn" style="left:24%;top:40%" title="Baixa cobertura de dados"></div>
+ <div class="maplayers">
+   <div class="lt">Camadas integradoras (GIS)</div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--grn)"></i>TIs validadas<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--red)"></i>TIs c/ pendência<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--cy)"></i>Comunidades<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--pur)"></i>Dados sensíveis<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--org)"></i>Integrações externas<span class="sw off"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--ylw)"></i>Lacunas de dados<span class="sw"></span></div>
+ </div>
+ <div class="legend">
+   <div><i style="background:var(--grn)"></i>Validado</div>
+   <div><i style="background:var(--red)"></i>Pendência crítica</div>
+   <div><i style="background:var(--pur)"></i>Sensível</div>
+   <div><i style="background:var(--cy)"></i>Comunidade</div>
+   <div><i style="background:var(--org)"></i>Integração</div>
+ </div>
+</div>

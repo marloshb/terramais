@@ -1,0 +1,677 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TERRA+ · Hub Dados &amp; Cadastro</title><style>:root{
+--bg:#0c1622;--bg2:#10202f;--panel:#13283a;--panel2:#173248;--line:#214258;--line2:#2c5573;
+--txt:#eaf1f5;--mut:#9bb3c4;--mut2:#647e92;
+--navy:#1b3a5b;--navy2:#14304d;--gold:#c9a25b;--gold2:#e0bd7a;--leaf:#7d9b76;--leaf2:#a7bf9d;--cream:#ece5d6;
+--acc:#3d92c9;--acc2:#2c6e9e;--grn:#5bbf7b;--ylw:#e0bd7a;--red:#e0606e;--pur:#9b8bd0;--cy:#4cc4cf;--org:#dd9a55;
+--chip:#16304a;--r:11px;--sh:0 10px 34px rgba(0,0,0,.5)}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{font-family:'Segoe UI',Inter,system-ui,Arial,sans-serif;background:
+radial-gradient(1200px 620px at 86% -12%,rgba(201,162,91,.10),transparent),
+radial-gradient(940px 520px at -5% 112%,rgba(125,155,118,.12),transparent),var(--bg);color:var(--txt);font-size:13.5px;overflow:hidden}
+.app{display:grid;grid-template-columns:256px 1fr;grid-template-rows:58px 1fr;height:100vh}
+/* topbar */
+.top{grid-column:1/3;display:flex;align-items:center;gap:14px;padding:0 16px;background:linear-gradient(180deg,#14304d,#0e2236);border-bottom:1px solid var(--line);z-index:30}
+.brand{display:flex;align-items:center;gap:11px;min-width:240px}
+.seal{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 50% 38%,#2a4d6e 0%,#1b3a5b 60%,#14304d 100%);border:2px solid var(--cream);box-shadow:0 0 0 1px var(--gold),0 2px 10px rgba(0,0,0,.5);display:grid;place-items:center;position:relative;overflow:hidden}
+.seal:before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(201,162,91,.6)}
+.seal b{font-size:9px;font-weight:800;color:var(--cream);letter-spacing:.3px;z-index:2;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.seal .leaf{position:absolute;right:7px;top:8px;width:11px;height:18px;border-radius:0 60% 0 60%;background:linear-gradient(135deg,var(--gold),var(--leaf));opacity:.85}
+.brand .bt b{font-size:13px;letter-spacing:.2px}.brand .bt small{display:block;color:var(--gold2);font-size:9.5px;font-weight:700;letter-spacing:.4px}
+.search{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;background:#0c1c2c;border:1px solid var(--line);border-radius:9px;padding:7px 12px;color:var(--mut)}
+.search input{flex:1;background:none;border:none;color:var(--txt);outline:none;font-size:12.5px}
+.tbtns{display:flex;gap:6px;flex-wrap:wrap}
+.tb{background:var(--chip);border:1px solid var(--line2);color:var(--txt);padding:7px 11px;border-radius:8px;font-size:11.5px;cursor:pointer;white-space:nowrap;transition:.15s;font-weight:600}
+.tb:hover{border-color:var(--gold);color:var(--gold2);box-shadow:0 0 0 2px rgba(201,162,91,.14)}
+.tb.pri{background:linear-gradient(135deg,var(--gold),#b48a45);border:none;color:#1b2433}
+.tb.dng{border-color:rgba(224,96,110,.4);color:var(--red)}
+.top .right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.bell{position:relative;cursor:pointer;color:var(--mut)}.bell b{position:absolute;top:-6px;right:-8px;background:var(--red);color:#fff;font-size:9px;border-radius:10px;padding:1px 5px;font-weight:700}
+.me{display:flex;align-items:center;gap:8px}.av{width:31px;height:31px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--leaf));display:grid;place-items:center;font-weight:700;color:#16263a}
+/* sidebar */
+.side{background:linear-gradient(180deg,#0f2233,#0a1622);border-right:1px solid var(--line);overflow-y:auto;padding:10px 8px}
+.side::-webkit-scrollbar{width:7px}.side::-webkit-scrollbar-thumb{background:#234055;border-radius:6px}
+.snav{font-size:9.5px;text-transform:uppercase;letter-spacing:1.1px;color:var(--mut2);padding:13px 10px 5px;font-weight:800}
+.mi{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--mut);cursor:pointer;font-size:12px;font-weight:600;transition:.12s}
+.mi:hover{background:#15314a;color:var(--txt)}.mi.on{background:linear-gradient(90deg,rgba(201,162,91,.20),transparent);color:#fff;box-shadow:inset 2px 0 0 var(--gold)}
+.mi .ic{width:17px;text-align:center}.mi .badge{margin-left:auto;background:var(--chip);color:var(--mut);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700}
+.mi .badge.r{background:rgba(224,96,110,.18);color:var(--red)}.mi .badge.y{background:rgba(224,189,122,.18);color:var(--ylw)}
+.modlink{display:flex;align-items:center;gap:8px;padding:7px 10px;margin-top:4px;border-radius:8px;color:var(--mut2);font-size:11px;cursor:pointer}
+.modlink:hover{background:#123048;color:var(--cy)}.modlink b{margin-left:auto;font-size:9px;color:var(--mut2)}
+/* main */
+.main{overflow-y:auto;padding:16px 18px 60px}.main::-webkit-scrollbar{width:9px}.main::-webkit-scrollbar-thumb{background:#234055;border-radius:6px}
+.crumbs{display:flex;align-items:center;gap:7px;color:var(--mut2);font-size:11px;margin-bottom:10px}.crumbs b{color:var(--txt)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0 14px;border-bottom:1px solid var(--line)}
+.tab{padding:8px 12px;border-radius:8px 8px 0 0;color:var(--mut);font-size:11.5px;cursor:pointer;font-weight:600;border:1px solid transparent;border-bottom:none}
+.tab:hover{color:var(--txt);background:#122739}.tab.on{color:#fff;background:var(--panel);border-color:var(--line);box-shadow:inset 0 2px 0 var(--gold)}
+.view{display:none;animation:fade .25s}.view.on{display:block}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+/* kpis */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:11px}
+.kpi{background:linear-gradient(160deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;position:relative;overflow:hidden}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc)}
+.kpi.g:before{background:var(--grn)}.kpi.y:before{background:var(--ylw)}.kpi.r:before{background:var(--red)}.kpi.p:before{background:var(--pur)}.kpi.c:before{background:var(--cy)}.kpi.o:before{background:var(--org)}.kpi.gold:before{background:var(--gold)}
+.kpi .lbl{color:var(--mut);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}.kpi .val{font-size:23px;font-weight:800;margin-top:5px;letter-spacing:-.5px}.kpi .sub{font-size:10.5px;color:var(--mut2);margin-top:3px}.up{color:var(--grn)}.dn{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 372px;gap:14px;margin-top:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+@media(max-width:1300px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
+.card{background:linear-gradient(160deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.card h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px}.card h3 .t{margin-left:auto;font-size:10.5px;color:var(--mut2);font-weight:600}
+.hint{color:var(--mut2);font-size:11px}
+/* module cards */
+.modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px}
+.modcard{background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:12px;padding:14px;transition:.15s;position:relative;overflow:hidden}
+.modcard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--sh)}
+.modcard .mh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.modcard .mi2{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:linear-gradient(135deg,var(--navy),var(--acc2))}
+.modcard .mtag{font-size:9px;font-weight:800;color:var(--gold2);letter-spacing:.6px}
+.modcard b{font-size:12.5px;display:block;line-height:1.25}
+.modcard .stat{margin-top:9px;display:flex;gap:8px;flex-wrap:wrap}
+.modcard .mm{flex:1;min-width:60px;background:#0e2030;border:1px solid var(--line);border-radius:8px;padding:6px 7px;text-align:center}
+.modcard .mm .v{font-size:15px;font-weight:800}.modcard .mm .l{font-size:8.5px;color:var(--mut2);text-transform:uppercase;letter-spacing:.3px}
+.modcard .resp{font-size:10px;color:var(--mut2);margin-top:8px;display:flex;justify-content:space-between}
+.modacts{display:flex;gap:5px;margin-top:10px}.modacts .tb{flex:1;text-align:center;padding:6px 4px;font-size:10.5px}
+/* donut/bars */
+.donutwrap{display:flex;align-items:center;gap:16px;justify-content:center}
+.donut{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.donut .inner{width:98px;height:98px;border-radius:50%;background:var(--panel);display:grid;place-items:center;text-align:center}.donut .inner b{font-size:27px;display:block}.donut .inner small{color:var(--mut);font-size:9.5px}
+.dim{display:grid;grid-template-columns:130px 1fr 40px;gap:9px;align-items:center;padding:6px 0;border-bottom:1px dashed rgba(33,66,88,.6);font-size:11.5px}
+.bar{height:7px;border-radius:6px;background:#16293c;overflow:hidden;min-width:54px}.bar i{display:block;height:100%;border-radius:6px}
+.barchart{display:flex;flex-direction:column;gap:8px}.barrow{display:grid;grid-template-columns:158px 1fr 46px;gap:9px;align-items:center;font-size:11px}
+.spark{display:flex;align-items:flex-end;gap:3px;height:50px}.spark i{flex:1;background:linear-gradient(180deg,var(--gold),rgba(201,162,91,.12));border-radius:2px 2px 0 0;min-width:5px}
+/* map */
+.map{position:relative;height:452px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line2);background:
+radial-gradient(420px 280px at 32% 36%,rgba(125,155,118,.14),transparent),
+radial-gradient(380px 260px at 70% 66%,rgba(224,96,110,.10),transparent),linear-gradient(180deg,#0b1e2e,#0a1825)}
+.grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(140,170,200,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(140,170,200,.06) 1px,transparent 1px);background-size:44px 44px}
+.ti{position:absolute;border:1.5px dashed rgba(125,155,118,.6);background:rgba(125,155,118,.07);border-radius:14px;font-size:9.5px;color:#cfe0c8;padding:3px 6px;cursor:pointer;transition:.15s}
+.ti:hover{background:rgba(125,155,118,.18);box-shadow:0 0 0 2px rgba(125,155,118,.25)}.ti.bad{border-color:rgba(224,96,110,.6);background:rgba(224,96,110,.08);color:#f3c4c9}.ti.ok{border-color:rgba(91,191,123,.6);background:rgba(91,191,123,.08);color:#bdebca}
+.heat{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;filter:blur(8px)}
+.dot{position:absolute;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.dot.err{background:var(--red);box-shadow:0 0 10px var(--red),0 0 0 4px rgba(224,96,110,.18)}.dot.warn{background:var(--ylw)}.dot.ok{background:var(--grn)}.dot.sens{background:var(--pur);box-shadow:0 0 10px var(--pur),0 0 0 4px rgba(155,139,208,.18)}.dot.int{background:var(--cy)}
+.pulse{animation:pl 1.8s infinite}@keyframes pl{0%{box-shadow:0 0 0 0 rgba(224,96,110,.5)}70%{box-shadow:0 0 0 12px rgba(224,96,110,0)}100%{box-shadow:0 0 0 0 rgba(224,96,110,0)}}
+.maptools{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:6px;z-index:5}.mt{width:30px;height:30px;background:rgba(12,24,38,.85);border:1px solid var(--line2);border-radius:7px;display:grid;place-items:center;cursor:pointer;color:var(--mut)}.mt:hover{color:var(--gold);border-color:var(--gold)}
+.maplayers{position:absolute;top:10px;right:10px;background:rgba(8,18,30,.92);border:1px solid var(--line2);border-radius:9px;padding:9px 11px;font-size:10.5px;z-index:5;width:198px}
+.maplayers .lt{font-weight:700;color:var(--mut);margin-bottom:5px;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+.maplayers .ly{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer}.maplayers .ly i{width:9px;height:9px;border-radius:2px}
+.maplayers .sw{margin-left:auto;width:26px;height:14px;border-radius:8px;background:var(--grn);position:relative}.maplayers .sw:after{content:"";position:absolute;right:2px;top:2px;width:10px;height:10px;border-radius:50%;background:#0c1c12}
+.maplayers .sw.off{background:#33485e}.maplayers .sw.off:after{left:2px;right:auto;background:var(--mut)}
+.legend{position:absolute;bottom:10px;left:10px;background:rgba(8,18,30,.9);border:1px solid var(--line2);border-radius:9px;padding:8px 10px;font-size:10.5px;display:flex;flex-direction:column;gap:5px;z-index:5}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:var(--mut2);font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:8px 9px;border-bottom:1px solid var(--line);font-weight:700;position:sticky;top:0;background:var(--panel)}
+td{padding:9px;border-bottom:1px solid rgba(33,66,88,.55)}tr:hover td{background:rgba(201,162,91,.06);cursor:pointer}
+.tw{max-height:420px;overflow:auto}.tw::-webkit-scrollbar{width:8px}.tw::-webkit-scrollbar-thumb{background:#234055;border-radius:6px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-ok{color:var(--grn);background:rgba(91,191,123,.13)}.p-warn{color:var(--ylw);background:rgba(224,189,122,.13)}.p-err{color:var(--red);background:rgba(224,96,110,.13)}.p-idle{color:var(--mut);background:rgba(100,126,146,.14)}.p-info{color:var(--acc);background:rgba(61,146,201,.13)}.p-pur{color:var(--pur);background:rgba(155,139,208,.13)}.p-org{color:var(--org);background:rgba(221,154,85,.13)}.p-crit{color:#ff8a96;background:rgba(224,96,110,.2)}
+.subtag{font-size:10px;padding:1px 7px;border-radius:5px;font-weight:700;white-space:nowrap}
+.s-pub{background:rgba(91,191,123,.14);color:var(--grn)}.s-int{background:rgba(61,146,201,.14);color:var(--acc)}.s-rest{background:rgba(224,189,122,.14);color:var(--ylw)}.s-sens{background:rgba(221,154,85,.16);color:var(--org)}.s-asens{background:rgba(224,96,110,.16);color:var(--red)}.s-sig{background:rgba(155,139,208,.16);color:var(--pur)}
+/* right panel */
+.rp{background:linear-gradient(160deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:14px;align-self:start;position:sticky;top:4px}
+.rp .hd{display:flex;align-items:center;gap:10px;padding-bottom:11px;border-bottom:1px solid var(--line);margin-bottom:11px}.rp .hd .ico{width:36px;height:36px;border-radius:9px;background:rgba(155,139,208,.16);display:grid;place-items:center;font-size:17px}
+.rp .hd b{font-size:13px}.rp .hd small{color:var(--mut);font-size:10.5px;display:block}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed rgba(33,66,88,.6);font-size:11.5px}.kv span{color:var(--mut)}.kv b{font-weight:700;text-align:right}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.acts .tb{flex:1;text-align:center;min-width:78px}
+.ai{background:linear-gradient(135deg,rgba(155,139,208,.14),rgba(61,146,201,.07));border:1px solid rgba(155,139,208,.36);border-radius:11px;padding:12px;margin-top:11px}
+.ai .ah{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;color:#cdc4f0;margin-bottom:7px}.ai .ah .dot2{width:8px;height:8px;border-radius:50%;background:var(--pur);box-shadow:0 0 10px var(--pur)}
+.ai p{font-size:11.5px;color:#dfe5f2;line-height:1.55}.ai .rec{background:rgba(8,18,30,.42);border-left:2px solid var(--pur);padding:7px 9px;border-radius:6px;margin-top:7px;font-size:11px}
+/* kanban */
+.kan{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:10px}.kcol{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px;min-height:120px}
+.kcol h4{font-size:10px;color:var(--mut);display:flex;align-items:center;gap:6px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px}.kcol h4 b{margin-left:auto;background:var(--chip);border-radius:10px;padding:0 7px;font-size:9.5px}
+.kc{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:9px;margin-bottom:7px;cursor:pointer;font-size:11px;border-left:3px solid var(--acc)}.kc:hover{border-color:var(--gold)}
+.kc.h{border-left-color:var(--red)}.kc.m{border-left-color:var(--ylw)}.kc.l{border-left-color:var(--grn)}.kc.c{border-left-color:#ff8a96}
+.kc .kt{font-weight:700;font-size:11px}.kc .km{color:var(--mut2);font-size:10px;margin-top:3px;display:flex;gap:5px;flex-wrap:wrap}
+.tag{background:var(--chip);border:1px solid var(--line2);border-radius:6px;padding:1px 7px;font-size:9.5px;color:var(--mut)}
+.tag.mod{background:rgba(201,162,91,.14);color:var(--gold2);border-color:rgba(201,162,91,.3)}
+/* esteira */
+.flow{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:10px 2px}
+.fnode{min-width:108px;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:10px;text-align:center;font-size:11px;flex-shrink:0;cursor:pointer}.fnode:hover{border-color:var(--gold)}.fnode .fi{font-size:18px}.fnode b{display:block;margin-top:4px;font-size:10.5px}.fnode small{color:var(--mut2);font-size:9px}.fnode .qt{display:block;font-size:14px;font-weight:800;color:var(--gold2);margin-top:3px}
+.farr{display:flex;align-items:center;color:var(--gold);font-size:16px;padding:0 4px;flex-shrink:0}
+.fnode.gis{border-color:var(--leaf);box-shadow:0 0 0 1px rgba(125,155,118,.3)}.fnode.ai{border-color:var(--pur);box-shadow:0 0 0 1px rgba(155,139,208,.3)}
+/* matrix */
+.matrix td,.matrix th{text-align:center}.matrix td:first-child,.matrix th:first-child{text-align:left}.chk{font-size:13px;font-weight:700}.yy{color:var(--grn)}.nn{color:var(--red)}.pa{color:var(--ylw)}
+/* timeline */
+.timeline{position:relative;padding-left:18px}.timeline:before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line2)}
+.tl{position:relative;padding:7px 0 7px 4px;font-size:11.5px}.tl:before{content:"";position:absolute;left:-16px;top:11px;width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 3px var(--bg)}
+.tl.ok:before{background:var(--grn)}.tl.warn:before{background:var(--ylw)}.tl.err:before{background:var(--red)}.tl small{color:var(--mut2);font-size:10px}
+/* forms */
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:11px}.fg{display:flex;flex-direction:column;gap:5px}.fg label{font-size:10.5px;color:var(--mut);font-weight:600}
+.fg input,.fg select{background:#0c1c2c;border:1px solid var(--line2);border-radius:7px;padding:8px 10px;color:var(--txt);font-size:12px;outline:none}.fg input:focus,.fg select:focus{border-color:var(--gold)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sel{outline:2px solid var(--gold)!important;outline-offset:-1px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--panel2);border:1px solid var(--gold);border-radius:10px;padding:12px 16px;font-size:12px;box-shadow:var(--sh);z-index:99;display:none;max-width:380px}
+.proggrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.pgcell{background:#0e2030;border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}.pgcell .v{font-size:16px;font-weight:800}.pgcell .l{font-size:8.5px;color:var(--mut2);text-transform:uppercase}
+.userrow{display:flex;align-items:center;gap:9px}.uav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--navy));display:grid;place-items:center;font-size:10px;font-weight:700}</style></head>
+<body>
+<div class="app">
+ <div class="top">
+ <div class="brand">
+   <div class="seal"><span class="leaf"></span><b>TERRA+</b></div>
+   <div class="bt"><b>Dados &amp; Cadastro</b><small>INFRAESTRUTURA NACIONAL DE INTELIGÊNCIA TERRITORIAL INDÍGENA</small></div>
+ </div>
+ <div class="search">🔎<input placeholder="Buscar Terra Indígena, comunidade, camada, fonte, integração, ocorrência ou responsável…"></div>
+ <div class="tbtns">
+   <button class="tb pri" onclick="toast('Assistente: Novo Cadastro Territorial / Comunidade')">+ Novo Cadastro</button>
+   <button class="tb" onclick="toast('Nova Camada Geoespacial')">🗺️ Nova Camada</button>
+   <button class="tb" onclick="toast('Nova Integração externa (A4)')">🔌 Nova Integração</button>
+   <button class="tb" onclick="gotab('ger');toast('Validação de dados acionada')">✔️ Validar Dados</button>
+   <button class="tb" onclick="toast('Gerando Relatório Executivo (PDF)…')">📑 Relatório Executivo</button>
+ </div>
+ <div class="right"><div class="bell">🔔<b>11</b></div>
+  <div class="me"><div class="av">DG</div><div style="font-size:11.5px;line-height:1.2"><b>Diretoria · DGTer</b><br><span style="color:var(--mut2);font-size:10px">Administrador Geral</span></div></div></div>
+</div>
+ <div class="side"><div class="snav">Bloco Dados & Cadastro</div><div class="mi on" onclick="toast('Seção: Visão Geral (Hub)')"><span class="ic">📊</span>Visão Geral (Hub)</div><div class="mi " onclick="toast('Seção: Cadastro Territorial de TIs')"><span class="ic">🗺️</span>Cadastro Territorial de TIs<span class="badge y">18</span></div><div class="mi " onclick="toast('Seção: Comunidades e Aldeias')"><span class="ic">🏘️</span>Comunidades e Aldeias<span class="badge r">127</span></div><div class="mi " onclick="toast('Seção: Catálogo de Dados')"><span class="ic">🗂️</span>Catálogo de Dados<span class="badge ">31</span></div><div class="mi " onclick="toast('Seção: Interoperabilidade Externa')"><span class="ic">🔌</span>Interoperabilidade Externa<span class="badge y">14</span></div><div class="mi " onclick="toast('Seção: Qualidade e Governança')"><span class="ic">🛡️</span>Qualidade e Governança<span class="badge ">43</span></div><div class="snav">Gestão & Operação</div><div class="mi " onclick="toast('Seção: Esteiras de Produção')"><span class="ic">🏭</span>Esteiras de Produção</div><div class="mi " onclick="toast('Seção: Despachos e Pendências')"><span class="ic">📨</span>Despachos e Pendências<span class="badge r">12</span></div><div class="mi " onclick="toast('Seção: Painel de Responsáveis')"><span class="ic">👥</span>Painel de Responsáveis</div><div class="mi " onclick="toast('Seção: Relatórios')"><span class="ic">📈</span>Relatórios</div><div class="snav">Administração</div><div class="mi " onclick="toast('Seção: Administração de Acessos')"><span class="ic">🔑</span>Administração de Acessos</div><div class="mi " onclick="toast('Seção: Configuração dos Módulos')"><span class="ic">⚙️</span>Configuração dos Módulos</div><div class="mi " onclick="toast('Seção: Agentes de IA ativos')"><span class="ic">🤖</span>Agentes de IA ativos<span class="badge ">6</span></div><div class="mi " onclick="toast('Seção: Auditoria e Logs')"><span class="ic">🔍</span>Auditoria e Logs</div><div class="snav">Outros Blocos da Plataforma</div><div class="modlink" onclick="go('#')"><span class="ic">○</span>Monitoramento e Operações<b>↗</b></div><div class="modlink" onclick="go('#')"><span class="ic">○</span>Inteligência Territorial e Riscos<b>↗</b></div><div class="modlink" onclick="go('#')"><span class="ic">○</span>Governança Territorial<b>↗</b></div><div class="modlink" onclick="go('#')"><span class="ic">○</span>Gestão Estratégica<b>↗</b></div></div>
+ <div class="main">
+   <div class="tabs"><div class="tab on" id="t_hub" data-grp="main" onclick="tab('main','v_hub',this)">🏠 Hub (Visão Geral)</div><div class="tab " id="t_exec" data-grp="main" onclick="tab('main','v_exec',this)">📊 Dashboard Executivo</div><div class="tab " id="t_ger" data-grp="main" onclick="tab('main','v_ger',this)">🧭 Visão Gerencial</div><div class="tab " id="t_op" data-grp="main" onclick="tab('main','v_op',this)">🛠️ Visão Operacional</div><div class="tab " id="t_adm" data-grp="main" onclick="tab('main','v_adm',this)">🔑 Administração & Acessos</div><div class="tab " id="t_mod" data-grp="main" onclick="tab('main','v_mod',this)">🧩 Dashboards por Módulo</div><div class="tab " id="t_est" data-grp="main" onclick="tab('main','v_est',this)">🏭 Esteira Integrada</div><div class="tab " id="t_ia" data-grp="main" onclick="tab('main','v_ia',this)">🤖 Copiloto Dados & Cadastro</div><div class="tab " id="t_rel" data-grp="main" onclick="tab('main','v_rel',this)">📈 Relatórios</div></div>
+   <div class="view on" id="v_hub" data-view="main">
+<div class="crumbs">TERRA+ · <b>Bloco Dados &amp; Cadastro</b> › Hub de Gestão</div>
+<div class="kgrid"><div class="kpi gold"><div class="lbl">Score Geral de Qualidade</div><div class="val">78<span style="font-size:13px;color:var(--mut2)">/100</span></div><div class="sub"><span class="up">▲ 2,4</span> vs. mês anterior</div></div><div class="kpi"><div class="lbl">Terras Indígenas cadastradas</div><div class="val">724</div><div class="sub">87% validadas</div></div><div class="kpi"><div class="lbl">Comunidades e aldeias</div><div class="val">6.218</div><div class="sub">64% c/ atualização recente</div></div><div class="kpi c"><div class="lbl">Camadas publicadas</div><div class="val">142</div><div class="sub">catálogo geoespacial</div></div><div class="kpi"><div class="lbl">Webservices conectados</div><div class="val">38</div><div class="sub">interoperabilidade (A4)</div></div><div class="kpi r"><div class="lbl">Integrações com falha</div><div class="val">4</div><div class="sub">fontes críticas fora do ar</div></div><div class="kpi p"><div class="lbl">Dados sensíveis classificados</div><div class="val">92%</div><div class="sub">conformidade LGPD</div></div><div class="kpi y"><div class="lbl">Aguardando validação</div><div class="val">214</div><div class="sub">registros na fila</div></div><div class="kpi r"><div class="lbl">Pendências críticas</div><div class="val">47</div><div class="sub"><span class="dn">▲ 5</span> em 48h</div></div><div class="kpi y"><div class="lbl">Despachos vencidos</div><div class="val">12</div><div class="sub">gargalos de governança</div></div></div>
+<div class="card" style="margin-top:14px"><h3>🧩 Acesso aos Módulos do Bloco <span class="t">o GIS é a plataforma integradora · a IA é o copiloto transversal</span></h3>
+<div class="modgrid"><div class="modcard">
+         <div class="mh"><div class="mi2">🗺️</div><div><div class="mtag">MÓDULO A1</div><b>Cadastro Territorial de TIs</b></div></div>
+         <div class="stat">
+           <div class="mm"><div class="v" style="color:var(--grn)">84%</div><div class="l">Qualidade</div></div>
+           <div class="mm"><div class="v" style="color:var(--grn)">18</div><div class="l">Pendências</div></div>
+           <div class="mm"><div class="v" style="font-size:12px;padding-top:3px"><span class="pill p-ok">Ativo</span></div><div class="l">Status</div></div>
+         </div>
+         <div class="resp"><span>👤 Coord. Territorial</span><span>🕑 Hoje</span></div>
+         <div class="resp"><span>📤 67 publicadas</span></div>
+         <div class="modacts">
+           <button class="tb pri" onclick="openmod('Cadastro Territorial de TIs')">Acessar</button>
+           <button class="tb" onclick="gotab('mod')">Dashboard</button>
+           <button class="tb" onclick="gotab('ger')">Pendências</button>
+         </div></div><div class="modcard">
+         <div class="mh"><div class="mi2">🏘️</div><div><div class="mtag">MÓDULO A2</div><b>Comunidades e Aldeias</b></div></div>
+         <div class="stat">
+           <div class="mm"><div class="v" style="color:var(--ylw)">69%</div><div class="l">Qualidade</div></div>
+           <div class="mm"><div class="v" style="color:var(--red)">127</div><div class="l">Pendências</div></div>
+           <div class="mm"><div class="v" style="font-size:12px;padding-top:3px"><span class="pill p-warn">Atenção</span></div><div class="l">Status</div></div>
+         </div>
+         <div class="resp"><span>👤 Coord. Regional</span><span>🕑 Ontem</span></div>
+         <div class="resp"><span>📤 430 publicadas</span></div>
+         <div class="modacts">
+           <button class="tb pri" onclick="openmod('Comunidades e Aldeias')">Acessar</button>
+           <button class="tb" onclick="gotab('mod')">Dashboard</button>
+           <button class="tb" onclick="gotab('ger')">Pendências</button>
+         </div></div><div class="modcard">
+         <div class="mh"><div class="mi2">🗂️</div><div><div class="mtag">MÓDULO A3</div><b>Catálogo de Dados</b></div></div>
+         <div class="stat">
+           <div class="mm"><div class="v" style="color:var(--cy)">76%</div><div class="l">Qualidade</div></div>
+           <div class="mm"><div class="v" style="color:var(--ylw)">31</div><div class="l">Pendências</div></div>
+           <div class="mm"><div class="v" style="font-size:12px;padding-top:3px"><span class="pill p-ok">Ativo</span></div><div class="l">Status</div></div>
+         </div>
+         <div class="resp"><span>👤 CGTI / GIS</span><span>🕑 Hoje</span></div>
+         <div class="resp"><span>📤 142 publicadas</span></div>
+         <div class="modacts">
+           <button class="tb pri" onclick="openmod('Catálogo de Dados')">Acessar</button>
+           <button class="tb" onclick="gotab('mod')">Dashboard</button>
+           <button class="tb" onclick="gotab('ger')">Pendências</button>
+         </div></div><div class="modcard">
+         <div class="mh"><div class="mi2">🔌</div><div><div class="mtag">MÓDULO A4</div><b>Interoperabilidade Externa</b></div></div>
+         <div class="stat">
+           <div class="mm"><div class="v" style="color:var(--cy)">72%</div><div class="l">Qualidade</div></div>
+           <div class="mm"><div class="v" style="color:var(--grn)">14</div><div class="l">Pendências</div></div>
+           <div class="mm"><div class="v" style="font-size:12px;padding-top:3px"><span class="pill p-warn">Atenção</span></div><div class="l">Status</div></div>
+         </div>
+         <div class="resp"><span>👤 Integração</span><span>🕑 Hoje</span></div>
+         <div class="resp"><span>📤 38 fontes</span></div>
+         <div class="modacts">
+           <button class="tb pri" onclick="openmod('Interoperabilidade Externa')">Acessar</button>
+           <button class="tb" onclick="gotab('mod')">Dashboard</button>
+           <button class="tb" onclick="gotab('ger')">Pendências</button>
+         </div></div><div class="modcard">
+         <div class="mh"><div class="mi2">🛡️</div><div><div class="mtag">MÓDULO A5</div><b>Qualidade e Governança</b></div></div>
+         <div class="stat">
+           <div class="mm"><div class="v" style="color:var(--cy)">81%</div><div class="l">Qualidade</div></div>
+           <div class="mm"><div class="v" style="color:var(--ylw)">43</div><div class="l">Pendências</div></div>
+           <div class="mm"><div class="v" style="font-size:12px;padding-top:3px"><span class="pill p-ok">Ativo</span></div><div class="l">Status</div></div>
+         </div>
+         <div class="resp"><span>👤 Governança</span><span>🕑 Hoje</span></div>
+         <div class="resp"><span>📤 96 validadas</span></div>
+         <div class="modacts">
+           <button class="tb pri" onclick="openmod('Qualidade e Governança')">Acessar</button>
+           <button class="tb" onclick="gotab('mod')">Dashboard</button>
+           <button class="tb" onclick="gotab('ger')">Pendências</button>
+         </div></div></div></div>
+<div class="grid2">
+ <div class="card"><h3>🗺️ Mapa Nacional Integrado <span class="t">GIS · base territorial de toda a gestão</span></h3>
+<div class="map">
+ <div class="grid-lines"></div>
+ <div class="maptools"><div class="mt" onclick="toast('Zoom +')">+</div><div class="mt" onclick="toast('Zoom -')">−</div><div class="mt" onclick="toast('Medir')">📐</div><div class="mt" onclick="toast('Filtrar por UF / Coordenação')">▦</div></div>
+ <div class="heat" style="left:46%;top:30%;width:140px;height:140px;background:radial-gradient(rgba(224,96,110,.5),transparent 70%)"></div>
+ <div class="heat" style="left:60%;top:62%;width:120px;height:120px;background:radial-gradient(rgba(224,96,110,.42),transparent 70%)"></div>
+ <div class="heat" style="left:20%;top:24%;width:110px;height:110px;background:radial-gradient(rgba(224,189,122,.4),transparent 70%)"></div>
+ <div class="ti ok" style="left:14%;top:18%;width:118px;height:88px">TI Yanomami<br><b>Validada · 86</b></div>
+ <div class="ti bad" style="left:40%;top:26%;width:98px;height:74px">TI Vale do Javari<br><b style="color:var(--red)">Pendência · 41 ⚠</b></div>
+ <div class="ti ok" style="left:62%;top:20%;width:108px;height:80px">TI Raposa S.Sol<br><b>Validada · 88</b></div>
+ <div class="ti" style="left:30%;top:54%;width:112px;height:82px">TI Xingu<br><b style="color:var(--cy)">74</b></div>
+ <div class="ti bad" style="left:56%;top:58%;width:102px;height:72px">TI Kayapó<br><b style="color:var(--red)">Pendência · 39 ⚠</b></div>
+ <div class="ti" style="left:75%;top:48%;width:96px;height:70px">TI Araribóia<br><b style="color:var(--ylw)">63</b></div>
+ <div class="dot err pulse" style="left:43%;top:30%" onclick="toast('Comunidade fora da TI · A2')" title="Comunidade fora da TI"></div>
+ <div class="dot err" style="left:58%;top:60%" title="Geometria inválida (A1)"></div>
+ <div class="dot sens" style="left:16%;top:22%" title="Dado sensível (povo isolado)"></div>
+ <div class="dot warn" style="left:33%;top:56%" title="Sem validação regional"></div>
+ <div class="dot int" style="left:76%;top:50%" title="Integração externa defasada (A4)"></div>
+ <div class="dot ok" style="left:64%;top:24%" title="Camada oficial validada"></div>
+ <div class="dot warn" style="left:24%;top:40%" title="Baixa cobertura de dados"></div>
+ <div class="maplayers">
+   <div class="lt">Camadas integradoras (GIS)</div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--grn)"></i>TIs validadas<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--red)"></i>TIs c/ pendência<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--cy)"></i>Comunidades<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--pur)"></i>Dados sensíveis<span class="sw"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--org)"></i>Integrações externas<span class="sw off"></span></div>
+   <div class="ly" onclick="layer(this)"><i style="background:var(--ylw)"></i>Lacunas de dados<span class="sw"></span></div>
+ </div>
+ <div class="legend">
+   <div><i style="background:var(--grn)"></i>Validado</div>
+   <div><i style="background:var(--red)"></i>Pendência crítica</div>
+   <div><i style="background:var(--pur)"></i>Sensível</div>
+   <div><i style="background:var(--cy)"></i>Comunidade</div>
+   <div><i style="background:var(--org)"></i>Integração</div>
+ </div>
+</div>
+   <p class="hint" style="margin-top:8px">Clique em uma TI/região para ver score de qualidade, nº de TIs e comunidades, pendências, incidentes de integração, dados sensíveis e ações recomendadas.</p></div>
+ 
+<div class="rp">
+ <div class="hd"><div class="ico">🤖</div><div><b>Copiloto Dados &amp; Cadastro</b><small>IA · síntese executiva</small></div></div>
+ <div class="ai" style="margin-top:0">
+   <div class="ah"><span class="dot2"></span>Síntese executiva</div>
+   <p>A base de Dados &amp; Cadastro apresenta <b>score geral de 78/100</b>. Os principais pontos de atenção estão no cadastro de <b>comunidades (127 pendências)</b> e em <b>interoperabilidade externa (4 fontes críticas fora do ar)</b>.</p>
+ </div>
+ <div style="margin-top:12px;font-size:11px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.4px">⚠️ Alertas críticos</div>
+ <div class="kv"><span>🔴 Integração INPE (focos de calor)</span><span class="pill p-err">Fora do ar</span></div>
+ <div class="kv"><span>🟠 Camadas s/ metadados consumidas em dashboards</span><b style="color:var(--org)">3</b></div>
+ <div class="kv"><span>🟣 Dados sensíveis sem classificação</span><b style="color:var(--pur)">31</b></div>
+ <div class="kv"><span>🟡 Despachos vencidos</span><b style="color:var(--ylw)">12</b></div>
+ <div class="ai">
+   <div class="ah"><span class="dot2"></span>Recomendação prioritária</div>
+   <p>Priorizar a validação de <b>23 comunidades</b> com localização não confirmada em <b>áreas de alto risco hídrico</b> — elas alimentam os painéis de vulnerabilidade e resposta emergencial.</p>
+   <div class="rec">💡 Gerar despacho p/ Coordenação Regional validar coordenadas fora da TI associada.</div>
+ </div>
+ <div class="acts">
+   <button class="tb pri" onclick="gotab('ger')">Ver pendências</button>
+   <button class="tb" onclick="toast('Despacho gerado pela IA')">Gerar despacho</button>
+   <button class="tb" onclick="gotab('ia')">Abrir copiloto</button>
+ </div>
+</div>
+</div>
+
+<div class="card" style="margin-top:14px"><h3>📋 Pendências operacionais consolidadas <span class="t">fila unificada · todos os módulos</span></h3>
+<div class="tw"><table><thead><tr><th>Prior.</th><th>Módulo</th><th>Item</th><th>Tipo</th><th>Território</th><th>Status</th><th>Resp.</th><th>Prazo</th></tr></thead><tbody>
+<tr onclick="selRow(this,'Comunidade X · localização fora da TI')"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A2</span></td><td>Comunidade X</td><td>Localização fora da TI</td><td>V. do Javari</td><td><span class="pill p-warn">Em triagem</span></td><td>Regional</td><td style="color:var(--ylw)">3 dias</td></tr>
+<tr onclick="selRow(this)"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A4</span></td><td>Webservice INPE</td><td>Falha de conexão</td><td>Nacional</td><td><span class="pill p-info">Em correção</span></td><td>TI</td><td style="color:var(--red)">Hoje</td></tr>
+<tr onclick="selRow(this)"><td><span class="pill p-warn">Média</span></td><td><span class="tag mod">A3</span></td><td>Camada Hidrografia</td><td>Metadados incompletos</td><td>Bacia Amazônica</td><td><span class="pill p-info">Em validação</span></td><td>Dados</td><td>5 dias</td></tr>
+<tr onclick="selRow(this)"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A1</span></td><td>TI Y</td><td>Divergência de área</td><td>Kayapó</td><td><span class="pill p-warn">Aguard. despacho</span></td><td>GIS</td><td style="color:var(--ylw)">2 dias</td></tr>
+<tr onclick="selRow(this)"><td><span class="pill p-crit">Crítica</span></td><td><span class="tag mod">A5</span></td><td>Dados sensíveis</td><td>Sem classificação</td><td>Povos isolados</td><td><span class="pill p-pur">Em revisão</span></td><td>Governança</td><td style="color:var(--red)">Hoje</td></tr>
+<tr onclick="selRow(this)"><td><span class="pill p-warn">Média</span></td><td><span class="tag mod">A2</span></td><td>Aldeia Demini</td><td>Registro duplicado</td><td>Yanomami</td><td><span class="pill p-info">Em correção</span></td><td>Regional</td><td>4 dias</td></tr>
+</tbody></table></div></div></div><div class="view " id="v_exec" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Dashboard Executivo</b></div>
+<div class="kgrid"><div class="kpi gold"><div class="lbl">Score Geral de Qualidade</div><div class="val">78</div><div class="sub">Confiabilidade da base</div></div><div class="kpi"><div class="lbl">TIs cadastradas</div><div class="val">724</div><div class="sub">Cobertura territorial</div></div><div class="kpi g"><div class="lbl">TIs com cadastro validado</div><div class="val">630</div><div class="sub">87% · maturidade</div></div><div class="kpi"><div class="lbl">Comunidades / aldeias</div><div class="val">6.218</div><div class="sub">granularidade</div></div><div class="kpi c"><div class="lbl">Comunidades c/ localização validada</div><div class="val">71%</div><div class="sub">confiabilidade espacial</div></div><div class="kpi"><div class="lbl">Camadas publicadas</div><div class="val">142</div><div class="sub">disponibilidade</div></div><div class="kpi"><div class="lbl">Webservices conectados</div><div class="val">38</div><div class="sub">interoperabilidade</div></div><div class="kpi r"><div class="lbl">Integrações com falha</div><div class="val">4</div><div class="sub">risco operacional</div></div><div class="kpi p"><div class="lbl">Dados sensíveis classificados</div><div class="val">92%</div><div class="sub">conformidade / LGPD</div></div><div class="kpi r"><div class="lbl">Pendências críticas</div><div class="val">47</div><div class="sub">passivo operacional</div></div><div class="kpi y"><div class="lbl">Despachos vencidos</div><div class="val">12</div><div class="sub">gargalos governança</div></div><div class="kpi"><div class="lbl">Camadas c/ metadados completos</div><div class="val">73%</div><div class="sub">maturidade catálogo</div></div></div>
+<div class="grid2">
+ <div>
+  <div class="grid3" style="margin-top:0">
+   <div class="card"><h3>📊 Maturidade por módulo</h3><div class="dim"><span style="color:var(--mut)">Cadastro Territorial (A1)</span><div class="bar"><i style="width:82%;background:var(--grn)"></i></div><b style="text-align:right;color:var(--grn)">82%</b></div><div class="dim"><span style="color:var(--mut)">Comunidades e Aldeias (A2)</span><div class="bar"><i style="width:66%;background:var(--ylw)"></i></div><b style="text-align:right;color:var(--ylw)">66%</b></div><div class="dim"><span style="color:var(--mut)">Catálogo de Dados (A3)</span><div class="bar"><i style="width:74%;background:var(--cy)"></i></div><b style="text-align:right;color:var(--cy)">74%</b></div><div class="dim"><span style="color:var(--mut)">Interoperabilidade (A4)</span><div class="bar"><i style="width:71%;background:var(--cy)"></i></div><b style="text-align:right;color:var(--cy)">71%</b></div><div class="dim"><span style="color:var(--mut)">Qualidade e Governança (A5)</span><div class="bar"><i style="width:78%;background:var(--cy)"></i></div><b style="text-align:right;color:var(--cy)">78%</b></div></div>
+   <div class="card"><h3>🎯 Qualidade por dimensão</h3><div class="dim"><span style="color:var(--mut)">Completude</span><div class="bar"><i style="width:73%;background:var(--ylw)"></i></div><b style="text-align:right;color:var(--ylw)">73</b></div><div class="dim"><span style="color:var(--mut)">Consistência</span><div class="bar"><i style="width:81%;background:var(--grn)"></i></div><b style="text-align:right;color:var(--grn)">81</b></div><div class="dim"><span style="color:var(--mut)">Atualidade</span><div class="bar"><i style="width:68%;background:var(--ylw)"></i></div><b style="text-align:right;color:var(--ylw)">68</b></div><div class="dim"><span style="color:var(--mut)">Precisão espacial</span><div class="bar"><i style="width:76%;background:var(--cy)"></i></div><b style="text-align:right;color:var(--cy)">76</b></div><div class="dim"><span style="color:var(--mut)">Metadados</span><div class="bar"><i style="width:73%;background:var(--ylw)"></i></div><b style="text-align:right;color:var(--ylw)">73</b></div><div class="dim"><span style="color:var(--mut)">Proveniência</span><div class="bar"><i style="width:62%;background:var(--ylw)"></i></div><b style="text-align:right;color:var(--ylw)">62</b></div><div class="dim"><span style="color:var(--mut)">Sensibilidade</span><div class="bar"><i style="width:88%;background:var(--grn)"></i></div><b style="text-align:right;color:var(--grn)">88</b></div><div class="dim"><span style="color:var(--mut)">Governança</span><div class="bar"><i style="width:91%;background:var(--grn)"></i></div><b style="text-align:right;color:var(--grn)">91</b></div></div>
+   <div class="card"><h3>🌎 Cobertura territorial <span class="t">por região</span></h3><div class="barchart"><div class="barrow"><span>Norte</span><div class="bar"><i style="width:78%;background:var(--grn)"></i></div><b>78%</b></div><div class="barrow"><span>Nordeste</span><div class="bar"><i style="width:64%;background:var(--ylw)"></i></div><b>64%</b></div><div class="barrow"><span>Centro-Oeste</span><div class="bar"><i style="width:71%;background:var(--cy)"></i></div><b>71%</b></div><div class="barrow"><span>Sudeste</span><div class="bar"><i style="width:83%;background:var(--grn)"></i></div><b>83%</b></div><div class="barrow"><span>Sul</span><div class="bar"><i style="width:69%;background:var(--ylw)"></i></div><b>69%</b></div></div>
+     <p class="hint" style="margin-top:8px">Filtros: UF · Coordenação Regional · Bioma · Bacia.</p></div>
+  </div>
+  <div class="grid2" style="grid-template-columns:1fr 1fr;margin-top:14px">
+   <div class="card"><h3>📈 Evolução mensal da qualidade <span class="t">12 meses</span></h3><div class="spark"><i style="height:62%"></i><i style="height:64%"></i><i style="height:63%"></i><i style="height:66%"></i><i style="height:68%"></i><i style="height:67%"></i><i style="height:70%"></i><i style="height:71%"></i><i style="height:73%"></i><i style="height:72%"></i><i style="height:75%"></i><i style="height:78%"></i></div>
+     <p class="hint" style="margin-top:8px">Melhoria contínua após regras automáticas de validação geoespacial e dedup.</p></div>
+   <div class="card"><h3>⚠️ Pendências por severidade</h3><div class="barchart">
+     <div class="barrow"><span><span class="pill p-crit">Crítica</span></span><div class="bar"><i style="width:28%;background:#ff8a96"></i></div><b>47</b></div>
+     <div class="barrow"><span><span class="pill p-err">Alta</span></span><div class="bar"><i style="width:45%;background:var(--red)"></i></div><b>89</b></div>
+     <div class="barrow"><span><span class="pill p-warn">Média</span></span><div class="bar"><i style="width:70%;background:var(--ylw)"></i></div><b>164</b></div>
+     <div class="barrow"><span><span class="pill p-ok">Baixa</span></span><div class="bar"><i style="width:85%;background:var(--grn)"></i></div><b>211</b></div>
+   </div></div>
+  </div>
+ </div>
+ 
+<div class="rp">
+ <div class="hd"><div class="ico" style="background:rgba(91,191,123,.16)">⭐</div><div><b>Saúde da base</b><small>resumo p/ direção</small></div></div>
+ <div class="donutwrap"><div class="donut" style="background:conic-gradient(var(--gold) 0 78%,#1c2c3e 78% 100%)"><div class="inner"><b style="color:var(--gold2)">78</b><small>Score geral</small></div></div></div>
+ <div style="margin-top:10px">
+  <div class="kv"><span>Classificação</span><span class="subtag s-int">Adequado</span></div>
+  <div class="kv"><span>Pronta p/ decisão?</span><b style="color:var(--grn)">Sim, c/ ressalvas</b></div>
+  <div class="kv"><span>Módulo mais maduro</span><b>A1 (82%)</b></div>
+  <div class="kv"><span>Módulo de maior risco</span><b style="color:var(--ylw)">A2 (66%)</b></div>
+  <div class="kv"><span>Integrações saudáveis</span><b style="color:var(--grn)">34 / 38</b></div>
+ </div>
+ <div class="ai">
+   <div class="ah"><span class="dot2"></span>Leitura executiva da IA</div>
+   <p>A base sustenta decisões estratégicas, mas o <b>cadastro de comunidades (A2)</b> e <b>3 integrações críticas</b> reduzem a confiança em painéis de vulnerabilidade. Tendência geral de melhoria (+2,4).</p>
+   <div class="rec">💡 Foco do trimestre: validar comunidades em áreas de risco e restabelecer integração INPE.</div>
+ </div>
+ <div class="acts"><button class="tb pri" onclick="toast('Relatório Executivo de Saúde dos Dados gerado')">Gerar relatório</button><button class="tb" onclick="gotab('ia')">Copiloto</button></div>
+</div>
+</div></div><div class="view " id="v_ger" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Visão Gerencial</b> · coordenação e acompanhamento</div>
+<div class="card"><h3>🏭 Painel de Produção Cadastral <span class="t">situação dos registros por etapa e módulo</span></h3>
+<div class="tw"><table><thead><tr><th>Módulo</th><th>Recebido</th><th>Em triagem</th><th>Em validação</th><th>Aguard. despacho</th><th>Aprovado</th><th>Publicado</th></tr></thead><tbody><tr><td><span class="tag mod">A1</span> TIs</td><td><b>12</b></td><td><b>8</b></td><td><b>15</b></td><td><b>4</b></td><td><b>21</b></td><td><b>67</b></td></tr><tr><td><span class="tag mod">A2</span> Comunidades</td><td><b>85</b></td><td><b>41</b></td><td><b>72</b></td><td><b>19</b></td><td><b>108</b></td><td><b>430</b></td></tr><tr><td><span class="tag mod">A3</span> Camadas</td><td><b>9</b></td><td><b>5</b></td><td><b>11</b></td><td><b>3</b></td><td><b>18</b></td><td><b>142</b></td></tr><tr><td><span class="tag mod">A4</span> Integrações</td><td><b>4</b></td><td><b>3</b></td><td><b>6</b></td><td><b>2</b></td><td><b>7</b></td><td><b>38</b></td></tr><tr><td><span class="tag mod">A5</span> Qualidade</td><td><b>37</b></td><td><b>22</b></td><td><b>43</b></td><td><b>16</b></td><td><b>52</b></td><td><b>96</b></td></tr></tbody></table></div></div>
+
+<div class="card" style="margin-top:14px"><h3>🗂️ Kanban Integrado de Pendências <span class="t">consolida todos os módulos · módulo · severidade · território · responsável</span></h3>
+<div class="kan"><div class="kcol"><h4>Detectado<b>2</b></h4><div class="kc h" onclick="toast('Pendência A2: Comunidade fora da TI')"><div class="kt">Comunidade fora da TI</div><div class="km"><span class="tag mod">A2</span><span class="tag">Comunidade X</span><span class="tag">Alta</span></div></div><div class="kc m" onclick="toast('Pendência A3: Sem metadados')"><div class="kt">Sem metadados</div><div class="km"><span class="tag mod">A3</span><span class="tag">Hidrografia</span><span class="tag">Média</span></div></div></div><div class="kcol"><h4>Aguard. responsável<b>2</b></h4><div class="kc h" onclick="toast('Pendência A1: Divergência de área')"><div class="kt">Divergência de área</div><div class="km"><span class="tag mod">A1</span><span class="tag">TI Kayapó</span><span class="tag">Alta</span></div></div><div class="kc m" onclick="toast('Pendência A4: Webservice defasado')"><div class="kt">Webservice defasado</div><div class="km"><span class="tag mod">A4</span><span class="tag">SICAR</span><span class="tag">Média</span></div></div></div><div class="kcol"><h4>Em correção<b>2</b></h4><div class="kc m" onclick="toast('Pendência A2: Registro duplicado')"><div class="kt">Registro duplicado</div><div class="km"><span class="tag mod">A2</span><span class="tag">Aldeia Demini</span><span class="tag">Média</span></div></div><div class="kc l" onclick="toast('Pendência A5: Sem proprietário')"><div class="kt">Sem proprietário</div><div class="km"><span class="tag mod">A5</span><span class="tag">Uso do Solo</span><span class="tag">Baixa</span></div></div></div><div class="kcol"><h4>Em validação<b>2</b></h4><div class="kc h" onclick="toast('Pendência A1: Geometria inválida')"><div class="kt">Geometria inválida</div><div class="km"><span class="tag mod">A1</span><span class="tag">TI Bananal</span><span class="tag">Alta</span></div></div><div class="kc m" onclick="toast('Pendência A2: Localização')"><div class="kt">Localização</div><div class="km"><span class="tag mod">A2</span><span class="tag">Aldeia Norte</span><span class="tag">Média</span></div></div></div><div class="kcol"><h4>Aguard. aprovação<b>1</b></h4><div class="kc l" onclick="toast('Pendência A3: Republicação')"><div class="kt">Republicação</div><div class="km"><span class="tag mod">A3</span><span class="tag">Limites Munic.</span><span class="tag">Baixa</span></div></div></div><div class="kcol"><h4>Publicado<b>1</b></h4><div class="kc l" onclick="toast('Pendência A5: Metadados completos')"><div class="kt">Metadados completos</div><div class="km"><span class="tag mod">A5</span><span class="tag">Comunidades v12</span><span class="tag">Baixa</span></div></div></div></div></div>
+
+<div class="grid2" style="margin-top:14px">
+ <div class="card"><h3>👥 Painel de Responsáveis <span class="t">distribuição de tarefas e gargalos</span></h3>
+ <div class="tw"><table><thead><tr><th>Equipe / Responsável</th><th>Atribuídas</th><th>Vencidas</th><th>Concluídas</th><th>Tempo médio</th></tr></thead><tbody><tr><td><div class="userrow"><div class="uav">RN</div>Coord. Regional Norte</div></td><td><b>34</b></td><td><b style="color:var(--red)">6</b></td><td><b style="color:var(--grn)">128</b></td><td style="color:var(--ylw)">3,2 d</td></tr><tr><td><div class="userrow"><div class="uav">GP</div>Geoprocessamento</div></td><td><b>21</b></td><td><b style="color:var(--red)">2</b></td><td><b style="color:var(--grn)">96</b></td><td style="color:var(--grn)">2,1 d</td></tr><tr><td><div class="userrow"><div class="uav">ED</div>Equipe de Dados</div></td><td><b>28</b></td><td><b style="color:var(--red)">4</b></td><td><b style="color:var(--grn)">142</b></td><td style="color:var(--cy)">2,8 d</td></tr><tr><td><div class="userrow"><div class="uav">GV</div>Governança</div></td><td><b>16</b></td><td><b style="color:var(--red)">3</b></td><td><b style="color:var(--grn)">52</b></td><td style="color:var(--ylw)">4,1 d</td></tr><tr><td><div class="userrow"><div class="uav">IN</div>Integração (A4)</div></td><td><b>14</b></td><td><b style="color:var(--red)">5</b></td><td><b style="color:var(--grn)">73</b></td><td style="color:var(--red)">5,0 d</td></tr></tbody></table></div>
+ <p class="hint" style="margin-top:8px">Gargalo identificado: <b style="color:var(--red)">Integração (A4)</b> — maior tempo médio de resolução (5,0 d) e mais tarefas vencidas.</p></div>
+ <div class="rp"><div class="hd"><div class="ico" style="background:rgba(201,162,91,.16)">📨</div><div><b>Painel de Despachos</b><small>SLA e tipos</small></div></div>
+ <div class="kv"><span>Despachos abertos</span><b>58</b></div>
+ <div class="kv"><span>Vencidos</span><b style="color:var(--red)">12</b></div>
+ <div class="kv"><span>SLA médio</span><b>3,1 dias</b></div>
+ <div style="margin-top:8px;font-size:10.5px;color:var(--mut);font-weight:700">TIPOS DE DESPACHO</div>
+ <div class="row" style="margin-top:6px"><span class="tag">Correção cadastral</span><span class="tag">Validação regional</span><span class="tag">Validação de geometria</span><span class="tag">Revisão documental</span><span class="tag">Classificação de sensibilidade</span><span class="tag">Correção de metadados</span><span class="tag">Reprocessar integração</span><span class="tag">Aprovação de publicação</span></div>
+ <div style="margin-top:12px;font-size:10.5px;color:var(--mut);font-weight:700">PAINEL DE PUBLICAÇÃO</div>
+ <div class="kv"><span>Camadas prontas p/ publicar</span><b style="color:var(--grn)">9</b></div>
+ <div class="kv"><span>Aprovados aguardando publicação</span><b>21</b></div>
+ <div class="kv"><span>Publicações com erro</span><b style="color:var(--red)">2</b></div>
+ <div class="kv"><span>Bloqueados por governança</span><b style="color:var(--ylw)">3</b></div>
+ <div class="kv"><span>Bloqueados por baixa qualidade</span><b style="color:var(--ylw)">5</b></div>
+ <div class="acts"><button class="tb pri" onclick="toast('Despacho criado')">Novo despacho</button><button class="tb" onclick="toast('Relatório de SLA gerado')">Relatório SLA</button></div>
+ </div>
+</div></div><div class="view " id="v_op" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Visão Operacional</b> · execução diária</div>
+<div class="kgrid">
+ <div class="kpi"><div class="lbl">Minhas tarefas</div><div class="val">14</div><div class="sub">4 para hoje</div></div>
+ <div class="kpi y"><div class="lbl">Validações pendentes</div><div class="val">8</div><div class="sub">registros atribuídos</div></div>
+ <div class="kpi r"><div class="lbl">Prazos vencidos</div><div class="val">3</div><div class="sub">requer ação imediata</div></div>
+ <div class="kpi"><div class="lbl">Camadas a publicar</div><div class="val">2</div><div class="sub">prontas</div></div>
+ <div class="kpi r"><div class="lbl">Integrações c/ falha (minhas)</div><div class="val">1</div><div class="sub">WS INPE</div></div>
+ <div class="kpi p"><div class="lbl">Alertas de qualidade</div><div class="val">6</div><div class="sub">do copiloto</div></div>
+</div>
+<div class="grid2">
+ <div class="card"><h3>📥 Fila Operacional Unificada <span class="t">tarefas de todos os módulos · ordenadas por prioridade</span></h3>
+ <div class="tw"><table><thead><tr><th>Prior.</th><th>Mód.</th><th>Item</th><th>Tipo</th><th>Status</th><th>Resp.</th><th>Prazo</th></tr></thead><tbody><tr onclick="selRow(this,'Comunidade X · Localização fora da TI')"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A2</span></td><td><b>Comunidade X</b></td><td>Localização fora da TI</td><td><span class="pill p-warn">Em triagem</span></td><td>Regional</td><td style="color:var(--ylw)">3 dias</td></tr><tr onclick="selRow(this,'Webservice INPE · Falha de conexão')"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A4</span></td><td><b>Webservice INPE</b></td><td>Falha de conexão</td><td><span class="pill p-info">Em correção</span></td><td>TI</td><td style="color:var(--red)">Hoje</td></tr><tr onclick="selRow(this,'Camada Hidrografia · Metadados incompletos')"><td><span class="pill p-warn">Média</span></td><td><span class="tag mod">A3</span></td><td><b>Camada Hidrografia</b></td><td>Metadados incompletos</td><td><span class="pill p-info">Em validação</span></td><td>Dados</td><td style="color:var(--mut)">5 dias</td></tr><tr onclick="selRow(this,'TI Y · Divergência de área')"><td><span class="pill p-err">Alta</span></td><td><span class="tag mod">A1</span></td><td><b>TI Y</b></td><td>Divergência de área</td><td><span class="pill p-warn">Aguardando despacho</span></td><td>GIS</td><td style="color:var(--ylw)">2 dias</td></tr><tr onclick="selRow(this,'Dados sensíveis · Sem classificação')"><td><span class="pill p-crit">Crítica</span></td><td><span class="tag mod">A5</span></td><td><b>Dados sensíveis</b></td><td>Sem classificação</td><td><span class="pill p-pur">Em revisão</span></td><td>Governança</td><td style="color:var(--red)">Hoje</td></tr><tr onclick="selRow(this,'Aldeia Demini · Registro duplicado')"><td><span class="pill p-warn">Média</span></td><td><span class="tag mod">A2</span></td><td><b>Aldeia Demini</b></td><td>Registro duplicado</td><td><span class="pill p-info">Em correção</span></td><td>Regional</td><td style="color:var(--mut)">4 dias</td></tr><tr onclick="selRow(this,'Camada Uso do Solo · Sem proprietário')"><td><span class="pill p-ok">Baixa</span></td><td><span class="tag mod">A3</span></td><td><b>Camada Uso do Solo</b></td><td>Sem proprietário</td><td><span class="pill p-idle">Detectado</span></td><td>Dados</td><td style="color:var(--mut)">7 dias</td></tr></tbody></table></div></div>
+ 
+<div class="rp">
+ <div class="hd"><div class="ico" style="background:rgba(61,146,201,.16)">🛠️</div><div><b>Minha Operação</b><small>Ana Ribeiro · Analista Comunitário</small></div></div>
+ <div class="kv"><span>Minhas tarefas</span><b>14</b></div>
+ <div class="kv"><span>Meus despachos</span><b>5</b></div>
+ <div class="kv"><span>Validações pendentes</span><b style="color:var(--ylw)">8</b></div>
+ <div class="kv"><span>Camadas sob responsabilidade</span><b>6</b></div>
+ <div class="kv"><span>Integrações sob responsabilidade</span><b>2</b></div>
+ <div class="kv"><span>Prazos vencidos</span><b style="color:var(--red)">3</b></div>
+ <div class="ai">
+   <div class="ah"><span class="dot2"></span>Recomendação da IA p/ hoje</div>
+   <p>Comece pelos <b>3 itens vencidos</b>. A <b>Comunidade X</b> (fora da TI) impacta painéis de vulnerabilidade — alta prioridade. Sugiro correção assistida da coordenada (provável erro de sinal na longitude).</p>
+   <div class="rec">💡 2 registros podem ser resolvidos em lote (dedup assistida).</div>
+ </div>
+ <div class="acts">
+  <button class="tb pri" onclick="toast('Abrindo primeiro item da fila')">Iniciar fila</button>
+  <button class="tb" onclick="toast('Apoio da IA acionado')">Pedir apoio à IA</button>
+ </div>
+</div>
+</div>
+
+<div class="card" style="margin-top:14px"><h3>⚡ Ações operacionais rápidas <span class="t">disponíveis na pendência selecionada</span></h3>
+<div class="row">
+ <button class="tb" onclick="toast('Registro aberto')">Abrir registro</button>
+ <button class="tb" onclick="toast('Aberto no mapa (GIS)')">Abrir no mapa</button>
+ <button class="tb" onclick="toast('Validado')">Validar</button>
+ <button class="tb pri" onclick="toast('Correção assistida aplicada')">Corrigir</button>
+ <button class="tb" onclick="toast('Despacho criado')">Despachar</button>
+ <button class="tb" onclick="toast('Complemento solicitado')">Solicitar complemento</button>
+ <button class="tb" onclick="toast('Aprovado')">Aprovar</button>
+ <button class="tb dng" onclick="toast('Rejeitado')">Rejeitar</button>
+ <button class="tb" onclick="toast('Publicado no GIS')">Publicar</button>
+ <button class="tb" onclick="toast('Arquivado')">Arquivar</button>
+ <button class="tb" onclick="toast('Relatório gerado')">Gerar relatório</button>
+ <button class="tb" onclick="gotab('ia')">Pedir apoio da IA</button>
+</div></div></div><div class="view " id="v_adm" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Administração &amp; Acessos</b> · perfis, permissões, sensibilidade, auditoria</div>
+<div class="kgrid">
+ <div class="kpi"><div class="lbl">Usuários ativos</div><div class="val">131</div><div class="sub">12 perfis</div></div>
+ <div class="kpi"><div class="lbl">Perfis de acesso</div><div class="val">12</div><div class="sub">orientados a papéis</div></div>
+ <div class="kpi g"><div class="lbl">Agentes de IA ativos</div><div class="val">6</div><div class="sub">copilotos transversais</div></div>
+ <div class="kpi y"><div class="lbl">Acessos a dados sensíveis (30d)</div><div class="val">208</div><div class="sub">todos com log</div></div>
+ <div class="kpi r"><div class="lbl">Tentativas bloqueadas</div><div class="val">9</div><div class="sub">sem permissão</div></div>
+ <div class="kpi p"><div class="lbl">Eventos de auditoria (30d)</div><div class="val">14,2k</div><div class="sub">trilha completa</div></div>
+</div>
+<div class="grid2">
+ <div class="card"><h3>👤 Perfis de Acesso <span class="t">gestão de usuários</span></h3>
+ <div class="tw"><table><thead><tr><th>Perfil</th><th>Papel</th><th>Usuários</th><th>Status</th></tr></thead><tbody><tr onclick="toast('Perfil: Administrador Geral')"><td><b>Administrador Geral</b></td><td class="hint">Configura plataforma, módulos, usuários e permissões</td><td><b>3</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Administrador GIS')"><td><b>Administrador GIS</b></td><td class="hint">Camadas, serviços, mapas e publicação</td><td><b>2</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Gestor de Dados')"><td><b>Gestor de Dados</b></td><td class="hint">Qualidade, governança e ciclo de vida</td><td><b>4</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Analista Territorial')"><td><b>Analista Territorial</b></td><td class="hint">Edita e valida dados de TIs</td><td><b>6</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Analista Comunitário')"><td><b>Analista Comunitário</b></td><td class="hint">Edita e valida comunidades e aldeias</td><td><b>9</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Analista de Integração')"><td><b>Analista de Integração</b></td><td class="hint">Webservices, APIs e cargas</td><td><b>3</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Validador Regional')"><td><b>Validador Regional</b></td><td class="hint">Confirma informações territoriais/comunitárias</td><td><b>18</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Gestor Finalístico')"><td><b>Gestor Finalístico</b></td><td class="hint">Consulta painéis e aprova fluxos</td><td><b>7</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Auditor')"><td><b>Auditor</b></td><td class="hint">Logs, histórico e trilhas de auditoria</td><td><b>2</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Parceiro Externo')"><td><b>Parceiro Externo</b></td><td class="hint">Acessa dados específicos autorizados</td><td><b>11</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Consulta Restrita')"><td><b>Consulta Restrita</b></td><td class="hint">Apenas visualiza dados autorizados</td><td><b>24</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr><tr onclick="toast('Perfil: Operador de Campo')"><td><b>Operador de Campo</b></td><td class="hint">Coleta e atualiza via app móvel</td><td><b>42</b> usuários</td><td><span class="pill p-ok">Ativo</span></td></tr></tbody></table></div></div>
+ <div class="rp"><div class="hd"><div class="ico" style="background:rgba(155,139,208,.16)">🔒</div><div><b>Controle por Sensibilidade</b><small>comportamento por nível</small></div></div>
+ <div class="kv"><span><span class="subtag s-pub">Público</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Visível p/ todos os perfis autorizados</b></div><div class="kv"><span><span class="subtag s-int">Interno</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Visível p/ usuários internos</b></div><div class="kv"><span><span class="subtag s-rest">Restrito</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Visível por área ou função</b></div><div class="kv"><span><span class="subtag s-sens">Sensível</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Exige permissão específica</b></div><div class="kv"><span><span class="subtag s-asens">Altamente sensível</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Exige autorização formal</b></div><div class="kv"><span><span class="subtag s-sig">Sigiloso operacional</span></span><b style="font-size:10.5px;color:var(--mut);max-width:220px">Visível apenas p/ perfis críticos</b></div>
+ <div style="margin-top:8px;font-size:10.5px;color:var(--mut);font-weight:700">PARA DADOS SENSÍVEIS O SISTEMA PODE:</div>
+ <div class="row" style="margin-top:6px"><span class="tag">Mascarar coordenadas</span><span class="tag">Ocultar campos</span><span class="tag">Bloquear exportação</span><span class="tag">Agregar informações</span><span class="tag">Esconder documentos</span><span class="tag">Justificativa de acesso</span><span class="tag">Log detalhado</span></div>
+ <div class="acts"><button class="tb pri" onclick="toast('Política de sensibilidade aplicada')">Aplicar política</button></div>
+ </div>
+</div>
+<div class="card" style="margin-top:14px"><h3>🔐 Matriz de Permissões <span class="t">✓ total · ◐ parcial · ✕ negado · 🔒 restrito</span></h3>
+<div class="tw"><table class="matrix"><thead><tr><th>Ação</th><th>Admin</th><th>Gestor Dados</th><th>Analista</th><th>Validador</th><th>Parceiro</th><th>Campo</th></tr></thead><tbody><tr><td>Visualizar dados públicos</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td></tr><tr><td>Visualizar dados internos</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk pa">◐</span></td></tr><tr><td>Visualizar dados sensíveis</td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk pa">◐</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk pa">🔒</span></td></tr><tr><td>Criar registro</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk yy">✓</span></td></tr><tr><td>Editar registro</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk pa">◐</span></td></tr><tr><td>Validar registro</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk yy">✓</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr><tr><td>Publicar camada</td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr><tr><td>Exportar dados</td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr><tr><td>Configurar integração</td><td><span class="chk yy">✓</span></td><td><span class="chk nn">✕</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr><tr><td>Criar regra de qualidade</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr><tr><td>Aprovar dado sensível</td><td><span class="chk yy">✓</span></td><td><span class="chk yy">✓</span></td><td><span class="chk nn">✕</span></td><td><span class="chk pa">◐</span></td><td><span class="chk nn">✕</span></td><td><span class="chk nn">✕</span></td></tr></tbody></table></div></div>
+<div class="grid2" style="margin-top:14px">
+ <div class="card"><h3>🌎 Controle por Território</h3>
+ <p class="hint" style="margin-bottom:8px">Permissões restritas por escopo geográfico. Ex.: um validador regional edita/valida apenas dados de sua coordenação.</p>
+ <div class="row"><span class="tag">País</span><span class="tag">Região</span><span class="tag">UF</span><span class="tag">Coordenação Regional</span><span class="tag">Terra Indígena</span><span class="tag">Comunidade</span><span class="tag">Bioma</span><span class="tag">Bacia</span><span class="tag">Área sensível</span></div>
+ <div class="kv" style="margin-top:10px"><span>Ex.: Validador Norte</span><b>Coord. Regional Norte</b></div>
+ <div class="kv"><span>Ex.: Parceiro IBGE</span><b>UF: AM, RR, PA</b></div>
+ </div>
+ <div class="card"><h3>🔍 Auditoria &amp; Logs <span class="t">trilha completa</span></h3>
+ <div class="timeline">
+  <div class="tl ok">Ana Ribeiro validou coordenada da Comunidade X. <small>13:22 · Analista Comunitário</small></div>
+  <div class="tl warn">Acesso a dado sensível (povo isolado) — justificativa registrada. <small>11:48 · Gestor de Dados</small></div>
+  <div class="tl err">Tentativa de exportação bloqueada — perfil sem permissão. <small>10:05 · Parceiro Externo</small></div>
+  <div class="tl">Camada "Hidrografia v2" publicada no GIS. <small>09:31 · Admin GIS</small></div>
+  <div class="tl">Regra de qualidade RQ-014 ativada. <small>08:50 · Gestor de Dados</small></div>
+ </div>
+ <div class="acts"><button class="tb" onclick="toast('Exportando trilha de auditoria')">Exportar logs</button><button class="tb" onclick="toast('Filtro aplicado')">Filtrar</button></div>
+ </div>
+</div></div><div class="view " id="v_mod" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Dashboards por Módulo</b></div>
+<div class="card"><h3>🧩 Dashboard especializado por módulo <span class="t">indicadores · gráficos · mapa por módulo</span></h3>
+<div class="tabs" style="margin:0 0 12px"><div class="tab on" data-grp="mod" onclick="modtab('m_a1',this)">A1 · Cadastro Territorial</div><div class="tab " data-grp="mod" onclick="modtab('m_a2',this)">A2 · Comunidades e Aldeias</div><div class="tab " data-grp="mod" onclick="modtab('m_a3',this)">A3 · Catálogo de Dados</div><div class="tab " data-grp="mod" onclick="modtab('m_a4',this)">A4 · Interoperabilidade</div><div class="tab " data-grp="mod" onclick="modtab('m_a5',this)">A5 · Qualidade e Governança</div></div>
+<div id="m_a1" class="modpane">
+<div class="kgrid"><div class="kpi "><div class="lbl">TIs cadastradas</div><div class="val">724</div><div class="sub">cobertura</div></div><div class="kpi g"><div class="lbl">Geometria validada</div><div class="val">630</div><div class="sub">87%</div></div><div class="kpi "><div class="lbl">Documentação completa</div><div class="val">548</div><div class="sub">76%</div></div><div class="kpi y"><div class="lbl">Pendência topológica</div><div class="val">11</div><div class="sub">revisão</div></div><div class="kpi r"><div class="lbl">Sobreposição crítica</div><div class="val">3</div><div class="sub">atenção</div></div><div class="kpi y"><div class="lbl">Sem atualização recente</div><div class="val">42</div><div class="sub">&gt;180d</div></div><div class="kpi "><div class="lbl">Em edição</div><div class="val">15</div><div class="sub">registros</div></div><div class="kpi "><div class="lbl">Aguardando publicação</div><div class="val">21</div><div class="sub">aprovados</div></div></div>
+<div class="grid3">
+ <div class="card"><h3>TIs por status jurídico</h3><div class="barchart"><div class="barrow"><span>Regularizada</span><div class="bar"><i style="width:64%;background:var(--grn)"></i></div><b>463</b></div><div class="barrow"><span>Homologada</span><div class="bar"><i style="width:16%;background:var(--cy)"></i></div><b>116</b></div><div class="barrow"><span>Declarada</span><div class="bar"><i style="width:11%;background:var(--ylw)"></i></div><b>79</b></div><div class="barrow"><span>Em estudo</span><div class="bar"><i style="width:9%;background:var(--org)"></i></div><b>66</b></div></div></div>
+ <div class="card"><h3>Pendências por tipo</h3><div class="barchart"><div class="barrow"><span>Documental</span><div class="bar"><i style="width:45%;background:var(--ylw)"></i></div><b>8</b></div><div class="barrow"><span>Topológica</span><div class="bar"><i style="width:32%;background:var(--red)"></i></div><b>5</b></div><div class="barrow"><span>Área divergente</span><div class="bar"><i style="width:23%;background:var(--org)"></i></div><b>3</b></div><div class="barrow"><span>Atualização</span><div class="bar"><i style="width:12%;background:var(--cy)"></i></div><b>2</b></div></div></div>
+ <div class="card"><h3>Área total por bioma</h3><div class="barchart"><div class="barrow"><span>Amazônia</span><div class="bar"><i style="width:88%;background:var(--leaf)"></i></div><b>98M ha</b></div><div class="barrow"><span>Cerrado</span><div class="bar"><i style="width:34%;background:var(--gold)"></i></div><b>12M ha</b></div><div class="barrow"><span>Mata Atlântica</span><div class="bar"><i style="width:12%;background:var(--grn)"></i></div><b>1,8M ha</b></div><div class="barrow"><span>Caatinga</span><div class="bar"><i style="width:8%;background:var(--org)"></i></div><b>0,9M ha</b></div></div></div>
+</div></div><div id="m_a2" class="modpane" style="display:none">
+<div class="kgrid"><div class="kpi "><div class="lbl">Comunidades</div><div class="val">4.812</div><div class="sub">cadastradas</div></div><div class="kpi "><div class="lbl">Aldeias</div><div class="val">6.218</div><div class="sub">total</div></div><div class="kpi c"><div class="lbl">Localização validada</div><div class="val">71%</div><div class="sub">espacial</div></div><div class="kpi y"><div class="lbl">Sem atualização</div><div class="val">36%</div><div class="sub">&gt;90d</div></div><div class="kpi r"><div class="lbl">Alta vulnerabilidade</div><div class="val">318</div><div class="sub">atenção</div></div><div class="kpi y"><div class="lbl">Risco hídrico</div><div class="val">142</div><div class="sub">monitorar</div></div><div class="kpi r"><div class="lbl">Ocorrência ativa</div><div class="val">57</div><div class="sub">em curso</div></div><div class="kpi p"><div class="lbl">Sensibilidade alta</div><div class="val">89</div><div class="sub">LGPD</div></div></div>
+<div class="grid3">
+ <div class="card"><h3>Comunidades por nível de vulnerabilidade</h3><div class="barchart"><div class="barrow"><span>Crítica</span><div class="bar"><i style="width:18%;background:var(--red)"></i></div><b>318</b></div><div class="barrow"><span>Alta</span><div class="bar"><i style="width:34%;background:var(--org)"></i></div><b>602</b></div><div class="barrow"><span>Média</span><div class="bar"><i style="width:58%;background:var(--ylw)"></i></div><b>1.024</b></div><div class="barrow"><span>Baixa</span><div class="bar"><i style="width:82%;background:var(--grn)"></i></div><b>1.448</b></div></div></div>
+ <div class="card"><h3>Comunidades por status cadastral</h3><div class="barchart"><div class="barrow"><span>Validada</span><div class="bar"><i style="width:71%;background:var(--grn)"></i></div><b>3.416</b></div><div class="barrow"><span>Em validação</span><div class="bar"><i style="width:16%;background:var(--cy)"></i></div><b>770</b></div><div class="barrow"><span>Pendente</span><div class="bar"><i style="width:13%;background:var(--ylw)"></i></div><b>626</b></div></div></div>
+ <div class="card"><h3>Por tipo de acesso logístico</h3><div class="barchart"><div class="barrow"><span>Fluvial</span><div class="bar"><i style="width:62%;background:var(--cy)"></i></div><b>—</b></div><div class="barrow"><span>Terrestre</span><div class="bar"><i style="width:24%;background:var(--gold)"></i></div><b>—</b></div><div class="barrow"><span>Aéreo</span><div class="bar"><i style="width:14%;background:var(--org)"></i></div><b>—</b></div></div></div>
+</div></div><div id="m_a3" class="modpane" style="display:none">
+<div class="kgrid"><div class="kpi "><div class="lbl">Camadas cadastradas</div><div class="val">198</div><div class="sub">total</div></div><div class="kpi g"><div class="lbl">Publicadas</div><div class="val">142</div><div class="sub">disponíveis</div></div><div class="kpi "><div class="lbl">Internas</div><div class="val">89</div><div class="sub">restritas</div></div><div class="kpi "><div class="lbl">Externas</div><div class="val">53</div><div class="sub">de parceiros</div></div><div class="kpi y"><div class="lbl">Simuladas</div><div class="val">6</div><div class="sub">demo/teste</div></div><div class="kpi "><div class="lbl">Heatmaps publicados</div><div class="val">17</div><div class="sub">analíticos</div></div><div class="kpi c"><div class="lbl">Metadados completos</div><div class="val">73%</div><div class="sub">catálogo</div></div><div class="kpi y"><div class="lbl">Pendência de qualidade</div><div class="val">31</div><div class="sub">revisão</div></div></div>
+<div class="grid3">
+ <div class="card"><h3>Camadas por tema</h3><div class="barchart"><div class="barrow"><span>Territorial</span><div class="bar"><i style="width:70%;background:var(--leaf)"></i></div><b>58</b></div><div class="barrow"><span>Ambiental</span><div class="bar"><i style="width:52%;background:var(--grn)"></i></div><b>43</b></div><div class="barrow"><span>Social</span><div class="bar"><i style="width:38%;background:var(--cy)"></i></div><b>31</b></div><div class="barrow"><span>Infraestrutura</span><div class="bar"><i style="width:24%;background:var(--gold)"></i></div><b>20</b></div></div></div>
+ <div class="card"><h3>Camadas por sensibilidade</h3><div class="barchart"><div class="barrow"><span>Público</span><div class="bar"><i style="width:60%;background:var(--grn)"></i></div><b>119</b></div><div class="barrow"><span>Interno</span><div class="bar"><i style="width:26%;background:var(--acc)"></i></div><b>51</b></div><div class="barrow"><span>Restrito</span><div class="bar"><i style="width:10%;background:var(--ylw)"></i></div><b>20</b></div><div class="barrow"><span>Sensível</span><div class="bar"><i style="width:4%;background:var(--org)"></i></div><b>8</b></div></div></div>
+ <div class="card"><h3>Camadas mais consumidas</h3><div class="barchart"><div class="barrow"><span>Comunidades</span><div class="bar"><i style="width:92%;background:var(--gold)"></i></div><b>A2,A6,A8</b></div><div class="barrow"><span>TIs</span><div class="bar"><i style="width:84%;background:var(--gold)"></i></div><b>A1,A8</b></div><div class="barrow"><span>Hidrografia</span><div class="bar"><i style="width:61%;background:var(--cy)"></i></div><b>A6</b></div><div class="barrow"><span>Focos calor</span><div class="bar"><i style="width:47%;background:var(--red)"></i></div><b>A6</b></div></div></div>
+</div></div><div id="m_a4" class="modpane" style="display:none">
+<div class="kgrid"><div class="kpi "><div class="lbl">Fontes externas</div><div class="val">38</div><div class="sub">conectadas</div></div><div class="kpi g"><div class="lbl">Integrações ativas</div><div class="val">34</div><div class="sub">saudáveis</div></div><div class="kpi r"><div class="lbl">Com falha</div><div class="val">4</div><div class="sub">crítico</div></div><div class="kpi "><div class="lbl">Webservices públicos</div><div class="val">22</div><div class="sub">OGC/REST</div></div><div class="kpi "><div class="lbl">APIs institucionais</div><div class="val">16</div><div class="sub">parceiros</div></div><div class="kpi "><div class="lbl">Cargas processadas</div><div class="val">1.284</div><div class="sub">30 dias</div></div><div class="kpi y"><div class="lbl">Registros rejeitados</div><div class="val">317</div><div class="sub">validação</div></div><div class="kpi "><div class="lbl">Tempo médio resposta</div><div class="val">1,4s</div><div class="sub">latência</div></div></div>
+<div class="grid3">
+ <div class="card"><h3>Integrações por status</h3><div class="barchart"><div class="barrow"><span>Ativa</span><div class="bar"><i style="width:89%;background:var(--grn)"></i></div><b>34</b></div><div class="barrow"><span>Falha</span><div class="bar"><i style="width:11%;background:var(--red)"></i></div><b>4</b></div><div class="barrow"><span>Degradada</span><div class="bar"><i style="width:8%;background:var(--ylw)"></i></div><b>3</b></div></div></div>
+ <div class="card"><h3>Erros por origem</h3><div class="barchart"><div class="barrow"><span>INPE (focos)</span><div class="bar"><i style="width:60%;background:var(--red)"></i></div><b>timeout</b></div><div class="barrow"><span>SICAR</span><div class="bar"><i style="width:32%;background:var(--org)"></i></div><b>schema</b></div><div class="barrow"><span>IBGE</span><div class="bar"><i style="width:18%;background:var(--ylw)"></i></div><b>auth</b></div></div></div>
+ <div class="card"><h3>Disponibilidade dos webservices</h3><div class="barchart"><div class="barrow"><span>Funai</span><div class="bar"><i style="width:99%;background:var(--grn)"></i></div><b>99,8%</b></div><div class="barrow"><span>IBGE</span><div class="bar"><i style="width:97%;background:var(--grn)"></i></div><b>97,2%</b></div><div class="barrow"><span>INPE</span><div class="bar"><i style="width:74%;background:var(--red)"></i></div><b>74,1%</b></div><div class="barrow"><span>SICAR</span><div class="bar"><i style="width:88%;background:var(--ylw)"></i></div><b>88,5%</b></div></div></div>
+</div></div><div id="m_a5" class="modpane" style="display:none">
+<div class="kgrid"><div class="kpi gold"><div class="lbl">Score geral</div><div class="val">81</div><div class="sub">qualidade</div></div><div class="kpi "><div class="lbl">Regras ativas</div><div class="val">38</div><div class="sub">de qualidade</div></div><div class="kpi y"><div class="lbl">Inconsistências abertas</div><div class="val">214</div><div class="sub">passivo</div></div><div class="kpi p"><div class="lbl">Sensíveis classificados</div><div class="val">92%</div><div class="sub">LGPD</div></div><div class="kpi y"><div class="lbl">Dados sem proprietário</div><div class="val">3</div><div class="sub">órfãos</div></div><div class="kpi y"><div class="lbl">Metadados incompletos</div><div class="val">66</div><div class="sub">revisão</div></div><div class="kpi y"><div class="lbl">Registros duplicados</div><div class="val">142</div><div class="sub">dedup</div></div><div class="kpi r"><div class="lbl">Despachos vencidos</div><div class="val">12</div><div class="sub">gargalo</div></div></div>
+<div class="grid3">
+ <div class="card"><h3>Qualidade por módulo</h3><div class="barchart"><div class="barrow"><span>A1</span><div class="bar"><i style="width:82%;background:var(--grn)"></i></div><b>82</b></div><div class="barrow"><span>A2</span><div class="bar"><i style="width:66%;background:var(--ylw)"></i></div><b>66</b></div><div class="barrow"><span>A3</span><div class="bar"><i style="width:74%;background:var(--cy)"></i></div><b>74</b></div><div class="barrow"><span>A4</span><div class="bar"><i style="width:71%;background:var(--cy)"></i></div><b>71</b></div><div class="barrow"><span>A5</span><div class="bar"><i style="width:78%;background:var(--cy)"></i></div><b>78</b></div></div></div>
+ <div class="card"><h3>Inconsistências por severidade</h3><div class="barchart"><div class="barrow"><span>Crítica</span><div class="bar"><i style="width:20%;background:#ff8a96"></i></div><b>31</b></div><div class="barrow"><span>Alta</span><div class="bar"><i style="width:38%;background:var(--red)"></i></div><b>73</b></div><div class="barrow"><span>Média</span><div class="bar"><i style="width:64%;background:var(--ylw)"></i></div><b>142</b></div><div class="barrow"><span>Baixa</span><div class="bar"><i style="width:80%;background:var(--grn)"></i></div><b>188</b></div></div></div>
+ <div class="card"><h3>Dados sensíveis por categoria</h3><div class="barchart"><div class="barrow"><span>Povos isolados</span><div class="bar"><i style="width:70%;background:var(--pur)"></i></div><b>—</b></div><div class="barrow"><span>Localização</span><div class="bar"><i style="width:52%;background:var(--org)"></i></div><b>—</b></div><div class="barrow"><span>Saúde</span><div class="bar"><i style="width:34%;background:var(--red)"></i></div><b>—</b></div><div class="barrow"><span>Documentos</span><div class="bar"><i style="width:22%;background:var(--ylw)"></i></div><b>—</b></div></div></div>
+</div></div>
+<p class="hint" style="margin-top:10px">Cada módulo dispõe ainda de mapa dedicado (status cadastral, heatmaps de pendências/sobreposições, cobertura, lacunas e dados sensíveis), acessível no produto especializado.</p></div></div><div class="view " id="v_est" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Esteira Integrada</b> · ciclo de vida do dado ponta a ponta</div>
+<div class="card"><h3>🏭 Pipeline Integrado do Bloco <span class="t">Entrada → Cadastro → Validação → Qualidade → Governança → Publicação GIS → Consumo → Auditoria</span></h3>
+<div class="flow"><div class="fnode src" onclick="toast('Etapa: Dado recebido')"><div class="fi">📥</div><b>Dado recebido</b><span class="qt">412</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Cadastro preliminar')"><div class="fi">📝</div><b>Cadastro preliminar</b><span class="qt">318</span><small>itens</small></div><div class="farr">→</div><div class="fnode ai" onclick="toast('Etapa: Validação automática')"><div class="fi">✔️</div><b>Validação automática</b><span class="qt">286</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Complementação')"><div class="fi">➕</div><b>Complementação</b><span class="qt">194</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Validação técnica')"><div class="fi">🔬</div><b>Validação técnica</b><span class="qt">167</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Validação regional')"><div class="fi">🌎</div><b>Validação regional</b><span class="qt">143</span><small>itens</small></div><div class="farr">→</div><div class="fnode ai" onclick="toast('Etapa: Classificação sensibilidade')"><div class="fi">🔒</div><b>Classificação sensibilidade</b><span class="qt">121</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Aprovação')"><div class="fi">👍</div><b>Aprovação</b><span class="qt">98</span><small>itens</small></div><div class="farr">→</div><div class="fnode gis" onclick="toast('Etapa: Publicação GIS')"><div class="fi">🗺️</div><b>Publicação GIS</b><span class="qt">142</span><small>itens</small></div><div class="farr">→</div><div class="fnode gis" onclick="toast('Etapa: Consumo por aplicações')"><div class="fi">📊</div><b>Consumo por aplicações</b><span class="qt">—</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Auditoria')"><div class="fi">🔍</div><b>Auditoria</b><span class="qt">—</span><small>itens</small></div><div class="farr">→</div><div class="fnode " onclick="toast('Etapa: Revisão periódica')"><div class="fi">🔄</div><b>Revisão periódica</b><span class="qt">—</span><small>itens</small></div></div>
+<p class="hint" style="margin-top:8px">Clique em uma etapa para ver registros, módulos de origem, responsáveis, prazos, gargalos, ações possíveis e recomendações da IA. Etapas em <span style="color:var(--leaf)">verde</span> = GIS integrador · <span style="color:var(--pur)">roxo</span> = etapa assistida por IA.</p></div>
+<div class="grid2" style="margin-top:14px">
+ <div class="card"><h3>🔁 Exemplo de fluxo ponta a ponta <span class="t">carga de Comunidades</span></h3>
+ <div class="timeline">
+  <div class="tl ok">Carga de comunidades recebida via importação CSV (412 registros). <small>10:02 · Conector A4</small></div>
+  <div class="tl warn">IA identificou <b>12 duplicados</b> e <b>7 coordenadas fora da TI</b>. <small>10:03 · Agente de Qualidade + Dedup</small></div>
+  <div class="tl">Mapa GIS destacou pontos problemáticos por TI. Score da camada: <b style="color:var(--ylw)">65</b>. <small>10:03 · GIS</small></div>
+  <div class="tl">IA sugeriu despacho p/ validação regional; gestor aprovou. <small>10:11 · IA → Gestor</small></div>
+  <div class="tl ok">Responsável corrigiu registros; área técnica aprovou. <small>14:40 · Coord. Regional</small></div>
+  <div class="tl ok">Camada republicada no GIS; dashboards de A8 atualizados. <small>14:52 · Publicação GIS</small></div>
+  <div class="tl">Trilha de auditoria registrou todo o processo. <small>14:52 · Agente de Auditoria</small></div>
+ </div></div>
+ <div class="rp"><div class="hd"><div class="ico" style="background:rgba(224,189,122,.16)">⏱️</div><div><b>Gargalos da esteira</b><small>análise da IA</small></div></div>
+ <div class="kv"><span>Maior fila</span><b style="color:var(--red)">Validação regional (143)</b></div>
+ <div class="kv"><span>Etapa mais lenta</span><b>Complementação (2,9 d)</b></div>
+ <div class="kv"><span>Taxa de aprovação</span><b style="color:var(--grn)">82%</b></div>
+ <div class="kv"><span>Itens reprovados/arquivados</span><b>54</b></div>
+ <div class="ai"><div class="ah"><span class="dot2"></span>Recomendação</div>
+  <p>A etapa de <b>validação regional</b> concentra o maior acúmulo. Redistribuir 18 itens entre coordenações ociosas reduziria o ciclo em ~1,8 dia.</p>
+  <div class="rec">💡 Acionar correção assistida nos 12 duplicados pendentes.</div></div>
+ </div>
+</div></div><div class="view " id="v_ia" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Copiloto Dados &amp; Cadastro</b> · IA transversal</div>
+<div class="grid2">
+ <div>
+  <div class="card"><h3>🤖 Síntese Executiva da IA <span class="t">gerada agora</span></h3>
+   <div class="ai" style="margin-top:0"><div class="ah"><span class="dot2"></span>Visão geral da base</div>
+   <p>A base de Dados &amp; Cadastro apresenta <b>score geral de 78/100</b>. Os principais pontos de atenção estão no <b>cadastro de comunidades (127 pendências)</b> e em <b>interoperabilidade externa (4 fontes críticas fora do ar)</b>. Tendência de melhoria contínua (+2,4 no mês).</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>🧠 Recomendações &amp; Alertas <span class="t">priorizados</span></h3>
+   <div class="ai" style="margin-top:0;border-color:rgba(224,96,110,.4);background:linear-gradient(135deg,rgba(224,96,110,.12),rgba(61,146,201,.05))"><div class="ah" style="color:#f3c4c9"><span class="dot2" style="background:var(--red)"></span>Recomendação operacional</div>
+   <p>Priorizar a validação de <b>23 comunidades</b> com localização não confirmada em <b>áreas de alto risco hídrico</b> — elas alimentam os painéis de vulnerabilidade e resposta emergencial.</p></div>
+   <div class="ai"><div class="ah"><span class="dot2"></span>Alerta de governança</div>
+   <p>Existem <b>14 camadas publicadas sem metadados completos</b>. Três delas são consumidas por dashboards executivos.</p></div>
+   <div class="ai"><div class="ah"><span class="dot2"></span>Despacho sugerido</div>
+   <p>Gerar despacho para a Coordenação Regional validar coordenadas de comunidades localizadas fora da Terra Indígena associada.</p>
+   <div class="rec">💡 <button class="tb pri" style="padding:4px 10px" onclick="toast('Despacho gerado e atribuído à Coord. Regional')">Gerar despacho automaticamente</button></div></div>
+   <div class="ai"><div class="ah"><span class="dot2"></span>Análise de impacto</div>
+   <p>A falha na integração com <b>focos de calor (INPE)</b> pode afetar o módulo de eventos críticos e o painel de monitoramento nacional.</p></div>
+  </div>
+ </div>
+ <div class="rp"><div class="hd"><div class="ico">🤖</div><div><b>Capacidades do Copiloto</b><small>governança · qualidade · operação · decisão</small></div></div>
+  <div class="kv"><span>Síntese executiva</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Priorização de pendências</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Sugestão de despachos</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Detecção de inconsistências</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Análise de impacto de dados ruins</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Detecção de gargalos</span><span class="pill p-ok">Ativo</span></div>
+  <div class="kv"><span>Resumo de qualidade por módulo</span><span class="pill p-ok">Ativo</span></div>
+  <div style="margin-top:12px;font-size:10.5px;color:var(--mut);font-weight:700">AGENTES ATIVOS (6)</div>
+  <div class="row" style="margin-top:6px"><span class="tag">Qualidade</span><span class="tag">Dedup</span><span class="tag">Geoespacial</span><span class="tag">Governança</span><span class="tag">Metadados</span><span class="tag">Auditoria</span></div>
+  <div style="margin-top:12px"><div class="search" style="max-width:none"><input placeholder="Pergunte ao copiloto…"></div>
+  <div class="acts"><button class="tb pri" onclick="toast('Síntese executiva gerada')">Gerar síntese</button><button class="tb" onclick="toast('Pendências priorizadas')">Priorizar</button></div></div>
+ </div>
+</div></div><div class="view " id="v_rel" data-view="main">
+<div class="crumbs">Bloco Dados &amp; Cadastro › <b>Relatórios</b></div>
+<div class="grid3">
+ <div class="card"><h3>📑 Executivos</h3><div class="kv"><span>Saúde dos Dados</span><button class="tb" onclick="toast('Gerando: Saúde dos Dados')">Gerar</button></div><div class="kv"><span>Maturidade do Bloco</span><button class="tb" onclick="toast('Gerando: Maturidade do Bloco')">Gerar</button></div><div class="kv"><span>Cobertura Territorial</span><button class="tb" onclick="toast('Gerando: Cobertura Territorial')">Gerar</button></div><div class="kv"><span>Riscos de Dados p/ Decisão</span><button class="tb" onclick="toast('Gerando: Riscos de Dados p/ Decisão')">Gerar</button></div><div class="kv"><span>Integrações Estratégicas</span><button class="tb" onclick="toast('Gerando: Integrações Estratégicas')">Gerar</button></div><div class="kv"><span>Governança e LGPD</span><button class="tb" onclick="toast('Gerando: Governança e LGPD')">Gerar</button></div></div>
+ <div class="card"><h3>📊 Gerenciais</h3><div class="kv"><span>Pendências por Módulo</span><button class="tb" onclick="toast('Gerando: Pendências por Módulo')">Gerar</button></div><div class="kv"><span>Despachos e SLA</span><button class="tb" onclick="toast('Gerando: Despachos e SLA')">Gerar</button></div><div class="kv"><span>Qualidade por Responsável</span><button class="tb" onclick="toast('Gerando: Qualidade por Responsável')">Gerar</button></div><div class="kv"><span>Produção Cadastral</span><button class="tb" onclick="toast('Gerando: Produção Cadastral')">Gerar</button></div><div class="kv"><span>Publicações GIS</span><button class="tb" onclick="toast('Gerando: Publicações GIS')">Gerar</button></div><div class="kv"><span>Falhas de Integração</span><button class="tb" onclick="toast('Gerando: Falhas de Integração')">Gerar</button></div><div class="kv"><span>Metadados e Catálogo</span><button class="tb" onclick="toast('Gerando: Metadados e Catálogo')">Gerar</button></div></div>
+ <div class="card"><h3>🛠️ Operacionais</h3><div class="kv"><span>Registros para validação</span><button class="tb" onclick="toast('Gerando: Registros para validação')">Gerar</button></div><div class="kv"><span>Comunidades sem atualização</span><button class="tb" onclick="toast('Gerando: Comunidades sem atualização')">Gerar</button></div><div class="kv"><span>TIs com pendência documental</span><button class="tb" onclick="toast('Gerando: TIs com pendência documental')">Gerar</button></div><div class="kv"><span>Camadas com erro</span><button class="tb" onclick="toast('Gerando: Camadas com erro')">Gerar</button></div><div class="kv"><span>Integrações com falha</span><button class="tb" onclick="toast('Gerando: Integrações com falha')">Gerar</button></div><div class="kv"><span>Sensíveis sem classificação</span><button class="tb" onclick="toast('Gerando: Sensíveis sem classificação')">Gerar</button></div><div class="kv"><span>Despachos vencidos</span><button class="tb" onclick="toast('Gerando: Despachos vencidos')">Gerar</button></div><div class="kv"><span>Correções realizadas</span><button class="tb" onclick="toast('Gerando: Correções realizadas')">Gerar</button></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>📤 Exportação e distribuição</h3>
+<div class="row"><button class="tb pri" onclick="toast('Relatório PDF gerado')">PDF</button><button class="tb" onclick="toast('Exportado XLSX')">Excel</button><button class="tb" onclick="toast('Exportado CSV')">CSV</button><button class="tb" onclick="toast('Agendamento criado')">Agendar envio</button><button class="tb" onclick="toast('Compartilhado com gestores')">Compartilhar</button></div>
+<p class="hint" style="margin-top:10px">Todos os relatórios respeitam as permissões por perfil, território e sensibilidade. Dados sensíveis são mascarados ou agregados conforme política vigente.</p></div></div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>function tab(g,id,el){document.querySelectorAll('[data-grp="'+g+'"]').forEach(t=>t.classList.remove('on'));document.querySelectorAll('[data-view="'+g+'"]').forEach(v=>v.classList.remove('on'));if(el)el.classList.add('on');var v=document.getElementById(id);if(v)v.classList.add('on');var m=document.querySelector('.main');if(m)m.scrollTop=0;}
+function gotab(id){var t=document.getElementById('t_'+id);if(t)t.click();}
+function selRow(el,msg){document.querySelectorAll('tr.sel').forEach(r=>r.classList.remove('sel'));el.classList.add('sel');toast(msg||'Registro selecionado — painel contextual atualizado');}
+function toast(m){var t=document.getElementById('toast');t.innerHTML=m;t.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',3000);}
+function go(u){if(u==='#'){toast('Abrindo módulo especializado (mock) — navegação ilustrativa');return;}toast('Abrindo módulo…');setTimeout(()=>location.href=u,400);}
+function layer(el){var sw=el.querySelector('.sw');if(sw)sw.classList.toggle('off');toast('Camada do mapa alternada');}
+function openmod(n){toast('Acessando módulo: '+n);}
+function modtab(id,el){document.querySelectorAll('.modpane').forEach(p=>p.style.display='none');document.querySelectorAll('[data-grp="mod"]').forEach(t=>t.classList.remove('on'));var p=document.getElementById(id);if(p)p.style.display='block';if(el)el.classList.add('on');}
+</script>
+<footer-watermark data-tess-watermark="1" style="position:fixed;right:12px;bottom:12px;z-index:2147483647"><div class="tess-wrap" aria-live="polite">
+  <a href="https://tess.pareto.io/" target="_blank" rel="noopener noreferrer" class="tess-tag" aria-label="Made with Tess">
+    <span class="tess-text">Made with</span>
+    <svg class="tess-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1986 542" fill="none">
+      <path d="M1.84122 234.485C2.5103 258.289 0.0171567 282.444 3.13957 305.906C6.77175 321.611 36.809 314.132 48.7889 313.4C97.1145 305.914 139.458 271.305 156.249 225.598C171.487 183.209 163.139 137.494 164.501 93.1716C164.565 77.9758 164.39 63.0743 164.716 47.8227C163.872 32.1097 171.383 3.9616 149.279 1.2168C102.993 -2.5941 49.6412 0.636019 19.1738 39.9464C-1.20154 64.3632 0.423388 96.7677 0.773863 126.841V127L1.83325 234.493L1.84122 234.485Z" fill="#F4F4F4"/>
+      <path d="M1.4599 364.947C1.56345 401.378 4.48673 436.487 25.5948 467.635C34.1018 480.85 44.4249 493.412 56.8189 503.118C70.2724 513.509 86.3305 521.592 101.919 528.235C120.263 535.817 140.001 539.191 159.619 540.201C180.17 541.379 202.314 541.57 223.493 540.838C259.56 540.074 291.326 533.995 316.672 506.683C330.189 492.107 341.293 475.105 344.399 455.08C348.804 429.613 342.559 405.403 328.062 384.129C314.553 364.422 292.991 350.086 270.505 342.225C263.129 339.783 253.347 337.961 246.226 337.476C219.869 337.125 117.539 337.507 53.123 337.348C41.5813 337.34 30.852 337.348 19.6766 337.348C16.0842 337.547 12.3485 336.815 9.31372 338.096C0.997915 342.734 1.42008 356.331 1.46787 364.804V364.963L1.4599 364.947Z" fill="#F4F4F4"/>
+      <path d="M541.251 306.783C540.582 282.979 543.075 258.824 539.953 235.362C536.32 219.657 506.283 227.136 494.303 227.868C445.978 235.354 403.634 269.963 386.843 315.67C371.605 358.059 379.953 403.774 378.591 448.096C378.527 463.292 378.703 478.194 378.376 493.445C379.22 509.158 371.709 537.306 393.813 540.051C440.091 543.87 493.451 540.64 523.918 501.322C544.286 476.905 542.661 444.5 542.31 414.435V414.276L541.251 306.783Z" fill="#F4F4F4"/>
+      <path d="M541.626 176.322C541.523 139.891 538.6 104.782 517.491 73.6342C508.985 60.4193 498.661 47.8569 486.267 38.1506C472.814 27.7602 456.756 19.6769 441.168 13.0337C422.824 5.4517 403.086 2.07837 383.467 1.06797C362.916 -0.109512 340.773 -0.300455 319.593 0.431493C283.526 1.19526 251.76 7.27361 226.415 34.5864C212.897 49.1617 201.794 66.1635 198.687 86.1887C194.282 111.656 200.527 135.866 215.024 157.14C228.533 176.847 250.095 191.183 272.582 199.044C279.957 201.486 289.739 203.308 296.86 203.794C323.217 204.144 425.548 203.762 489.963 203.921C501.505 203.929 512.234 203.921 523.41 203.921C527.002 203.722 530.738 204.454 533.773 203.173C542.088 198.535 541.666 184.938 541.618 176.465V176.306L541.626 176.322Z" fill="#F4F4F4"/>
+      <path d="M1346.08 331.633H1000.71C1001.31 403.224 1059.07 470.845 1131.7 476.045C1196.94 480.709 1251.73 449.696 1282.44 392.729L1331.08 416.682C1283.12 500.083 1192.62 544.362 1096.92 521.543C969.409 491.139 913.368 342.352 967.88 227.67C1009.68 139.733 1102.6 96.9629 1197.67 120.135C1290.64 142.793 1356.88 236.025 1346.07 331.644L1346.08 331.633ZM1289.41 280.283C1279.12 224.664 1234.82 179.487 1179.31 168.457C1116.57 155.983 1055.75 180.696 1022.7 235.437C1017.37 244.274 1005.73 268.376 1005.38 278.079C1005.34 279.395 1005.56 279.47 1006.58 280.283H1289.4H1289.41Z" fill="#F4F4F4"/>
+      <path d="M1983.37 239.636H1931.51C1929.11 234.811 1929.69 228.446 1928.31 222.508C1909.69 142.605 1737.59 148.286 1749.48 235.613C1755.42 279.261 1842.03 284.674 1876.45 293.65C1927.8 307.043 1976.49 330.504 1984.3 389.011C1998.94 498.719 1885.96 538.986 1795.88 524.03C1728.23 512.808 1676.94 462.656 1678.63 391.547H1729.95C1729.76 433.515 1758.03 462.741 1797.31 472.327C1843.08 483.506 1929.17 472.872 1933.09 412.386C1937.64 342.475 1835.75 339.137 1787.67 326.835C1742.78 315.345 1701.43 292.473 1696.93 241.101C1686.67 123.852 1825.3 91.3408 1912.43 131.405C1955.94 151.41 1982.31 191.506 1983.36 239.636H1983.37Z" fill="#F4F4F4"/>
+      <path d="M1402.21 391.545C1404.83 392.358 1403.54 399.386 1403.83 401.697C1413.01 474.817 1503.49 489.859 1561.28 467.243C1624.15 442.649 1621.84 372.021 1556.98 349.02C1491.48 325.795 1376.1 332.727 1369.55 238.072C1361.17 117.025 1516.76 87.9583 1600.47 139.694C1635.59 161.4 1657.24 198.96 1656.14 240.704C1655.76 241.238 1654.77 239.634 1654.55 239.634H1603.76C1603.27 176.313 1533.03 159.763 1481.64 168.268C1445.03 174.334 1403.72 211.691 1428.57 250.685C1446.71 279.141 1523.22 286.405 1555.87 295.563C1619.98 313.535 1667.01 347.897 1658.15 421.895C1647.79 508.452 1550.45 534.619 1476.13 525.108C1405.72 516.101 1351.27 464.965 1352.48 391.534H1402.2L1402.21 391.545Z" fill="#F4F4F4"/>
+      <path d="M775.088 0V119.817H936.548V173.307H775.088L775.045 392.122C776.778 429.373 787.449 463.563 827.482 473.384C864.811 482.542 903.379 470.153 936.548 453.593V510.292C919.162 516.272 901.84 522.573 883.47 525.119C796.078 537.219 726.992 495.358 723.774 402.767V173.307H628.598V120.887L723.763 119.817V0H775.088Z" fill="#F4F4F4"/>
+    </svg>
+  </a>
+
+  <span class="tess-tooltip" role="tooltip">
+    AI-generated (possibly user-edited) content - please verify carefully and submit no personal information. If you believe this content violates your rights or applicable laws, you may submit a report for review
+  </span>
+</div>
+  
+  <style>
+    .tess-wrap { position: relative; }
+
+    .tess-tag {
+      display: inline-flex;
+      align-items: center;
+      background-color: #1a1a1a;
+      color: white;
+      font-family: "Inter", Arial, sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1;
+      border-radius: 999px;
+      padding: 6px 14px;
+      text-decoration: none;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      position: relative;
+    }
+  
+    .tess-tag:hover {
+      background-color: #000000;
+      transform: translateY(-1px);
+    }
+
+    .tess-tooltip {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      right: 0;
+      max-width: 360px;
+      width: max-content;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font: 400 12px "Inter", Arial, sans-serif;
+      line-height: 1.45;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      border: 1px solid rgba(0,0,0,.06);
+      text-align: left;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity .2s ease, transform .2s ease;
+      pointer-events: auto;
+      z-index: 1000;
+    }
+
+    .tess-tooltip a { color: #111; text-decoration: underline; }
+
+    .tess-wrap:hover .tess-tooltip,
+    .tess-tag:focus + .tess-tooltip,
+    .tess-wrap:focus-within .tess-tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tess-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 18px;
+      border: 8px solid transparent;
+      border-top-color: #fff;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.08));
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .tess-tooltip { background:#2a2a2a; color:#f5f5f5; border-color: rgba(255,255,255,.08); }
+      .tess-tooltip a { color:#f5f5f5; }
+      .tess-tooltip::after { border-top-color:#2a2a2a; }
+    }
+  
+    .tess-logo {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+  
+    .tess-text {
+      opacity: 0.9;
+    }
+  </style>
+  </footer-watermark></body></html>
