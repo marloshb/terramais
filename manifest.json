@@ -1,0 +1,22 @@
+{
+  "project": "Terra+ - Infraestrutura Nacional de Inteligência Territorial Indígena",
+  "entrypoint": "index.html",
+  "publication": "static hosting",
+  "files": [
+    "A1_cadastro_territorial.html",
+    "A2_comunidades_aldeias.html",
+    "_data.json",
+    "_data_blob.json",
+    "_engine.js",
+    "_shared.css",
+    "_style.css",
+    "br_uf.json",
+    "hub_dados_cadastro.html",
+    "hub_dados_cadastro_esri.html",
+    "index.html",
+    "module_A3.html",
+    "module_A4.html",
+    "module_A5.html",
+    "uf_paths.json"
+  ]
+}
